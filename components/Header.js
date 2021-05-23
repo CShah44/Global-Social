@@ -1,9 +1,14 @@
 import Link from "next/link";
 import { signOut, useSession } from "next-auth/client";
 import Image from "next/image";
+import Login from "./Login";
 
 function Header() {
   const [session] = useSession();
+
+  if (!session) {
+    return <Login />;
+  }
 
   return (
     <div className="sticky top-0 flex justify-between content-center">

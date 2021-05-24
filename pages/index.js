@@ -2,6 +2,7 @@ import Head from "next/head";
 import Header from "../components/Header";
 import { getSession } from "next-auth/client";
 import Login from "../components/Login";
+import Feed from "../components/Feed";
 
 export default function Home({ session }) {
   if (!session) {
@@ -13,6 +14,7 @@ export default function Home({ session }) {
         <title>Global Social</title>
       </Head>
       <Header />
+      <Feed />
     </div>
   );
 }

@@ -11,7 +11,7 @@ function Header() {
   }
 
   return (
-    <div className="sticky top-0 flex justify-between content-center">
+    <div className="sticky top-0 bg-white flex justify-between content-center shadow-md">
       {/* Left */}
 
       <h3 className="text-4xl font-sans flex-auto p-2 mr-2 justify-start">
@@ -20,8 +20,8 @@ function Header() {
 
       {/* Center - Links for chat or posts feed */}
       <div className="flex-auto self-center">
-        <Link href="/"> Feed/Posts </Link>
-        <Link href="/"> Chat </Link>
+        <Link href="/">Feed/Posts</Link>
+        <Link href="/">Chat</Link>
       </div>
 
       {/* Right */}

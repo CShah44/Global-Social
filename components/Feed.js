@@ -3,8 +3,8 @@ import Posts from "./Posts";
 
 function Feed({ posts }) {
   return (
-    <div className="d-flex flex-grow-1 h-screen pb-44 pt-6 mr-4">
-      <div className="flex-1 mx-auto">
+    <div className="d-flex h-screen pt-6 me-4 container-sm">
+      <div className="flex-grow-1 mx-auto">
         <InputBox />
         <Posts posts={posts} />
       </div>

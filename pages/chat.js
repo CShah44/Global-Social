@@ -1,5 +1,7 @@
+import Sidebar from "../components/Chat/Sidebar";
+
 function chat() {
-  return <div></div>;
+  return <Sidebar />;
 }
 
 export default chat;

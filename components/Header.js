@@ -2,6 +2,7 @@ import Link from "next/link";
 import { signOut, useSession } from "next-auth/client";
 import Image from "next/image";
 import Login from "./Login";
+import { Navbar, Nav, Container } from "react-bootstrap";
 
 function Header() {
   const [session] = useSession();
@@ -11,35 +12,33 @@ function Header() {
   }
 
   return (
-    <div className="sticky top-0 bg-white flex justify-between content-center shadow-md">
-      {/* Left */}
-
-      <h3 className="text-4xl font-sans flex-auto p-2 mr-2 justify-start">
-        GLOBAL SOCIAL
-      </h3>
-
-      {/* Center - Links for chat or posts feed */}
-      <div className="flex-auto self-center">
-        <Link href="/">Feed/Posts</Link>
-        <Link href="/">Chat</Link>
-      </div>
-
-      {/* Right */}
-      <div className="flex items-center sm:space-x-2 justify-end">
-        <Image
-          onClick={signOut}
-          src={session.user.image}
-          className="rounded-full cursor-pointer"
-          width={40}
-          height={40}
-          layout="fixed"
-        />
-
-        <p className="whitespace-nowrap font-semibold pr-2">
-          {session.user.name}
-        </p>
-      </div>
-    </div>
+    <Navbar bg="light" variant="light" sticky="top" expand="lg">
+      <Container>
+        <Navbar.Brand>Global Social</Navbar.Brand>
+        <Nav className="d-flex justify-content-center align-items-center">
+          <Nav.Link>
+            <Link href="/">Feed</Link>
+          </Nav.Link>
+          <Nav.Link>
+            <Link href="/chat">Chat</Link>
+          </Nav.Link>
+        </Nav>
+        <Nav className="d-flex justify-content-center align-items-center">
+          <Nav.Item>
+            <Image
+              onClick={signOut}
+              style={{ cursor: "pointer" }}
+              src={session.user.image}
+              className="rounded-full"
+              width={40}
+              height={40}
+              layout="fixed"
+            />
+          </Nav.Item>
+          <Nav.Item className="mx-1">{session.user.name}</Nav.Item>
+        </Nav>
+      </Container>
+    </Navbar>
   );
 }
 

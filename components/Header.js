@@ -12,16 +12,16 @@ function Header() {
   }
 
   return (
-    <Navbar bg="light" variant="light" sticky="top" expand="lg">
+    <Navbar bg="light" variant="light" sticky="top" expand="sm">
       <Container>
         <Navbar.Brand className="fs-2">Global Social</Navbar.Brand>
         <Nav className="d-flex justify-content-center align-items-center fs-5">
-          <Nav.Link className="noUnderLine px-2">
+          <Button className="p-2" variant="light">
             <Link href="/">Feed</Link>
-          </Nav.Link>
-          <Nav.Link className="noUnderLine px-2">
+          </Button>{" "}
+          <Button className="p-2" variant="light">
             <Link href="/chat">Chat</Link>
-          </Nav.Link>
+          </Button>
         </Nav>
         <Nav className="d-flex justify-content-center align-items-center">
           <Nav.Item style={{ cursor: "pointer" }}>

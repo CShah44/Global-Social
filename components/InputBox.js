@@ -3,6 +3,7 @@ import { useSession } from "next-auth/client";
 import { useRef, useState } from "react";
 import { db, storage } from "../firebase";
 import firebase from "firebase";
+import { Card, Button, InputGroup, FormControl } from "react-bootstrap";
 
 function InputBox() {
   const [session] = useSession();
@@ -74,55 +75,65 @@ function InputBox() {
   };
 
   return (
-    <div className="bg-white p-2 shadow-sm rounded mt-6 overflow-auto container-fluid">
-      <div className="d-flex p-4 align-items-center">
-        <Image
-          src={session.user.image}
-          className="rounded-full me-2"
-          width={40}
-          height={40}
-          layout="fixed"
-        />
-        <form className="d-flex flex-grow-1">
-          <input
-            className="rounded bg-light flex-grow-1 px-5 mx-auto"
-            type="text"
-            ref={inputRef}
-            maxLength="100"
-            placeholder={`What's on your mind, ${session.user.name}?`}
+    <div className="my-4">
+      <Card className="text-center">
+        <Card.Body>
+          <Card.Title>Add a post!</Card.Title>
+          <Image
+            src={session.user.image}
+            className="rounded-full"
+            width={40}
+            height={40}
+            layout="fixed"
           />
-          <button hidden type="submit" onClick={sendPostHandler}></button>
-        </form>
 
-        {imageToPost && (
-          <div
-            onClick={removeImage}
-            className="d-flex flex-column "
-            style={{ cursor: "pointer" }}
-          >
-            <img
-              src={imageToPost}
-              className="h-6"
-              width="80"
-              height="50"
-              style={{ objectFit: "contain" }}
-            />
-            <p className="fs-6 text-center">Remove</p>
+          <div>
+            <InputGroup>
+              <FormControl
+                as="textarea"
+                ref={inputRef}
+                style={{ resize: "none" }}
+                placeholder={`What's on your mind, ${session.user.name}?`}
+              />
+              <Button type="submit" onClick={sendPostHandler}>
+                {" "}
+                Post{" "}
+              </Button>
+            </InputGroup>
           </div>
-        )}
-      </div>
 
-      <div className="d-flex justify-content-evenly pt-1 mt-1 border-top">
-        <div onClick={() => filePickerRef.current.click()}>
-          <p className="fs-6">Add a Photo or Video</p>
-          <input
-            ref={filePickerRef}
-            hidden
-            type="file"
-            onChange={addImageToPostHandler}
-          />
-        </div>
-      </div>
+          {imageToPost && (
+            <div
+              onClick={removeImage}
+              className="px-2"
+              style={{ cursor: "pointer" }}
+            >
+              <img
+                src={imageToPost}
+                className="h-6"
+                width="80"
+                height="50"
+                style={{ objectFit: "contain" }}
+              />
+              <p className="fs-6 text-center">Remove</p>
+            </div>
+          )}
+
+          <div>
+            <div className="mt-3" onClick={() => filePickerRef.current.click()}>
+              <p style={{ cursor: "pointer" }} className="fs-6">
+                Add a Photo or Video
+              </p>
+              <input
+                ref={filePickerRef}
+                hidden
+                type="file"
+                onChange={addImageToPostHandler}
+              />
+            </div>
+          </div>
+        </Card.Body>
+      </Card>
     </div>
   );
 }

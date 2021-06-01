@@ -1,38 +1,38 @@
 import Image from "next/image";
+import { Card } from "react-bootstrap";
 
 function Post({ name, message, image, postImage, email, timestamp }) {
   return (
-    <div className="flex flex-col">
-      <div className="p-5 bg-white mt-5 rounded-t-2xl shadow-sm">
-        <div className="flex items-center space-x-2">
-          <img
-            src={image}
-            width="40"
-            height="40"
-            className="rounded-full"
-            alt=""
-          />
-          <div>
-            <p className="font-medium">{name}</p>
+    <Card className="w-90 my-5">
+      <Card.Body>
+        <Card.Text>
+          <div className="d-flex flex-grow-1">
+            <img
+              src={image}
+              width="40"
+              height="40"
+              className="rounded m-1"
+              alt=""
+            />
 
-            {timestamp ? (
-              <p className="text-xs text-gray-400">
-                {new Date(timestamp?.toDate()).toLocaleString()}
+            <div className="d-flex flex-row align-items-center justify-content-between">
+              <p style={{ fontSize: "1.1em" }} className="px-2">
+                {name}
+                {timestamp ? (
+                  <p style={{ fontSize: "0.8em" }}>
+                    {new Date(timestamp?.toDate()).toLocaleString()}
+                  </p>
+                ) : (
+                  <p>Loading...</p>
+                )}
               </p>
-            ) : (
-              <p className="text-xs text-gray-400">Loading...</p>
-            )}
+            </div>
           </div>
-        </div>
-        <p className="pt-4">{message}</p>
-      </div>
-
-      {postImage && (
-        <div className="relative h-56 md:h-96 bg-white z-0">
-          <Image src={postImage} objectFit="cover" layout="fill" />
-        </div>
-      )}
-    </div>
+        </Card.Text>
+        <Card.Text className="p-0 m-0">{message}</Card.Text>
+      </Card.Body>
+      <Card.Img variant="bottom" src={postImage} />
+    </Card>
   );
 }
 

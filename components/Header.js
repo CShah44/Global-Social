@@ -24,7 +24,7 @@ function Header() {
           </Button>
         </Nav>
         <Nav className="d-flex justify-content-center align-items-center">
-          <Nav.Item style={{ cursor: "pointer" }}>
+          <Nav.Item>
             <Image
               src={session.user.image}
               className="rounded-full"

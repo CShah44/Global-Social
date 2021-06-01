@@ -1,9 +1,9 @@
-import Image from "next/image";
+// import Image from "next/image";
 import { useSession } from "next-auth/client";
 import { useRef, useState } from "react";
 import { db, storage } from "../firebase";
 import firebase from "firebase";
-import { Card, Button, InputGroup, FormControl } from "react-bootstrap";
+import { Card, Button, InputGroup, FormControl, Image } from "react-bootstrap";
 
 function InputBox() {
   const [session] = useSession();
@@ -77,18 +77,19 @@ function InputBox() {
   return (
     <div className="my-4">
       <Card className="text-center">
+        <Card.Title className="pt-3 pb-0">Add Your Post!</Card.Title>
         <Card.Body>
-          <Card.Title>Add a post!</Card.Title>
-          <Image
-            src={session.user.image}
-            className="rounded-full"
-            width={40}
-            height={40}
-            layout="fixed"
-          />
+          <div className="d-flex flex-row justify-content-evenly">
+            <Image
+              src={session.user.image}
+              className="me-auto my-2"
+              roundedCircle
+              width={50}
+              height={50}
+              layout="fixed"
+            />
 
-          <div>
-            <InputGroup>
+            <InputGroup className=" flex-fill p-2">
               <FormControl
                 as="textarea"
                 ref={inputRef}
@@ -100,30 +101,27 @@ function InputBox() {
                 Post{" "}
               </Button>
             </InputGroup>
-          </div>
 
-          {imageToPost && (
-            <div
-              onClick={removeImage}
-              className="px-2"
-              style={{ cursor: "pointer" }}
-            >
-              <img
-                src={imageToPost}
-                className="h-6"
-                width="80"
-                height="50"
-                style={{ objectFit: "contain" }}
-              />
-              <p className="fs-6 text-center">Remove</p>
-            </div>
-          )}
+            {imageToPost && (
+              <div
+                onClick={removeImage}
+                className="px-2"
+                style={{ cursor: "pointer" }}
+              >
+                <img
+                  src={imageToPost}
+                  width="80"
+                  height="50"
+                  style={{ objectFit: "contain" }}
+                />
+                <p className="fs-6 text-center">Remove</p>
+              </div>
+            )}
+          </div>
 
           <div>
             <div className="mt-3" onClick={() => filePickerRef.current.click()}>
-              <p style={{ cursor: "pointer" }} className="fs-6">
-                Add a Photo or Video
-              </p>
+              <Button variant="outline-dark">Add a Photo or Video</Button>
               <input
                 ref={filePickerRef}
                 hidden

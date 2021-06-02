@@ -1,4 +1,3 @@
-import Image from "next/image";
 import { Card } from "react-bootstrap";
 
 function Post({ name, message, image, postImage, email, timestamp }) {

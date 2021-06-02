@@ -16,12 +16,18 @@ function Header() {
       <Container>
         <Navbar.Brand className="fs-2">Global Social</Navbar.Brand>
         <Nav className="d-flex justify-content-center align-items-center fs-5">
-          <Button className="p-2" variant="light">
-            <Link href="/">Feed</Link>
-          </Button>{" "}
-          <Button className="p-2" variant="light">
-            <Link href="/chat">Chat</Link>
-          </Button>
+          <Link href="/">
+            <Button className="p-2" variant="light">
+              Feed
+            </Button>
+          </Link>
+          {"  "}
+
+          <Link href="/chat">
+            <Button className="p-2" variant="light">
+              Chat
+            </Button>
+          </Link>
         </Nav>
         <Nav className="d-flex justify-content-center align-items-center">
           <Nav.Item>

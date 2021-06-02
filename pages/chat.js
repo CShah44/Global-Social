@@ -10,7 +10,7 @@ import { SocketProvider } from "../contexts/SocketProvider";
 import OpenConversation from "../components/Chat/OpenConversation";
 
 function chat() {
-  const { selectedConversation } = useConversations();
+  // const { selectedConversation } = useConversations();
 
   return (
     <Fragment>
@@ -20,7 +20,7 @@ function chat() {
           <SocketProvider>
             <div className="d-flex" style={{ height: "100vh" }}>
               <Sidebar />
-              {selectedConversation && <OpenConversation />}
+              {/* {selectedConversation && <OpenConversation />} */}
             </div>
           </SocketProvider>
         </ConversationsProvider>

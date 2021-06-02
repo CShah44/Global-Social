@@ -8,6 +8,7 @@
     "start": "next start"
   },
   "dependencies": {
+    "bootstrap": "^5.0.1",
     "firebase": "^8.6.2",
     "next": "10.2.2",
     "next-auth": "^3.23.3",

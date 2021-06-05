@@ -7,10 +7,6 @@ import { Navbar, Nav, Container, Button } from "react-bootstrap";
 function Header() {
   const [session] = useSession();
 
-  if (!session) {
-    return <Login />;
-  }
-
   return (
     <Navbar bg="light" variant="light" sticky="top" expand="sm">
       <Container>

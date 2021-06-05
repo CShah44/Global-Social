@@ -22,14 +22,11 @@ function Contact({ id, users }) {
   };
 
   return (
-    <div
-      onClick={enterChat}
-      className="d-flex align-items-center p-15 text-break"
-    >
+    <div onClick={enterChat} className="d-flex align-items-center">
       {recipient ? (
-        <img className="m-5" src={recipient.photoURL} />
+        <img src={recipient.photoURL} />
       ) : (
-        <img className="m-5">{recipientEmail}</img>
+        <img>{recipientEmail}</img>
       )}
       <p>{recipientEmail}</p>
     </div>

@@ -3,15 +3,15 @@ import { db } from "../firebase";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Login from "../components/Login";
 import { useEffect } from "react";
+import firebase from "firebase";
 
 function MyApp({ Component, pageProps }) {
   const [session, loading] = useSession();
 
-  if (loading) return <div>Loading</div>;
-  if (!session.user) return <Login />;
+  const user = session && session.user;
 
   useEffect(() => {
-    if (session.user) {
+    if (user) {
       db.collection("users").add(
         {
           email: session.user.email,
@@ -21,7 +21,10 @@ function MyApp({ Component, pageProps }) {
         { merge: true }
       );
     }
-  }, [session.user]);
+  }, [session]);
+
+  if (loading) return <div>Loading</div>;
+  if (!user) return <Login />;
 
   return (
     <Provider session={pageProps.session}>

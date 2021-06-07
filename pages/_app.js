@@ -12,18 +12,24 @@ function MyApp({ Component, pageProps }) {
 
   useEffect(() => {
     if (user) {
-      db.collection("users").add(
-        {
-          email: session.user.email,
-          lastSeen: firebase.firestore.FieldValue.serverTimestamp(),
-          photoURL: session.user.image,
-        },
-        { merge: true }
-      );
-    }
-  }, [session]);
+      const usersRef = db.collection("users");
+      const usersSnapshot = usersRef.where("email", "==", user?.email).get();
 
-  if (loading) return <div>Loading</div>;
+      if (usersSnapshot.empty) {
+        db.collection("users").add(
+          {
+            email: session.user.email,
+            lastSeen: firebase.firestore.FieldValue.serverTimestamp(),
+            photoURL: session.user.image,
+          },
+          { merge: true }
+        );
+        return;
+      }
+    }
+  }, [user]);
+
+  // if (loading) return <div>Loading</div>;
   if (!user) return <Login />;
 
   return (

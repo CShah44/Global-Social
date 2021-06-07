@@ -1,4 +1,4 @@
-import { Card } from "react-bootstrap";
+import { Card, Text } from "react-bootstrap";
 
 function Post({ name, message, image, postImage, email, timestamp }) {
   return (
@@ -14,18 +14,18 @@ function Post({ name, message, image, postImage, email, timestamp }) {
               alt=""
             />
 
-            <div className="d-flex flex-row align-items-center justify-content-between">
-              <p style={{ fontSize: "1.1em" }} className="px-2">
+            <span className="d-flex flex-row align-items-center justify-content-between">
+              <span style={{ fontSize: "1.1em" }} className="px-2">
                 {name}
                 {timestamp ? (
-                  <p style={{ fontSize: "0.8em" }}>
+                  <span style={{ fontSize: "0.8em" }}>
                     {new Date(timestamp?.toDate()).toLocaleString()}
-                  </p>
+                  </span>
                 ) : (
-                  <p>Loading...</p>
+                  <span>Loading...</span>
                 )}
-              </p>
-            </div>
+              </span>
+            </span>
           </div>
         </Card.Text>
         <Card.Text className="p-0 m-0">{message}</Card.Text>

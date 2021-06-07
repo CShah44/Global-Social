@@ -1,6 +1,16 @@
 import { Card, Text } from "react-bootstrap";
 
 function Post({ name, message, image, postImage, email, timestamp }) {
+  const timeStamp = timestamp ? (
+    <span style={{ fontSize: "0.8em" }} className="px-2">
+      {new Date(timestamp?.toDate()).toLocaleString()}
+    </span>
+  ) : (
+    <span className="px-2" style={{ fontSize: "0.8em" }}>
+      Loading...
+    </span>
+  );
+
   return (
     <Card className="w-90 my-5">
       <Card.Body>
@@ -14,18 +24,12 @@ function Post({ name, message, image, postImage, email, timestamp }) {
               alt=""
             />
 
-            <span className="d-flex flex-row align-items-center justify-content-between">
+            <div className="d-flex flex-column">
               <span style={{ fontSize: "1.1em" }} className="px-2">
                 {name}
-                {timestamp ? (
-                  <span style={{ fontSize: "0.8em" }}>
-                    {new Date(timestamp?.toDate()).toLocaleString()}
-                  </span>
-                ) : (
-                  <span>Loading...</span>
-                )}
               </span>
-            </span>
+              {timeStamp}
+            </div>
           </div>
         </Card.Text>
         <Card.Text className="p-0 m-0">{message}</Card.Text>

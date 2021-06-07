@@ -92,6 +92,7 @@ function InputBox() {
             <InputGroup className=" flex-fill p-2">
               <FormControl
                 as="textarea"
+                maxLength={100}
                 ref={inputRef}
                 style={{ resize: "none" }}
                 placeholder={`What's on your mind, ${session.user.name}?`}

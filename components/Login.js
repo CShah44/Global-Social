@@ -1,15 +1,12 @@
 import { signIn } from "next-auth/client";
+import { Button } from "react-bootstrap";
 
 function Login() {
   return (
-    <div className="grid place-items-center">
-      {/* todo : ADD IMAGE */}
-      <h1
-        onClick={signIn}
-        className="p-5 bg-blue-500 rounded-full text-white text-center cursor-pointer"
-      >
+    <div className="d-grid place-items-center">
+      <Button onClick={signIn} variant="dark">
         Login with Google
-      </h1>
+      </Button>
     </div>
   );
 }

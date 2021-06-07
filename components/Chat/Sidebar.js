@@ -2,7 +2,7 @@ import { useSession } from "next-auth/client";
 import { db } from "../../firebase";
 import { useCollection } from "react-firebase-hooks/firestore";
 import * as EmailValidator from "email-validator";
-import { Button } from "react-bootstrap";
+import { Button, ListGroup } from "react-bootstrap";
 import Contact from "./Contact";
 
 function Sidebar() {
@@ -42,13 +42,17 @@ function Sidebar() {
 
   return (
     <div
-      className="d-flex border-right overflow-scroll"
-      style={{scrollbarWidth: "none" }}
+      className="d-flex flex-column"
+      style={{ scrollbarWidth: "none", width: "250px" }}
     >
       <Button onClick={createChat}>Start a new chat</Button>
-      {chatsSnapshot?.docs.map((chat) => (
-        <Contact key={chat.id} id={chat.id} users={chat.data().users} />
-      ))}
+      <ListGroup variant="flush">
+        {chatsSnapshot?.docs.map((chat) => (
+          <ListGroup.Item key={chat.id}>
+            <Contact key={chat.id} id={chat.id} users={chat.data().users} />
+          </ListGroup.Item>
+        ))}
+      </ListGroup>
     </div>
   );
 }

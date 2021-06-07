@@ -2,13 +2,13 @@ import { useSession } from "next-auth/client";
 import { useRouter } from "next/router";
 import Message from "./Message";
 import { useState, useRef, Fragment } from "react";
-import { db } from "../firebase";
+import { db } from "../../firebase";
 import { useCollection } from "react-firebase-hooks/firestore";
-import getRecipientEmail from "../utils/getRecipientEmail";
+import getRecipientEmail from "../../utils/getRecipientEmail";
 import TimeAgo from "timeago-react";
 import { Button, Navbar, InputGroup, FormControl } from "react-bootstrap";
 
-function ChatScreen() {
+function ChatScreen({ chat, messages }) {
   const [session] = useSession();
   const [input, setInput] = useState("");
   const endOfMessageRef = useRef(null);
@@ -25,7 +25,7 @@ function ChatScreen() {
   const [recipientSnapshot] = useCollection(
     db
       .collection("users")
-      .where("email", "==", getRecipientEmail(chat.users, user))
+      .where("email", "==", getRecipientEmail(chat.users, session.user))
   );
 
   const showMessages = () => {
@@ -57,6 +57,8 @@ function ChatScreen() {
   const sendMessage = (e) => {
     e.preventDefault();
 
+    // TODO: first find user dynamically and then get the id and update last Seen
+    // IMPORTANT!
     db.collection("users").doc(user.uid).set(
       {
         lastSeen: firebase.firestore.FieldValue.serverTimestamp(),
@@ -76,7 +78,7 @@ function ChatScreen() {
   };
 
   const recipient = recipientSnapshot?.docs?.[0]?.data();
-  const recipientEmail = getRecipientEmail(chat.users, user);
+  const recipientEmail = getRecipientEmail(chat.users, session.user);
 
   return (
     <Fragment>

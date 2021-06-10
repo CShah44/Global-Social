@@ -1,30 +1,15 @@
-import Link from "next/link";
 import { signOut, useSession } from "next-auth/client";
 import Image from "next/image";
-import Login from "./Login";
 import { Navbar, Nav, Container, Button } from "react-bootstrap";
 
 function Header() {
   const [session] = useSession();
 
+  // add a user's profile page
   return (
     <Navbar bg="light" variant="light" sticky="top" expand="sm">
       <Container>
         <Navbar.Brand className="fs-2">Global Social</Navbar.Brand>
-        <Nav className="d-flex justify-content-center align-items-center fs-5">
-          <Link href="/">
-            <Button className="p-2" variant="light">
-              Feed
-            </Button>
-          </Link>
-          {"  "}
-
-          <Link href="/chat">
-            <Button className="p-2" variant="light">
-              Chat
-            </Button>
-          </Link>
-        </Nav>
         <Nav className="d-flex justify-content-center align-items-center">
           <Nav.Item>
             <Image

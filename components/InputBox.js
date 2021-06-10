@@ -1,8 +1,9 @@
-import Image from "next/image";
+// import Image from "next/image";
 import { useSession } from "next-auth/client";
 import { useRef, useState } from "react";
 import { db, storage } from "../firebase";
 import firebase from "firebase";
+import { Card, Button, InputGroup, FormControl, Image } from "react-bootstrap";
 
 function InputBox() {
   const [session] = useSession();
@@ -74,50 +75,64 @@ function InputBox() {
   };
 
   return (
-    <div className="bg-white p-2 rounded-2xl shadow-md text-gray-500 font-medium mt-6 overflow-hidden">
-      <div className="flex space-x-4 p-4 items-center">
-        <Image
-          src={session.user.image}
-          className="rounded-full "
-          width={40}
-          height={40}
-          layout="fixed"
-        />
-        <form className="flex flex-1">
-          <input
-            className="rounded-full h-12 bg-gray-100 flex-grow px-5 focus:outline-none"
-            type="text"
-            ref={inputRef}
-            maxLength="100"
-            placeholder={`What's on your mind, ${session.user.name}?`}
-          />
-          <button hidden type="submit" onClick={sendPostHandler}></button>
-        </form>
+    <div className="my-4 mx-auto" style={{ width: "65vw" }}>
+      <Card className="text-center">
+        <Card.Title className="pt-3 pb-0">Add Your Post!</Card.Title>
+        <Card.Body>
+          <div className="d-flex flex-row justify-content-evenly">
+            <Image
+              src={session.user.image}
+              className="me-auto my-2"
+              roundedCircle
+              width={50}
+              height={50}
+              layout="fixed"
+            />
 
-        {imageToPost && (
-          <div
-            onClick={removeImage}
-            className="flex flex-col filter hover:brightness-110 transition hover:scale-105 duration-105 cursor-pointer"
-          >
-            <img src={imageToPost} className="h-10 object-contain" />
-            <p className="text-xs text-red-500 text-center ">Remove</p>
+            <InputGroup className=" flex-fill p-2">
+              <FormControl
+                as="textarea"
+                maxLength={100}
+                ref={inputRef}
+                style={{ resize: "none" }}
+                placeholder={`What's on your mind, ${session.user.name}?`}
+              />
+              <Button type="submit" onClick={sendPostHandler}>
+                {" "}
+                Post{" "}
+              </Button>
+            </InputGroup>
+
+            {imageToPost && (
+              <div
+                onClick={removeImage}
+                className="px-2"
+                style={{ cursor: "pointer" }}
+              >
+                <img
+                  src={imageToPost}
+                  width="80"
+                  height="50"
+                  style={{ objectFit: "contain" }}
+                />
+                <p className="fs-6 text-center">Remove</p>
+              </div>
+            )}
           </div>
-        )}
-      </div>
 
-      <div className="flex justify-evenly p-3 border-t">
-        <div onClick={() => filePickerRef.current.click()}>
-          <p className="text-xs sm:text-sm xl:text-base">
-            Add a Photo or Video
-          </p>
-          <input
-            ref={filePickerRef}
-            hidden
-            type="file"
-            onChange={addImageToPostHandler}
-          />
-        </div>
-      </div>
+          <div>
+            <div className="mt-3" onClick={() => filePickerRef.current.click()}>
+              <Button variant="outline-dark">Add a Photo or Video</Button>
+              <input
+                ref={filePickerRef}
+                hidden
+                type="file"
+                onChange={addImageToPostHandler}
+              />
+            </div>
+          </div>
+        </Card.Body>
+      </Card>
     </div>
   );
 }

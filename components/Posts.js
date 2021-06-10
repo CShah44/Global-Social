@@ -8,7 +8,7 @@ function Posts({ posts }) {
   );
 
   return (
-    <div className="scrollbar-hide">
+    <div className="scrollbar-hide mx-auto" style={{ width: "65vw" }}>
       {realtimePosts
         ? realtimePosts?.docs.map((post) => (
             <Post

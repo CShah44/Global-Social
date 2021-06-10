@@ -3,12 +3,10 @@ import Posts from "./Posts";
 
 function Feed({ posts }) {
   return (
-    <div className="d-flex container-sm ">
-      <div className="flex-grow-1 w-80">
-        <InputBox className="row" />
+    <div className="d-flex container-sm flex-column justify-content-center">
+      <InputBox />
 
-        <Posts posts={posts} className="row" />
-      </div>
+      <Posts posts={posts} />
     </div>
   );
 }

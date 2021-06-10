@@ -75,7 +75,7 @@ function InputBox() {
   };
 
   return (
-    <div className="my-4">
+    <div className="my-4 mx-auto" style={{ width: "65vw" }}>
       <Card className="text-center">
         <Card.Title className="pt-3 pb-0">Add Your Post!</Card.Title>
         <Card.Body>

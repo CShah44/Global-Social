@@ -1,17 +1,17 @@
 import Head from "next/head";
 import Header from "../components/Header";
 import { getSession } from "next-auth/client";
-import Feed from "../components/Feed";
 import { db } from "../firebase";
+import ProfilePage from "../components/ProfilePage";
 
-export default function Home({ posts }) {
+export default function Profile({ posts }) {
   return (
     <div>
       <Head>
         <title>Global Social</title>
       </Head>
       <Header />
-      <Feed posts={posts} />
+      <ProfilePage posts={posts} />
     </div>
   );
 }
@@ -19,9 +19,13 @@ export default function Home({ posts }) {
 export async function getServerSideProps(context) {
   const session = await getSession(context);
 
-  const posts = await db.collection("posts").orderBy("timestamp", "desc").get();
+  const posts = db
+    .collection("posts")
+    .where("email", "==", session.user.email)
+    .orderBy("timestamp", "desc")
+    .get();
 
-  const docs = posts.docs.map((post) => ({
+  const docs = posts?.docs?.map((post) => ({
     id: post.id,
     ...post.data(),
     timestamp: null,
@@ -30,7 +34,7 @@ export async function getServerSideProps(context) {
   return {
     props: {
       session,
-      posts: docs,
+      posts: docs ? docs : null,
     },
   };
 }

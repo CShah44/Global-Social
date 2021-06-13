@@ -9,10 +9,6 @@
   },
   "dependencies": {
     "bootstrap": "^5.0.1",
-<<<<<<< HEAD
-=======
-    "email-validator": "^2.0.4",
->>>>>>> chat
     "firebase": "^8.6.2",
     "moment": "^2.29.1",
     "next": "10.2.2",

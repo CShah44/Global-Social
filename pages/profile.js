@@ -2,7 +2,7 @@ import Head from "next/head";
 import Header from "../components/Header";
 import { getSession } from "next-auth/client";
 import { db } from "../firebase";
-import ProfilePage from "../components/ProfilePage";
+import ProfilePage from "../components/Profile_Page/ProfilePage";
 
 export default function Profile({ posts }) {
   return (

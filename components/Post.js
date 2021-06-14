@@ -1,8 +1,6 @@
 import { Card } from "react-bootstrap";
-import { db } from "../firebase";
 
-function Post({ name, message, image, postImage, email, timestamp, id }) {
-  
+function Post({ name, message, image, postImage, timestamp }) {
   const timeStamp = timestamp ? (
     <span style={{ fontSize: "0.8em" }} className="px-2">
       {new Date(timestamp?.toDate()).toLocaleString()}
@@ -12,14 +10,6 @@ function Post({ name, message, image, postImage, email, timestamp, id }) {
       Loading...
     </span>
   );
-
-  function deletePostHandler() {
-    // TODO: LAUNCH A MODAL FIRST TO CONFIRM DELETION
-    db.collection('posts').doc(id).delete().catch(err => {
-      // TODO: SHOW A TOAST
-      console.log(err);
-    })
-  }
 
   return (
     <Card className="w-90 my-5">

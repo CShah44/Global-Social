@@ -22,7 +22,7 @@ function Posts({ posts }) {
               postImage={post.data().postImage}
             />
           ))
-        : posts?.map((post) => {
+        : posts.map((post) => {
             <Post
               key={post.id}
               id={post.id}

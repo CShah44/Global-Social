@@ -1,4 +1,3 @@
-// import Image from "next/image";
 import { useSession } from "next-auth/client";
 import { useRef, useState } from "react";
 import { db, storage } from "../firebase";

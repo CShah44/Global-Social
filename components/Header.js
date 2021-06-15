@@ -1,5 +1,6 @@
 import { signOut, useSession } from "next-auth/client";
 import Image from "next/image";
+import Link from "next/link";
 import { Navbar, Nav, Container, Button } from "react-bootstrap";
 import { useRouter } from "next/router";
 
@@ -9,14 +10,14 @@ function Header() {
 
   return (
     <Navbar bg="light" expand="lg" sticky="top">
-      <Container>
+      <Container className="d-flex">
         <Navbar.Brand className="fs-2" onClick={() => router.push("/")}>
           Global Social
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
-          <Nav className="d-flex">
-            <Nav.Item className="d-inline">
+          <Nav className="ms-auto">
+            <Nav.Item className="d-inline-flex justify-content-center align-items-center">
               <Image
                 src={session.user.image}
                 className="rounded-full"
@@ -25,11 +26,15 @@ function Header() {
                 layout="fixed"
               />
 
-              <span className="mx-3 p-1 my-auto">{session.user.name}</span>
+              <span className="mx-3 p-1">{session.user.name}</span>
             </Nav.Item>
-
-            <Nav.Item>
-              <Button className="mx-2" variant="outline-dark" onClick={signOut}>
+            <Nav.Item className="m-2">
+              <Link href="/profile">
+                <Button variant="outline-dark">View Profile</Button>
+              </Link>
+            </Nav.Item>
+            <Nav.Item className="m-2">
+              <Button variant="outline-dark" onClick={signOut}>
                 Sign Out
               </Button>
             </Nav.Item>

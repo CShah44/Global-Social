@@ -14,7 +14,7 @@ function Post({ name, message, image, postImage, timestamp }) {
   return (
     <Card className="w-90 my-5">
       <Card.Body>
-        <Card.Text>
+        <Card.Text as="div">
           <div className="d-flex flex-grow-1">
             <img
               src={image}
@@ -32,7 +32,9 @@ function Post({ name, message, image, postImage, timestamp }) {
             </div>
           </div>
         </Card.Text>
-        <Card.Text className="p-0 m-0">{message}</Card.Text>
+        <Card.Text as="div" className="p-0 mt-2">
+          {message}
+        </Card.Text>
       </Card.Body>
       <Card.Img variant="bottom" src={postImage} />
     </Card>

@@ -3,8 +3,11 @@ import Header from "../components/Header";
 import { getSession } from "next-auth/client";
 import { db } from "../firebase";
 import ProfilePage from "../components/Profile_Page/ProfilePage";
+import Login from "../components/Login";
 
-export default function Profile({ posts }) {
+export default function Profile({ session, posts }) {
+  if (!session) return <Login />;
+
   return (
     <div>
       <Head>
@@ -19,13 +22,12 @@ export default function Profile({ posts }) {
 export async function getServerSideProps(context) {
   const session = await getSession(context);
 
-  const posts = db
+  const posts = await db
     .collection("posts")
     .where("email", "==", session.user.email)
-    .orderBy("timestamp", "desc")
     .get();
 
-  const docs = posts?.docs?.map((post) => ({
+  const docs = posts.docs.map((post) => ({
     id: post.id,
     ...post.data(),
     timestamp: null,
@@ -34,7 +36,7 @@ export async function getServerSideProps(context) {
   return {
     props: {
       session,
-      posts: docs ? docs : null,
+      posts: docs,
     },
   };
 }

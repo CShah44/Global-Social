@@ -2,18 +2,16 @@ import { signOut, useSession } from "next-auth/client";
 import Image from "next/image";
 import Link from "next/link";
 import { Navbar, Nav, Container, Button } from "react-bootstrap";
-import { useRouter } from "next/router";
 
 function Header() {
   const [session] = useSession();
-  const router = useRouter();
 
   return (
     <Navbar bg="light" expand="lg" sticky="top">
       <Container className="d-flex">
-        <Navbar.Brand className="fs-2" onClick={() => router.push("/")}>
-          Global Social
-        </Navbar.Brand>
+        <Link href="/">
+          <Navbar.Brand className="fs-2">Global Social</Navbar.Brand>
+        </Link>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="ms-auto">

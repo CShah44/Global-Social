@@ -7,10 +7,10 @@ export default function ProfilePage({ posts }) {
   const [session] = useSession();
 
   return (
-    <div className="d-flex flex-column justify-content-center">
+    <div className="d-flex flex-column justify-content-center align-items-center">
       <Card
         style={{ width: "65vw" }}
-        className="mb-4 d-flex flex-column justify-content-center align-items-center p-5 fs-5"
+        className="my-4 d-flex flex-column align-items-center p-5 fs-5"
       >
         <Card.Body>
           <Card.Title className="fs-2">Hi, {session.user.name} </Card.Title>
@@ -23,7 +23,7 @@ export default function ProfilePage({ posts }) {
           </Card.Text>
         </Card.Body>
       </Card>
-      <InputBox className="my-2" />
+      {/* <InputBox className="my-2" /> */}
       <UserPosts posts={posts} />
     </div>
   );

@@ -3,8 +3,11 @@ import Header from "../components/Header";
 import { getSession } from "next-auth/client";
 import Feed from "../components/Feed";
 import { db } from "../firebase";
+import Login from "../components/Login";
 
-export default function Home({ posts }) {
+export default function Home({ session, posts }) {
+  if (!session) return <Login />;
+
   return (
     <div>
       <Head>

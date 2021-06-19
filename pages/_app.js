@@ -1,18 +1,19 @@
-import { Provider, useSession } from "next-auth/client";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Login from "../components/Login";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { auth } from "../firebase";
 
 function MyApp({ Component, pageProps }) {
-  const [session, loading] = useSession();
+  const [user, loading] = useAuthState(auth);
 
   if (loading) return <div>Loading</div>;
-  if (!session.user) return <Login />;
+  if (!user) return <Login />;
 
-  return (
-    <Provider session={pageProps.session}>
-      <Component {...pageProps} />
-    </Provider>
-  );
+  // if (user) {
+  //   user.getIdToken();
+  // }
+
+  return <Component {...pageProps} />;
 }
 
 export default MyApp;

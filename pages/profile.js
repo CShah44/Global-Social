@@ -1,12 +1,20 @@
 import Head from "next/head";
 import Header from "../components/Header";
-import { getSession } from "next-auth/client";
-import { db } from "../firebase";
+import { db, auth } from "../firebase";
 import ProfilePage from "../components/Profile_Page/ProfilePage";
 import Login from "../components/Login";
+import { useAuthState } from "react-firebase-hooks/auth";
 
-export default function Profile({ session, posts }) {
-  if (!session) return <Login />;
+export default function Profile() {
+  const [user] = useAuthState(auth);
+
+  const posts = db.collection("posts").where("email", "==", user.email).get();
+
+  const docs = posts.docs?.map((post) => ({
+    id: post.id,
+    ...post.data(),
+    timestamp: null,
+  }));
 
   return (
     <div>
@@ -14,29 +22,16 @@ export default function Profile({ session, posts }) {
         <title>Global Social</title>
       </Head>
       <Header />
-      <ProfilePage posts={posts} />
+      <ProfilePage posts={docs ? docs : []} />
     </div>
   );
 }
 
-export async function getServerSideProps(context) {
-  const session = await getSession(context);
+// export async function getServerSideProps() {
 
-  const posts = await db
-    .collection("posts")
-    .where("email", "==", session.user.email)
-    .get();
-
-  const docs = posts.docs.map((post) => ({
-    id: post.id,
-    ...post.data(),
-    timestamp: null,
-  }));
-
-  return {
-    props: {
-      session,
-      posts: docs,
-    },
-  };
-}
+//   return {
+//     props: {
+//       posts: docs,
+//     },
+//   };
+// }

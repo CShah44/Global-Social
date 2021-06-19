@@ -1,11 +1,11 @@
-import { useSession } from "next-auth/client";
+import { useAuthState } from "react-firebase-hooks/auth";
 import { useRef, useState } from "react";
-import { db, storage } from "../firebase";
+import { db, storage, auth } from "../firebase";
 import firebase from "firebase";
 import { Card, Button, InputGroup, FormControl, Image } from "react-bootstrap";
 
 function InputBox() {
-  const [session] = useSession();
+  const [user] = useAuthState(auth);
   const inputRef = useRef(null);
   const filePickerRef = useRef(null);
   const [imageToPost, setImageToPost] = useState(null);
@@ -34,9 +34,9 @@ function InputBox() {
     db.collection("posts")
       .add({
         message: inputRef.current.value,
-        name: session.user.name,
-        email: session.user.email,
-        image: session.user.image,
+        name: user.displayName,
+        email: user.email,
+        image: user.photoURL,
         timestamp: firebase.firestore.FieldValue.serverTimestamp(),
       })
       .then((doc) => {
@@ -80,7 +80,7 @@ function InputBox() {
         <Card.Body>
           <div className="d-flex flex-row justify-content-evenly">
             <Image
-              src={session.user.image}
+              src={user.photoURL}
               className="me-auto my-2"
               roundedCircle
               width={50}
@@ -94,7 +94,7 @@ function InputBox() {
                 maxLength={100}
                 ref={inputRef}
                 style={{ resize: "none" }}
-                placeholder={`What's on your mind, ${session.user.name}?`}
+                placeholder={`What's on your mind, ${user.displayName}?`}
               />
               <Button type="submit" onClick={sendPostHandler}>
                 {" "}

@@ -1,10 +1,11 @@
 import UserPosts from "./UserPosts";
 import InputBox from "../InputBox";
 import { Card } from "react-bootstrap";
-import { useSession } from "next-auth/client";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { auth } from "../../firebase";
 
 export default function ProfilePage({ posts }) {
-  const [session] = useSession();
+  const [user] = useAuthState(auth);
 
   return (
     <div className="d-flex flex-column justify-content-center align-items-center">
@@ -13,9 +14,9 @@ export default function ProfilePage({ posts }) {
         className="my-4 d-flex flex-column align-items-center p-5 fs-5"
       >
         <Card.Body>
-          <Card.Title className="fs-2">Hi, {session.user.name} </Card.Title>
+          <Card.Title className="fs-2">Hi, {user.displayName} </Card.Title>
           <Card.Subtitle className="mb-1 text-muted">
-            {session.user.email}
+            {user.email}
           </Card.Subtitle>
           <Card.Text>
             Welcome to your profile page. You can see your posts or add a new

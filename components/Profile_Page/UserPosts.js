@@ -1,15 +1,15 @@
-import { useSession } from "next-auth/client";
+import { useAuthState } from "react-firebase-hooks/auth";
 import { useCollection } from "react-firebase-hooks/firestore";
-import { db } from "../../firebase";
+import { db, auth } from "../../firebase";
 import UserPost from "./UserPost";
 
 function UserPosts({ posts }) {
-  const [session] = useSession();
+  const [user] = useAuthState(auth);
 
   console.log(posts);
 
   const [realtimeUserPosts] = useCollection(
-    db.collection("posts").where("email", "==", session.user.email)
+    db.collection("posts").where("email", "==", user.email)
   );
 
   return (
@@ -27,7 +27,7 @@ function UserPosts({ posts }) {
               postImage={post.data().postImage}
             />;
           })
-        : posts.map((post) => {
+        : posts?.map((post) => {
             <UserPosts
               key={post.id}
               id={post.id}

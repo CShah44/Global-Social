@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Card, Button, Modal } from "react-bootstrap";
 import { db } from "../../firebase";
 
-function UserPost({ email, name, image, message, postImage, timestamp, id }) {
+function UserPost({ message, postImage, timestamp, id }) {
   const [showModal, setShowModal] = useState(false);
 
   const timeStamp = timestamp ? (
@@ -33,34 +33,32 @@ function UserPost({ email, name, image, message, postImage, timestamp, id }) {
   }
 
   return (
-    <Fragment>
-      <Card className="my-5">
-        <Card.Body>
-          <Card.Text as="div">
-            <div className="d-flex flex-grow-1">
-              <div className="d-flex flex-column">
-                <span style={{ fontSize: "1.1em" }} className="px-2">
-                  Posted by you at,
-                </span>
-                {timeStamp}
-              </div>
-
-              <Button
-                variant="outline-danger"
-                className="p-1"
-                onClick={() => setShowModal(true)}
-              >
-                Delete Post
-              </Button>
+    <Card className="">
+      <Card.Body>
+        <Card.Text as="div">
+          <div className="d-flex flex-grow-1">
+            <div className="d-flex flex-column">
+              <span style={{ fontSize: "1.1em" }} className="px-2">
+                Posted by you at,
+              </span>
+              {timeStamp}
             </div>
-          </Card.Text>
-          <Card.Text as="div" className="p-0 m-0">
-            {message}
-          </Card.Text>
-        </Card.Body>
-        <Card.Img variant="bottom" src={postImage} />
-      </Card>
-    </Fragment>
+
+            <Button
+              variant="outline-danger"
+              className="p-1"
+              onClick={() => setShowModal(true)}
+            >
+              Delete Post
+            </Button>
+          </div>
+        </Card.Text>
+        <Card.Text as="div" className="p-0 m-0">
+          {message}
+        </Card.Text>
+      </Card.Body>
+      <Card.Img variant="bottom" src={postImage} />
+    </Card>
   );
 }
 

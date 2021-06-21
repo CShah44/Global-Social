@@ -3,42 +3,30 @@ import { useCollection } from "react-firebase-hooks/firestore";
 import { db, auth } from "../../firebase";
 import UserPost from "./UserPost";
 
-function UserPosts({ posts }) {
+function UserPosts() {
   const [user] = useAuthState(auth);
 
-  console.log(posts);
-
-  const [realtimeUserPosts] = useCollection(
+  const [userPosts] = useCollection(
     db.collection("posts").where("email", "==", user.email)
   );
 
+  // console.log(realtimeUserPosts.docs);
+
   return (
     <div className="scrollbar-hide mx-auto" style={{ width: "65vw" }}>
-      {realtimeUserPosts
-        ? realtimeUserPosts.docs.map((post) => {
-            <UserPost
-              key={post.id}
-              id={post.id}
-              name={post.data().name}
-              message={post.data().message}
-              email={post.data().email}
-              timestamp={post.data().timestamp}
-              image={post.data().image}
-              postImage={post.data().postImage}
-            />;
-          })
-        : posts?.map((post) => {
-            <UserPosts
-              key={post.id}
-              id={post.id}
-              name={post.name}
-              message={post.message}
-              email={post.email}
-              timestamp={post.timestamp}
-              image={post.image}
-              postImage={post.postImage}
-            />;
-          })}
+      {userPosts &&
+        userPosts.docs.map((post) => {
+          <UserPost
+            key={post.id}
+            id={post.id}
+            name={post.data().name}
+            message={post.data().message}
+            email={post.data().email}
+            timestamp={post.data().timestamp}
+            image={post.data().image}
+            postImage={post.data().postImage}
+          />;
+        })}
     </div>
   );
 }

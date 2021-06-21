@@ -9,10 +9,6 @@ function MyApp({ Component, pageProps }) {
   if (loading) return <div>Loading</div>;
   if (!user) return <Login />;
 
-  // if (user) {
-  //   user.getIdToken();
-  // }
-
   return <Component {...pageProps} />;
 }
 

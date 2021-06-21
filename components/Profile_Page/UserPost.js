@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, Fragment } from "react";
 import { Card, Button, Modal } from "react-bootstrap";
 import { db } from "../../firebase";
 
@@ -32,32 +32,53 @@ function UserPost({ message, postImage, timestamp, id }) {
   }
 
   return (
-    <Card className="my-5">
-      <Card.Body>
-        <Card.Text as="div">
-          <div className="d-flex flex-grow-1">
-            <div className="d-flex flex-column">
-              <span style={{ fontSize: "1.1em" }} className="px-2">
-                Posted by you at,
-              </span>
-              {timeStamp}
-            </div>
+    <Fragment>
+      <Modal
+        show={showModal}
+        onHide={() => setShowModal(false)}
+        backdrop="static"
+        keyboard={false}
+      >
+        <Modal.Header>
+          <Modal.Title>Delete Post</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>Are you sure you want to delete this post?</Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowModal(false)}>
+            Cancel
+          </Button>
+          <Button variant="outline-danger" onClick={deletePostHandler}>
+            Yes
+          </Button>
+        </Modal.Footer>
+      </Modal>
+      <Card className="my-5">
+        <Card.Body>
+          <Card.Text as="div">
+            <div className="d-flex flex-grow-1 mb-3">
+              <div className="d-flex flex-column">
+                <span style={{ fontSize: "1.1em" }} className="px-2">
+                  Posted by you at,
+                </span>
+                {timeStamp}
+              </div>
 
-            <Button
-              variant="outline-danger"
-              className="p-1"
-              onClick={() => setShowModal(true)}
-            >
-              Delete Post
-            </Button>
-          </div>
-        </Card.Text>
-        <Card.Text as="div" className="p-0 m-0">
-          {message}
-        </Card.Text>
-      </Card.Body>
-      <Card.Img variant="bottom" src={postImage} />
-    </Card>
+              <Button
+                variant="outline-danger ms-auto"
+                className="p-2"
+                onClick={() => setShowModal(true)}
+              >
+                Delete Post
+              </Button>
+            </div>
+          </Card.Text>
+          <Card.Text as="div" className="px-2">
+            {message}
+          </Card.Text>
+        </Card.Body>
+        <Card.Img variant="bottom" src={postImage} />
+      </Card>
+    </Fragment>
   );
 }
 

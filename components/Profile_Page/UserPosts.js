@@ -10,11 +10,9 @@ function UserPosts() {
     db.collection("posts").where("email", "==", user.email)
   );
 
-  // console.log(realtimeUserPosts.docs);
-
   return (
-    <div className="scrollbar-hide mx-auto mb-5" style={{ width: "65vw" }}>
-      {userPosts &&
+    <div className="scrollbar-hide mx-auto mb-5 " style={{ width: "65vw" }}>
+      {userPosts?.docs?.length > 0 ? (
         userPosts.docs.map(function (post) {
           return (
             <UserPost
@@ -28,7 +26,10 @@ function UserPosts() {
               postImage={post.data().postImage}
             />
           );
-        })}
+        })
+      ) : (
+        <p className="fs-2">You have no posts yet!</p>
+      )}
     </div>
   );
 }

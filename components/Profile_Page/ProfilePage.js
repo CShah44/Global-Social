@@ -3,7 +3,6 @@ import InputBox from "../InputBox";
 import { Card } from "react-bootstrap";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "../../firebase";
-import { Fragment } from "react";
 
 export default function ProfilePage() {
   const [user] = useAuthState(auth);
@@ -16,12 +15,12 @@ export default function ProfilePage() {
       >
         <Card.Body>
           <Card.Title className="fs-2">Hi, {user.displayName} </Card.Title>
-          <Card.Subtitle className="mb-1 text-muted">
+          <Card.Subtitle className="fs-5 my-1 text-muted">
             {user.email}
           </Card.Subtitle>
           <Card.Text>
-            Welcome to your profile page. You can see your posts or add a new
-            one here!
+            Welcome to your profile page. You can see/delete all your posts or
+            add a new one!
           </Card.Text>
         </Card.Body>
       </Card>

@@ -13,19 +13,21 @@ function UserPosts() {
   // console.log(realtimeUserPosts.docs);
 
   return (
-    <div className="scrollbar-hide mx-auto" style={{ width: "65vw" }}>
+    <div className="scrollbar-hide mx-auto mb-5" style={{ width: "65vw" }}>
       {userPosts &&
-        userPosts.docs.map((post) => {
-          <UserPost
-            key={post.id}
-            id={post.id}
-            name={post.data().name}
-            message={post.data().message}
-            email={post.data().email}
-            timestamp={post.data().timestamp}
-            image={post.data().image}
-            postImage={post.data().postImage}
-          />;
+        userPosts.docs.map(function (post) {
+          return (
+            <UserPost
+              key={post.id}
+              id={post.id}
+              name={post.data().name}
+              message={post.data().message}
+              email={post.data().email}
+              timestamp={post.data().timestamp}
+              image={post.data().image}
+              postImage={post.data().postImage}
+            />
+          );
         })}
     </div>
   );

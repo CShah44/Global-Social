@@ -1,4 +1,3 @@
-import { Fragment } from "react";
 import { useState } from "react";
 import { Card, Button, Modal } from "react-bootstrap";
 import { db } from "../../firebase";
@@ -33,7 +32,7 @@ function UserPost({ message, postImage, timestamp, id }) {
   }
 
   return (
-    <Card className="">
+    <Card className="my-5">
       <Card.Body>
         <Card.Text as="div">
           <div className="d-flex flex-grow-1">

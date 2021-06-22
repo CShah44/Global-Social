@@ -1,6 +1,6 @@
 import { useState, Fragment } from "react";
 import { Card, Button, Modal } from "react-bootstrap";
-import { db } from "../../firebase";
+import { db, storage } from "../../firebase";
 
 function UserPost({ message, postImage, timestamp, id }) {
   const [showModal, setShowModal] = useState(false);
@@ -29,6 +29,9 @@ function UserPost({ message, postImage, timestamp, id }) {
         // TODO: SHOW A TOAST
         console.log(err);
       });
+
+    // DELETE THE IMAGE
+    storage.refFromURL(postImage).delete().catch(alert);
   }
 
   return (

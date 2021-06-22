@@ -38,6 +38,7 @@ function InputBox() {
         email: user.email,
         image: user.photoURL,
         timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+        comments: [],
       })
       .then((doc) => {
         if (imageToPost) {

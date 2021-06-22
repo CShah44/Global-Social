@@ -1,4 +1,4 @@
-import { Card } from "react-bootstrap";
+import { Card, Button } from "react-bootstrap";
 
 function Post({ name, message, image, postImage, timestamp }) {
   const timeStamp = timestamp ? (
@@ -37,6 +37,11 @@ function Post({ name, message, image, postImage, timestamp }) {
         </Card.Text>
       </Card.Body>
       <Card.Img variant="bottom" src={postImage} />
+      <Card.Footer>
+        <Button variant="outline-dark" className="p-2">
+          View Comments
+        </Button>
+      </Card.Footer>
     </Card>
   );
 }

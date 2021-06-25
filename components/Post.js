@@ -1,5 +1,5 @@
 import { Fragment, useState } from "react";
-import { Card, Button, Modal, ListGroup } from "react-bootstrap";
+import { Card, Button } from "react-bootstrap";
 import CommentsModal from "./CommentsModal";
 
 function Post({ name, message, image, postImage, timestamp, id, comments }) {

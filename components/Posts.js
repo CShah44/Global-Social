@@ -20,6 +20,7 @@ function Posts({ posts }) {
               timestamp={post.data().timestamp}
               image={post.data().image}
               postImage={post.data().postImage}
+              comments={post.data().comments}
             />
           ))
         : posts.map((post) => {

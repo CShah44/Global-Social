@@ -5,7 +5,7 @@ import {
   InputGroup,
   FormControl,
 } from "react-bootstrap";
-import { db, FieldValue, auth } from "../firebase";
+import { db, FieldValue, auth } from "../../firebase";
 import { useRef } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 
@@ -45,16 +45,16 @@ function CommentsModal({ id, show, comments, hideModal }) {
   }
 
   return (
-    <Modal show={show} onHide={hideModal} centered>
+    <Modal size="lg" show={show} onHide={hideModal} centered>
       <Modal.Header>
         <Modal.Title>Comments</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <ListGroup variant="flush">
           {comments.length > 0 ? (
-            comments.map(function (comment) {
+            comments.map(function (comment, i) {
               return (
-                <ListGroup.Item className="d-flex p-1 py-2">
+                <ListGroup.Item key={i} className="d-flex p-1 py-2">
                   <span className="fw-bold me-2">{comment.name}</span>{" "}
                   {comment.comment}
                   {user.email === comment.email && (
@@ -81,8 +81,8 @@ function CommentsModal({ id, show, comments, hideModal }) {
         <InputGroup className="flex-fill p-2">
           <FormControl
             as="textarea"
-            maxLength={50}
             ref={inputRef}
+            maxLength={100}
             style={{ resize: "none" }}
             placeholder="Add a comment"
           />

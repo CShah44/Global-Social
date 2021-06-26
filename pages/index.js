@@ -2,7 +2,6 @@ import Head from "next/head";
 import Header from "../components/Header";
 import Feed from "../components/Feed";
 import { db } from "../firebase";
-import Login from "../components/Login";
 
 export default function Home({ posts }) {
   return (

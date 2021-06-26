@@ -21,6 +21,8 @@ function Posts({ posts }) {
               image={post.data().image}
               postImage={post.data().postImage}
               comments={post.data().comments}
+              likes={post.data().likes}
+              showDeleteButton={false}
             />
           ))
         : posts.map((post) => {
@@ -32,7 +34,10 @@ function Posts({ posts }) {
               email={post.email}
               timestamp={post.timestamp}
               image={post.image}
+              likes={post.likes}
+              comments={post.comments}
               postImage={post.postImage}
+              showDeleteButton={false}
             />;
           })}
     </div>

@@ -39,6 +39,7 @@ function InputBox() {
         image: user.photoURL,
         timestamp: firebase.firestore.FieldValue.serverTimestamp(),
         comments: [],
+        likes: [],
       })
       .then((doc) => {
         if (imageToPost) {
@@ -92,7 +93,7 @@ function InputBox() {
             <InputGroup className=" flex-fill p-2">
               <FormControl
                 as="textarea"
-                maxLength={100}
+                maxLength={240}
                 ref={inputRef}
                 style={{ resize: "none" }}
                 placeholder={`What's on your mind, ${user.displayName}?`}
@@ -122,7 +123,7 @@ function InputBox() {
 
           <div>
             <div className="mt-3" onClick={() => filePickerRef.current.click()}>
-              <Button variant="outline-dark">Add a Photo or Video</Button>
+              <Button variant="outline-dark">Add a Photo</Button>
               <input
                 ref={filePickerRef}
                 hidden

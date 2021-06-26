@@ -1,7 +1,7 @@
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useCollection } from "react-firebase-hooks/firestore";
 import { db, auth } from "../../firebase";
-import UserPost from "./UserPost";
+import Post from "../Post";
 
 function UserPosts() {
   const [user] = useAuthState(auth);
@@ -12,10 +12,10 @@ function UserPosts() {
 
   return (
     <div className="scrollbar-hide mx-auto mb-5 " style={{ width: "65vw" }}>
-      {userPosts?.docs?.length > 0 ? (
+      {userPosts && userPosts.docs.length > 0 ? (
         userPosts.docs.map(function (post) {
           return (
-            <UserPost
+            <Post
               key={post.id}
               id={post.id}
               name={post.data().name}
@@ -24,6 +24,9 @@ function UserPosts() {
               timestamp={post.data().timestamp}
               image={post.data().image}
               postImage={post.data().postImage}
+              comments={post.data().comments}
+              likes={post.data().likes}
+              showDeleteButton={true}
             />
           );
         })

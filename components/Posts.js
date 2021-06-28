@@ -23,6 +23,7 @@ function Posts({ posts }) {
               comments={post.data().comments}
               likes={post.data().likes}
               showDeleteButton={false}
+              repost={post.data().repost}
             />
           ))
         : posts.map((post) => {
@@ -38,6 +39,7 @@ function Posts({ posts }) {
               comments={post.comments}
               postImage={post.postImage}
               showDeleteButton={false}
+              repost={post.repost}
             />;
           })}
     </div>

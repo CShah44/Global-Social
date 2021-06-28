@@ -1,14 +1,14 @@
 import { Fragment, useState } from "react";
 import { Card, Button } from "react-bootstrap";
-import CommentsModal from "./Modals/CommentsModal";
+import CommentsModal from "./UserFeedback/CommentsModal";
 import TimeAgo from "timeago-react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth, db, FieldValue, storage } from "../firebase";
-import DeletePostModal from "./Modals/DeletePostModal";
+import DeletePostModal from "./UserFeedback/DeletePostModal";
 
 function Post({
-  email,
   name,
+  email,
   message,
   image,
   postImage,
@@ -17,6 +17,7 @@ function Post({
   comments,
   likes,
   showDeleteButton,
+  repost,
 }) {
   const [showComments, setShowComments] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -83,6 +84,44 @@ function Post({
     } else return;
   }
 
+  function processRepostHeader() {
+    if (repost) {
+      const repostName = repost.name;
+      const repostTime = repost.timestamp;
+      // const repostEmail = repost.email;
+
+      return (
+        <Card.Header>
+          Originally posted by <strong> {repostName}</strong>,{" "}
+          {
+            <TimeAgo
+              datetime={new Date(repostTime.toDate()).toLocaleString()}
+            />
+          }
+        </Card.Header>
+      );
+    } else return null;
+  }
+
+  function repostHandler() {
+    db.collection("posts")
+      .add({
+        message: message,
+        name: user.displayName,
+        email: user.email,
+        image: user.photoURL,
+        timestamp: FieldValue.serverTimestamp(),
+        comments: [],
+        likes: [],
+        repost: {
+          name: name,
+          timestamp: timestamp,
+          email: email,
+        },
+      })
+      .catch(alert);
+  }
+
   return (
     <Fragment>
       <CommentsModal
@@ -100,6 +139,7 @@ function Post({
       />
 
       <Card className="w-90 my-5">
+        {processRepostHeader()}
         <Card.Body>
           <Card.Text as="div">
             <div className="d-flex flex-grow-1">
@@ -132,21 +172,30 @@ function Post({
           </Card.Text>
         </Card.Body>
         <Card.Img variant="bottom" src={postImage} />
-        <Card.Footer>
+        <Card.Footer className="d-flex justify-content-start">
           <Button
             variant="outline-dark"
-            className="p-2 me-2"
+            className="m-1"
             onClick={() => setShowComments(true)}
           >
             View Comments ({comments.length})
           </Button>
           <Button
-            variant={`${hasLiked ? "primary" : "outline-dark"}`}
-            className="p-2"
+            variant={`${hasLiked ? "primary" : "outline-primary"}`}
+            className="m-1"
             onClick={toggleLiked}
           >
             Like ({likes.length})
           </Button>
+          {user.email != email && (
+            <Button
+              className="m-1 ms-auto"
+              variant="primary"
+              onClick={repostHandler}
+            >
+              Repost
+            </Button>
+          )}
         </Card.Footer>
       </Card>
     </Fragment>

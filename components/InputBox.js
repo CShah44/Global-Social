@@ -40,6 +40,7 @@ function InputBox() {
         timestamp: firebase.firestore.FieldValue.serverTimestamp(),
         comments: [],
         likes: [],
+        repost: null,
       })
       .then((doc) => {
         if (imageToPost) {

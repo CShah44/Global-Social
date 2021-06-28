@@ -27,6 +27,7 @@ function UserPosts() {
               comments={post.data().comments}
               likes={post.data().likes}
               showDeleteButton={true}
+              repost={post.data().repost}
             />
           );
         })

@@ -22,6 +22,7 @@ export async function getServerSideProps() {
     id: post.id,
     ...post.data(),
     timestamp: null,
+    repost: null,
   }));
 
   return {

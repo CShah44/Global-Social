@@ -24,12 +24,14 @@ function Posts({ posts }) {
               likes={post.data().likes}
               showDeleteButton={false}
               repost={post.data().repost}
+              uid={post.data().uid}
             />
           ))
         : posts.map((post) => {
             <Post
               key={post.id}
               id={post.id}
+              uid={post.uid}
               name={post.name}
               message={post.message}
               email={post.email}

@@ -1,11 +1,8 @@
-import { useAuthState } from "react-firebase-hooks/auth";
 import { useCollection } from "react-firebase-hooks/firestore";
-import { db, auth } from "../../firebase";
+import { db } from "../../firebase";
 import Post from "../Post";
 
-function UserPosts() {
-  const [user] = useAuthState(auth);
-
+function UserPosts({ user }) {
   const [userPosts] = useCollection(
     db.collection("posts").where("email", "==", user.email)
   );
@@ -28,6 +25,7 @@ function UserPosts() {
               likes={post.data().likes}
               showDeleteButton={true}
               repost={post.data().repost}
+              uid={post.data().uid}
             />
           );
         })

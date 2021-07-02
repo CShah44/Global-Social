@@ -5,6 +5,8 @@ import TimeAgo from "timeago-react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth, db, FieldValue, storage } from "../firebase";
 import DeletePostModal from "./UserFeedback/DeletePostModal";
+import { useRouter } from "next/router";
+import Link from "next/link";
 
 function Post({
   name,
@@ -17,11 +19,13 @@ function Post({
   comments,
   likes,
   showDeleteButton,
+  uid,
   repost,
 }) {
   const [showComments, setShowComments] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
+  const router = useRouter();
   const [user] = useAuthState(auth);
 
   const hasLiked = likes.includes(user.email);
@@ -88,17 +92,19 @@ function Post({
     if (repost) {
       const repostName = repost.name;
       const repostTime = repost.timestamp;
-      // const repostEmail = repost.email;
+      const repostUID = repost.uid;
 
       return (
-        <Card.Header>
-          Originally posted by <strong> {repostName}</strong>,{" "}
-          {
-            <TimeAgo
-              datetime={new Date(repostTime.toDate()).toLocaleString()}
-            />
-          }
-        </Card.Header>
+        <Link href={`${router.basePath}/user/${repostUID}`}>
+          <Card.Header style={{ cursor: "pointer" }}>
+            Originally posted by <strong> {repostName}</strong>,{" "}
+            {
+              <TimeAgo
+                datetime={new Date(repostTime.toDate()).toLocaleString()}
+              />
+            }
+          </Card.Header>
+        </Link>
       );
     } else return null;
   }
@@ -110,13 +116,14 @@ function Post({
         name: user.displayName,
         email: user.email,
         image: user.photoURL,
+        uid: user.uid,
         timestamp: FieldValue.serverTimestamp(),
         comments: [],
         likes: [],
         repost: {
           name: name,
           timestamp: timestamp,
-          email: email,
+          uid: uid,
         },
       })
       .catch(alert);
@@ -150,8 +157,13 @@ function Post({
                 className="rounded m-1"
                 alt=""
               />
+
               <span className="px-2">
-                <span style={{ fontSize: "1.1em" }}>{name}</span>
+                <Link href={`${router.basePath}/user/${uid}`}>
+                  <span style={{ fontSize: "1.1em", cursor: "pointer" }}>
+                    {name}
+                  </span>
+                </Link>
                 <br />
                 {timeStamp}
               </span>

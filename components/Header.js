@@ -3,14 +3,23 @@ import { auth } from "../firebase";
 import Image from "next/image";
 import Link from "next/link";
 import { Navbar, Nav, Container, Button } from "react-bootstrap";
+import { useRouter } from "next/router";
+import Login from "./Login";
 
 function Header() {
   const [user] = useAuthState(auth);
 
+  const router = useRouter();
+
+  function processSignOut() {
+    auth.signOut();
+    router.replace("/");
+  }
+
   return (
     <Navbar bg="light" expand="lg" sticky="top">
       <Container className="d-flex">
-        <Link href="/">
+        <Link href="/" shallow={true}>
           <Navbar.Brand className="fs-2" style={{ cursor: "pointer" }}>
             Global Social
           </Navbar.Brand>
@@ -30,12 +39,12 @@ function Header() {
               <span className="mx-3 p-1">{user.displayName}</span>
             </Nav.Item>
             <Nav.Item className="m-2">
-              <Link href="/profile">
+              <Link href={`${router.basePath}/user/${user.uid}`}>
                 <Button variant="outline-dark">View Profile</Button>
               </Link>
             </Nav.Item>
             <Nav.Item className="m-2">
-              <Button variant="outline-dark" onClick={() => auth.signOut()}>
+              <Button variant="outline-dark" onClick={processSignOut}>
                 Sign Out
               </Button>
             </Nav.Item>

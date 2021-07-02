@@ -37,6 +37,7 @@ function InputBox() {
         name: user.displayName,
         email: user.email,
         image: user.photoURL,
+        uid: user.uid,
         timestamp: firebase.firestore.FieldValue.serverTimestamp(),
         comments: [],
         likes: [],

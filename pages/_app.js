@@ -8,19 +8,29 @@ function MyApp({ Component, pageProps }) {
   const [user, loading] = useAuthState(auth);
 
   useEffect(() => {
-    if (user) {
-      db.collection("users").doc(user.uid).set(
-        {
-          name: user.displayName,
-          about: "Hey there, I am using Global Social!",
-          email: user.email,
-          followers: [],
-          following: [],
-          photoURL: user.photoURL,
-        },
-        { merge: true }
-      );
-    }
+    if (
+      db
+        .collection("users")
+        .doc(user?.uid)
+        .get()
+        .then((snap) => {
+          if (snap.exists) return;
+
+          if (user) {
+            db.collection("users").doc(user.uid).set(
+              {
+                name: user.displayName,
+                about: "Hey there, I am using Global Social!",
+                email: user.email,
+                followers: [],
+                following: [],
+                photoURL: user.photoURL,
+              },
+              { merge: true }
+            );
+          }
+        })
+    );
   }, [user]);
 
   if (loading) return <div>Loading</div>;

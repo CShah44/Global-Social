@@ -3,14 +3,19 @@ import { useRef, useState } from "react";
 import { db, storage, auth } from "../firebase";
 import firebase from "firebase";
 import { Card, Button, InputGroup, FormControl, Image } from "react-bootstrap";
+import { useToasts } from "react-toast-notifications";
 
 function InputBox() {
   const [user] = useAuthState(auth);
+
   const inputRef = useRef(null);
   const filePickerRef = useRef(null);
+
   const [imageToPost, setImageToPost] = useState(null);
 
-  const addImageToPostHandler = (e) => {
+  const { addToast } = useToasts();
+
+  function addImageToPostHandler(e) {
     const reader = new FileReader();
 
     if (e.target.files[0]) {
@@ -20,16 +25,19 @@ function InputBox() {
     reader.onload = (readerEvent) => {
       setImageToPost(readerEvent.target.result);
     };
-  };
+  }
 
-  const removeImage = () => {
+  function removeImage() {
     setImageToPost(null);
-  };
+  }
 
-  const sendPostHandler = (e) => {
+  function sendPostHandler(e) {
     e.preventDefault();
 
-    if (!inputRef.current.value) return;
+    if (!inputRef.current.value) {
+      addToast("Don't post empty stuff...", { appearance: "warning" });
+      return;
+    }
 
     db.collection("posts")
       .add({
@@ -56,7 +64,6 @@ function InputBox() {
             null,
             (error) => console.log(error),
             () => {
-              //upload done!
               storage
                 .ref(`posts`)
                 .child(doc.id)
@@ -72,10 +79,16 @@ function InputBox() {
             }
           );
         }
+      })
+      .then(() => {
+        addToast("Added Post!", { appearance: "success" });
+      })
+      .catch(() => {
+        addToast("Could not post!", { appearance: "error" });
       });
 
     inputRef.current.value = "";
-  };
+  }
 
   return (
     <div className="my-4 mx-auto" style={{ width: "65vw" }}>

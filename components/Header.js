@@ -4,7 +4,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { Navbar, Nav, Container, Button } from "react-bootstrap";
 import { useRouter } from "next/router";
-import Login from "./Login";
 
 function Header() {
   const [user] = useAuthState(auth);
@@ -40,7 +39,7 @@ function Header() {
             </Nav.Item>
             <Nav.Item className="m-2">
               <Link href={`${router.basePath}/user/${user.uid}`}>
-                <Button variant="outline-dark">View Profile</Button>
+                <Button variant="outline-dark">Your Profile</Button>
               </Link>
             </Nav.Item>
             <Nav.Item className="m-2">

@@ -7,6 +7,7 @@ import { auth, db, FieldValue, storage } from "../firebase";
 import DeletePostModal from "./UserFeedback/DeletePostModal";
 import { useRouter } from "next/router";
 import Link from "next/link";
+import { useToasts } from "react-toast-notifications";
 
 function Post({
   name,
@@ -18,7 +19,7 @@ function Post({
   id,
   comments,
   likes,
-  showDeleteButton,
+  showUserOptions,
   uid,
   repost,
 }) {
@@ -29,6 +30,8 @@ function Post({
   const [user] = useAuthState(auth);
 
   const hasLiked = likes.includes(user.email);
+
+  const { addToast } = useToasts();
 
   const timeStamp = timestamp ? (
     <TimeAgo
@@ -73,19 +76,15 @@ function Post({
     db.collection("posts")
       .doc(id)
       .delete()
-      .then((res) => {
-        // TODO: SHOW A TOAST
-        console.log(res);
+      .then(() => {
+        if (postImage) {
+          storage.refFromURL(postImage).delete();
+        }
+        addToast("Deleted Post!", { appearance: "warning" });
       })
-      .catch((err) => {
-        // TODO: SHOW A TOAST
-        console.log(err);
+      .catch(() => {
+        addToast("Could not delete post!", { appearance: "error" });
       });
-
-    if (postImage) {
-      // DELETE THE IMAGE
-      storage.refFromURL(postImage).delete().catch(alert);
-    } else return;
   }
 
   function processRepostHeader() {
@@ -126,7 +125,12 @@ function Post({
           uid: uid,
         },
       })
-      .catch(alert);
+      .then(() => {
+        addToast("Re-posted!", { appearance: "success" });
+      })
+      .catch(() => {
+        addToast("Could not Re-Post!", { appearance: "error" });
+      });
   }
 
   return (
@@ -168,7 +172,7 @@ function Post({
                 {timeStamp}
               </span>
 
-              {showDeleteButton && (
+              {showUserOptions && (
                 <Button
                   variant="outline-danger ms-auto"
                   className="p-2"
@@ -190,7 +194,7 @@ function Post({
             className="m-1"
             onClick={() => setShowComments(true)}
           >
-            View Comments ({comments.length})
+            Comments ({comments.length})
           </Button>
           <Button
             variant={`${hasLiked ? "primary" : "outline-primary"}`}

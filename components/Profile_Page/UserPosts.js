@@ -23,14 +23,14 @@ function UserPosts({ user }) {
               postImage={post.data().postImage}
               comments={post.data().comments}
               likes={post.data().likes}
-              showDeleteButton={true}
+              showUserOptions={post.data().email === user.email ? true : false}
               repost={post.data().repost}
               uid={post.data().uid}
             />
           );
         })
       ) : (
-        <p className="fs-2">You have no posts yet!</p>
+        <p className="fs-2">No posts yet!</p>
       )}
     </div>
   );

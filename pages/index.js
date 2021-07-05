@@ -2,16 +2,19 @@ import Head from "next/head";
 import Header from "../components/Header";
 import Feed from "../components/Feed";
 import { db } from "../firebase";
+import { ToastProvider } from "react-toast-notifications";
 
 export default function Home({ posts }) {
   return (
-    <div>
+    <>
       <Head>
         <title>Global Social</title>
       </Head>
       <Header />
-      <Feed posts={posts} />
-    </div>
+      <ToastProvider placement="bottom-center" autoDismiss>
+        <Feed posts={posts} />
+      </ToastProvider>
+    </>
   );
 }
 

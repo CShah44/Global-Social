@@ -4,7 +4,10 @@ import Post from "../Post";
 
 function UserPosts({ user }) {
   const [userPosts] = useCollection(
-    db.collection("posts").where("email", "==", user.email)
+    db
+      .collection("posts")
+      .where("email", "==", user.email)
+      .orderBy("timestamp", "desc")
   );
 
   return (
@@ -20,7 +23,7 @@ function UserPosts({ user }) {
               email={post.data().email}
               timestamp={post.data().timestamp}
               image={post.data().image}
-              postImage={post.data().postImage}
+              postImages={post.data().postImages}
               comments={post.data().comments}
               likes={post.data().likes}
               showUserOptions={post.data().email === user.email ? true : false}

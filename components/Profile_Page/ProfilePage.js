@@ -83,10 +83,10 @@ export default function ProfilePage({ user, docId }) {
               </Button>
             </div>
           ) : (
-            <div>
+            <>
               <Card.Text className="mb-2 mt-4">{user.about}</Card.Text>
               {editButton}
-            </div>
+            </>
           )}
         </Card.Body>
       </Card>

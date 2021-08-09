@@ -1,0 +1,9 @@
+.ph {
+  height: 14rem;
+}
+
+@media (min-width: 768px) {
+  .phr {
+    height: 25rem;
+  }
+}

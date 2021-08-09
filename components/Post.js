@@ -1,5 +1,5 @@
 import { Fragment, useState } from "react";
-import { Card, Button } from "react-bootstrap";
+import { Card, Button, Carousel } from "react-bootstrap";
 import CommentsModal from "./UserFeedback/CommentsModal";
 import TimeAgo from "timeago-react";
 import { useAuthState } from "react-firebase-hooks/auth";
@@ -8,13 +8,15 @@ import DeletePostModal from "./UserFeedback/DeletePostModal";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import { useToasts } from "react-toast-notifications";
+import Image from "next/image";
+import classes from "./Post.module.css";
 
 function Post({
   name,
   email,
   message,
   image,
-  postImage,
+  postImages,
   timestamp,
   id,
   comments,
@@ -77,10 +79,12 @@ function Post({
       .doc(id)
       .delete()
       .then(() => {
-        if (postImage) {
-          storage.refFromURL(postImage).delete();
+        if (postImages) {
+          postImages.map((photo) => {
+            storage.refFromURL(photo).delete();
+          });
         }
-        addToast("Deleted Post!", { appearance: "warning" });
+        addToast("Deleted Post!", { appearance: "info" });
       })
       .catch(() => {
         addToast("Could not delete post!", { appearance: "error" });
@@ -116,6 +120,7 @@ function Post({
         email: user.email,
         image: user.photoURL,
         uid: user.uid,
+        postImages: postImages,
         timestamp: FieldValue.serverTimestamp(),
         comments: [],
         likes: [],
@@ -131,6 +136,25 @@ function Post({
       .catch(() => {
         addToast("Could not Re-Post!", { appearance: "error" });
       });
+  }
+
+  function makeImages() {
+    if (!postImages) return;
+    else if (postImages.length === 1) {
+      return <Card.Img variant="bottom" fluid src={postImages} />;
+    } else {
+      return (
+        <Carousel>
+          {postImages.map(function (img, i) {
+            return (
+              <Carousel.Item className={`${classes.ph} ${classes.phr}`} key={i}>
+                <Image layout="fill" objectFit="cover" src={img} />
+              </Carousel.Item>
+            );
+          })}
+        </Carousel>
+      );
+    }
   }
 
   return (
@@ -183,11 +207,13 @@ function Post({
               )}
             </div>
           </Card.Text>
-          <Card.Text as="div" className="p-0 mt-2">
+          <Card.Text as="div" className="p-0 mt-2 ms-2">
             {message}
           </Card.Text>
         </Card.Body>
-        <Card.Img variant="bottom" src={postImage} />
+
+        {makeImages()}
+
         <Card.Footer className="d-flex justify-content-start">
           <Button
             variant="outline-dark"

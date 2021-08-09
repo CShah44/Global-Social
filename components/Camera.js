@@ -1,17 +1,22 @@
 import { useRef, useState } from "react";
-import { storage, db } from "../firebase";
+import { storage } from "../firebase";
 import { Button } from "react-bootstrap";
 import { useToasts } from "react-toast-notifications";
 import Image from "react-bootstrap/Image";
 
 function Camera({ addPost, setUrls }) {
   const [images, setImages] = useState([]);
-  // const [urls, setUrls] = useState([]);
 
   const { addToast } = useToasts();
   const filePickerRef = useRef(null);
 
-  function updateImages(e) {
+  async function processPosting() {
+    await upload().then(() => {
+      addPost();
+    });
+  }
+
+  async function updateImages(e) {
     e.preventDefault();
     for (let i = 0; i < e.target.files.length; i++) {
       const newFile = e.target.files[i];
@@ -19,9 +24,8 @@ function Camera({ addPost, setUrls }) {
     }
   }
 
-  function upload() {
+  async function upload() {
     if (images.length <= 0) {
-      addPost();
       return;
     }
 
@@ -32,20 +36,22 @@ function Camera({ addPost, setUrls }) {
       uploadTask.on(
         "state_change",
         null,
-        (error) => console.log(error.code),
+        () => {
+          addToast("Error!", { appearance: "error" });
+        },
         async () => {
           const downloadURL = await uploadTask.snapshot.ref.getDownloadURL();
           setUrls((prevState) => [downloadURL, ...prevState]);
         }
       );
     });
-    setImages([]);
     Promise.all(promises)
       .then(() => addToast("Images Uploaded!", { appearance: "success" }))
       .catch(() =>
         addToast("Couldn't upload images!", { appearance: "error" })
       );
-    addPost();
+
+    setImages([]);
   }
 
   return (
@@ -56,6 +62,10 @@ function Camera({ addPost, setUrls }) {
           type="file"
           multiple
           hidden
+          max={5}
+          onError={() =>
+            addToast("Select only 5 images!", { appearance: "warning" })
+          }
           ref={filePickerRef}
         />
         <Button
@@ -74,7 +84,7 @@ function Camera({ addPost, setUrls }) {
         <Button
           className="ms-auto me-1"
           variant="outline-primary"
-          onClick={upload}
+          onClick={processPosting}
         >
           Post
         </Button>

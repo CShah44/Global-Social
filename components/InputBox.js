@@ -1,19 +1,26 @@
-import { useAuthState } from "react-firebase-hooks/auth";
-import { useRef, useState } from "react";
-import { db, auth } from "../firebase";
+import { useContext, useRef, useState } from "react";
+import { db } from "../firebase";
 import firebase from "firebase";
-import { Card, Button, InputGroup, FormControl, Image } from "react-bootstrap";
+import { Card, InputGroup, FormControl, Image, Button } from "react-bootstrap";
 import { useToasts } from "react-toast-notifications";
 import Camera from "./Camera";
+import "emoji-mart/css/emoji-mart.css";
+import { Picker } from "emoji-mart";
+
+import CurrentUser from "../contexts/CurrentUser";
 
 function InputBox() {
-  const [user] = useAuthState(auth);
+  const currentUser = useContext(CurrentUser);
+  const user = currentUser.user;
+
   const [urls, setUrls] = useState([]);
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+
   const inputRef = useRef(null);
   const { addToast } = useToasts();
 
   async function sendPostHandler() {
-    if (!inputRef.current.value) {
+    if (inputRef.current.value.length <= 0) {
       addToast("Don't post empty stuff...", { appearance: "warning" });
       return;
     }
@@ -38,7 +45,6 @@ function InputBox() {
       .catch(() => {
         addToast("Could not post!", { appearance: "error" });
       });
-
     inputRef.current.value = "";
   }
 
@@ -65,7 +71,31 @@ function InputBox() {
                 style={{ resize: "none" }}
                 placeholder={`What's on your mind, ${user.displayName}?`}
               />
+              <Button
+                variant="info"
+                onClick={() => setShowEmojiPicker((p) => !p)}
+              >
+                😎
+              </Button>
             </InputGroup>
+
+            {showEmojiPicker && (
+              <Picker
+                set="google"
+                enableFrequentEmojiSort
+                style={{
+                  position: "absolute",
+                  marginTop: "5em",
+                  right: "20px",
+                  zIndex: 1,
+                }}
+                theme="dark"
+                onClick={(emo) => {
+                  inputRef.current.value += emo.native;
+                  return console.log("done");
+                }}
+              />
+            )}
           </div>
 
           <Camera

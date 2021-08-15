@@ -5,13 +5,14 @@ import {
   InputGroup,
   FormControl,
 } from "react-bootstrap";
-import { db, FieldValue, auth } from "../../firebase";
-import { useRef } from "react";
-import { useAuthState } from "react-firebase-hooks/auth";
+import { db, FieldValue } from "../../firebase";
+import { useContext, useRef } from "react";
+import CurrentUser from "../../contexts/CurrentUser";
 
 function CommentsModal({ id, show, comments, hideModal }) {
   const inputRef = useRef(null);
-  const [user] = useAuthState(auth);
+  const currentUser = useContext(CurrentUser);
+  const user = currentUser.user;
 
   function addCommentHandler(e) {
     e.preventDefault();

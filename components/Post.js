@@ -1,15 +1,15 @@
-import { Fragment, useState } from "react";
+import { Fragment, useContext, useState } from "react";
 import { Card, Button, Carousel } from "react-bootstrap";
 import CommentsModal from "./UserFeedback/CommentsModal";
 import TimeAgo from "timeago-react";
-import { useAuthState } from "react-firebase-hooks/auth";
-import { auth, db, FieldValue, storage } from "../firebase";
+import { db, FieldValue, storage } from "../firebase";
 import DeletePostModal from "./UserFeedback/DeletePostModal";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import { useToasts } from "react-toast-notifications";
 import Image from "next/image";
 import classes from "./Post.module.css";
+import CurrentUser from "../contexts/CurrentUser";
 
 function Post({
   name,
@@ -29,7 +29,8 @@ function Post({
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   const router = useRouter();
-  const [user] = useAuthState(auth);
+  const currentUser = useContext(CurrentUser);
+  const user = currentUser.user;
 
   const hasLiked = likes.includes(user.email);
 

@@ -1,12 +1,14 @@
-import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "../firebase";
 import Image from "next/image";
 import Link from "next/link";
 import { Navbar, Nav, Container, Button } from "react-bootstrap";
 import { useRouter } from "next/router";
+import { useContext } from "react";
+import CurrentUser from "../contexts/CurrentUser";
 
 function Header() {
-  const [user] = useAuthState(auth);
+  const currentUser = useContext(CurrentUser);
+  const user = currentUser.user;
 
   const router = useRouter();
 

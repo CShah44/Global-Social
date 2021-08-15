@@ -1,11 +1,12 @@
 import InputBox from "../InputBox";
 import { Card, Image, InputGroup, FormControl, Button } from "react-bootstrap";
-import { auth, db } from "../../firebase";
-import { useAuthState } from "react-firebase-hooks/auth";
-import { useRef, useState } from "react";
+import { db } from "../../firebase";
+import { useContext, useRef, useState } from "react";
+import CurrentUser from "../../contexts/CurrentUser";
 
 export default function ProfilePage({ user, docId }) {
-  const [currentUser] = useAuthState(auth);
+  const currentUserCtx = useContext(CurrentUser);
+  const currentUser = currentUserCtx.user;
 
   const [isEditing, setIsEditing] = useState(false);
   const inputRef = useRef(null);

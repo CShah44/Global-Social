@@ -3,9 +3,12 @@ import Login from "../components/Login";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth, db } from "../firebase";
 import { useEffect } from "react";
+import CurrentUser from "../contexts/CurrentUser";
 
 function MyApp({ Component, pageProps }) {
-  const [user, loading] = useAuthState(auth);
+  const [user, loading, error] = useAuthState(auth);
+
+  let data = {};
 
   useEffect(() => {
     if (
@@ -14,7 +17,11 @@ function MyApp({ Component, pageProps }) {
         .doc(user?.uid)
         .get()
         .then((snap) => {
-          if (snap.exists) return;
+          if (snap.exists) {
+            data.about = snap.data().about;
+            //data.followers = snap.data().followers;
+            //data.following = snap.data().following;
+          }
 
           if (user) {
             db.collection("users").doc(user.uid).set(
@@ -36,7 +43,18 @@ function MyApp({ Component, pageProps }) {
   if (loading) return <div>Loading</div>;
   if (!user) return <Login />;
 
-  return <Component {...pageProps} />;
+  const value = {
+    user,
+    loading,
+    error,
+    about: data?.about,
+  };
+
+  return (
+    <CurrentUser.Provider value={value}>
+      <Component {...pageProps} />
+    </CurrentUser.Provider>
+  );
 }
 
 export default MyApp;

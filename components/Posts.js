@@ -1,3 +1,4 @@
+import { Spinner } from "react-bootstrap";
 import { useCollection } from "react-firebase-hooks/firestore";
 import { db } from "../firebase";
 import Post from "./Post";
@@ -9,7 +10,7 @@ function Posts() {
 
   return (
     <div className="scrollbar-hide mx-auto" style={{ width: "65vw" }}>
-      {loading && <p>LOADING PLEASE WAIT ! </p>}
+      {loading && <Spinner animation="border" variant="dark" />}
       {realtimePosts &&
         realtimePosts?.docs.map((post) => (
           <Post

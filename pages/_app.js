@@ -4,6 +4,8 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import { auth, db } from "../firebase";
 import { useEffect } from "react";
 import CurrentUser from "../contexts/CurrentUser";
+import { Spinner } from "react-bootstrap";
+import "../styles/globals.css";
 
 function MyApp({ Component, pageProps }) {
   const [user, loading, error] = useAuthState(auth);
@@ -40,7 +42,7 @@ function MyApp({ Component, pageProps }) {
     );
   }, [user]);
 
-  if (loading) return <div>Loading</div>;
+  if (loading) return <Spinner animation="border" variant="dark" />;
   if (!user) return <Login />;
 
   const value = {

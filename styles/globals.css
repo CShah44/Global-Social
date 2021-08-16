@@ -1,3 +1,7 @@
-.noUnderLine {
-  text-decoration: none !important;
+.heading {
+  font-family: "Bebas Neue", cursive;
+}
+
+.normal {
+  font-family: "Nunito", sans-serif;
 }

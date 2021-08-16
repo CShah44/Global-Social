@@ -174,7 +174,7 @@ function Post({
         deletePost={deletePostHandler}
       />
 
-      <Card className="w-90 my-5">
+      <Card className="w-90 my-5 normal">
         {processRepostHeader()}
         <Card.Body>
           <Card.Text as="div">

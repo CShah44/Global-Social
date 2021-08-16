@@ -42,7 +42,7 @@ export default function ProfilePage({ user, docId }) {
   }
 
   return (
-    <div className="d-flex flex-column justify-content-center align-items-center">
+    <div className="normal d-flex flex-column justify-content-center align-items-center">
       <Card style={{ width: "65vw" }} className="my-4 fs-5">
         <Card.Body className="d-flex flex-column flex-wrap p-5">
           <div className="d-flex flex-row flex-wrap ">

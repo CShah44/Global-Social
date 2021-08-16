@@ -19,9 +19,9 @@ function Header() {
 
   return (
     <Navbar bg="light" expand="lg" sticky="top">
-      <Container className="d-flex">
+      <Container className="d-flex normal">
         <Link href="/" shallow={true}>
-          <Navbar.Brand className="fs-2" style={{ cursor: "pointer" }}>
+          <Navbar.Brand className="fs-1 heading" style={{ cursor: "pointer" }}>
             Global Social
           </Navbar.Brand>
         </Link>

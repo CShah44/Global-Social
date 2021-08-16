@@ -2,7 +2,13 @@ import { Modal, Button } from "react-bootstrap";
 
 function DeletePostModal({ show, hideModal, deletePost }) {
   return (
-    <Modal show={show} onHide={hideModal} backdrop="static" keyboard={false}>
+    <Modal
+      className="normal"
+      show={show}
+      onHide={hideModal}
+      backdrop="static"
+      keyboard={false}
+    >
       <Modal.Header>
         <Modal.Title>Delete Post</Modal.Title>
       </Modal.Header>

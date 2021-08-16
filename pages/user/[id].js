@@ -6,6 +6,7 @@ import { useCollection } from "react-firebase-hooks/firestore";
 import { db } from "../../firebase";
 import UserPosts from "../../components/Profile_Page/UserPosts";
 import { ToastProvider } from "react-toast-notifications";
+import { Spinner } from "react-bootstrap";
 
 export default function Profile() {
   const router = useRouter();
@@ -14,11 +15,17 @@ export default function Profile() {
 
   const [user, loading] = useCollection(db.collection("users").doc(id));
 
-  if (loading) return <p>LOADING</p>;
+  if (loading) return <Spinner animation="border" variant="dark" />;
 
   return (
     <>
       <Head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito&display=swap"
+          rel="stylesheet"
+        />
         <title>Global Social · {user.data().name} </title>
       </Head>
       <Header />

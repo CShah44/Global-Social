@@ -46,7 +46,7 @@ function CommentsModal({ id, show, comments, hideModal }) {
   }
 
   return (
-    <Modal size="lg" show={show} onHide={hideModal} centered>
+    <Modal className="normal" size="lg" show={show} onHide={hideModal} centered>
       <Modal.Header>
         <Modal.Title>Comments</Modal.Title>
       </Modal.Header>

@@ -1,7 +1,14 @@
 import { useContext, useRef, useState } from "react";
 import { db } from "../firebase";
 import firebase from "firebase";
-import { Card, InputGroup, FormControl, Image, Button } from "react-bootstrap";
+import {
+  Card,
+  InputGroup,
+  FormControl,
+  Image,
+  Button,
+  ProgressBar,
+} from "react-bootstrap";
 import { useToasts } from "react-toast-notifications";
 import Camera from "./Camera";
 import "emoji-mart/css/emoji-mart.css";
@@ -16,12 +23,16 @@ function InputBox() {
   const [urls, setUrls] = useState([]);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
+  const [progress, setProgress] = useState(0);
+
   const inputRef = useRef(null);
   const { addToast } = useToasts();
 
   async function sendPostHandler() {
     if (inputRef.current.value.length <= 0) {
-      addToast("Don't post empty stuff...", { appearance: "warning" });
+      addToast("Your brain is as empty as the post content. Go, fill it in!", {
+        appearance: "warning",
+      });
       return;
     }
 
@@ -48,8 +59,18 @@ function InputBox() {
     inputRef.current.value = "";
   }
 
+  function changeProgress(e) {
+    if (e.target.value.length === 240) {
+      addToast("You have reached maximum character limit. Stop typing!", {
+        appearance: "warning",
+      });
+    }
+
+    setProgress(e.target.value);
+  }
+
   return (
-    <div className="my-4 mx-auto" style={{ width: "65vw" }}>
+    <div className="my-4 mx-auto normal" style={{ width: "65vw" }}>
       <Card className="text-center">
         <Card.Title className="pt-3 pb-0">Add Your Post!</Card.Title>
         <Card.Body>
@@ -68,9 +89,10 @@ function InputBox() {
                 as="textarea"
                 maxLength={240}
                 ref={inputRef}
+                onChange={changeProgress}
                 style={{ resize: "none" }}
                 placeholder={`What's on your mind, ${user.displayName}?`}
-              />
+              ></FormControl>
               <Button
                 variant="info"
                 onClick={() => setShowEmojiPicker((p) => !p)}
@@ -97,6 +119,16 @@ function InputBox() {
               />
             )}
           </div>
+
+          <Card.Text as="div">
+            <ProgressBar
+              now={progress.length}
+              max={240}
+              animated
+              className="m-2 mt-0 ms-auto me-2"
+              style={{ height: "5px", width: "92%" }}
+            />
+          </Card.Text>
 
           <Camera
             className="mt-3"

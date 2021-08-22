@@ -7,6 +7,7 @@ function DeletePostModal({ show, hideModal, deletePost }) {
       show={show}
       onHide={hideModal}
       backdrop="static"
+      centered
       keyboard={false}
     >
       <Modal.Header>

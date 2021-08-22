@@ -20,9 +20,7 @@ function MyApp({ Component, pageProps }) {
         .get()
         .then((snap) => {
           if (snap.exists) {
-            data.about = snap.data().about;
-            //data.followers = snap.data().followers;
-            //data.following = snap.data().following;
+            return (data.about = snap.data().about);
           }
 
           if (user) {

@@ -5,7 +5,7 @@ import { ToastProvider } from "react-toast-notifications";
 
 export default function Home() {
   return (
-    <>
+    <div className="darkbg text-white">
       <Head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -19,6 +19,6 @@ export default function Home() {
       <ToastProvider placement="bottom-center" autoDismiss>
         <Feed />
       </ToastProvider>
-    </>
+    </div>
   );
 }

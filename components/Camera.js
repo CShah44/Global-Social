@@ -11,6 +11,7 @@ function Camera({ addPost, setUrls }) {
   const filePickerRef = useRef(null);
 
   async function processPosting() {
+    setUrls([]);
     await upload().then(() => {
       addPost();
     });
@@ -68,15 +69,12 @@ function Camera({ addPost, setUrls }) {
           }
           ref={filePickerRef}
         />
-        <Button
-          onClick={() => filePickerRef.current.click()}
-          variant="outline-dark"
-        >
+        <Button onClick={() => filePickerRef.current.click()} variant="light">
           Add Photos
         </Button>
         <Button
           disabled={images?.length <= 0}
-          variant="outline-warning"
+          variant="warning"
           onClick={() => setImages([])}
         >
           Remove

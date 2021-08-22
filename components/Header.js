@@ -18,11 +18,26 @@ function Header() {
   }
 
   return (
-    <Navbar bg="light" expand="lg" sticky="top">
-      <Container className="d-flex normal">
+    <Navbar
+      className="glassyheader"
+      variant="dark"
+      text="light"
+      expand="lg"
+      sticky="top"
+    >
+      <Container className="d-flex normal text-white">
         <Link href="/" shallow={true}>
-          <Navbar.Brand className="fs-1 heading" style={{ cursor: "pointer" }}>
-            Global Social
+          <Navbar.Brand
+            className="fs-1 heading d-flex align-items-center"
+            style={{ cursor: "pointer" }}
+          >
+            <Image
+              className="align-self-center border-white"
+              src="/button.png"
+              height="50"
+              width="50"
+            />
+            <span className="ms-2">Global Social</span>
           </Navbar.Brand>
         </Link>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
@@ -37,15 +52,15 @@ function Header() {
                 layout="fixed"
               />
 
-              <span className="mx-3 p-1">{user.displayName}</span>
+              <span className="mx-3 p-1 ">{user.displayName}</span>
             </Nav.Item>
             <Nav.Item className="m-2">
               <Link href={`${router.basePath}/user/${user.uid}`}>
-                <Button variant="outline-dark">Your Profile</Button>
+                <Button variant="primary">Your Profile</Button>
               </Link>
             </Nav.Item>
             <Nav.Item className="m-2">
-              <Button variant="outline-dark" onClick={processSignOut}>
+              <Button variant="primary" onClick={processSignOut}>
                 Sign Out
               </Button>
             </Nav.Item>

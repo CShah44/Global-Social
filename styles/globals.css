@@ -5,3 +5,20 @@
 .normal {
   font-family: "Nunito", sans-serif;
 }
+
+.glassyheader {
+  background: rgba(0, 0, 0, 0.1);
+  box-shadow: 0 7px 6px 0 rgba(142, 145, 185, 0.27);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  border-radius: 10px;
+}
+
+body {
+  background-color: #212529;
+}
+
+.dark3 {
+  /* background-color: #2e2e2e; */
+  background-color: #252525;
+}

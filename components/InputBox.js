@@ -30,7 +30,7 @@ function InputBox() {
 
   async function sendPostHandler() {
     if (inputRef.current.value.length <= 0) {
-      addToast("Your brain is as empty as the post content. Go, fill it in!", {
+      addToast("I don't like posting empty stuff. Go, write something.", {
         appearance: "warning",
       });
       return;
@@ -56,6 +56,7 @@ function InputBox() {
       .catch(() => {
         addToast("Could not post!", { appearance: "error" });
       });
+    setProgress("");
     inputRef.current.value = "";
   }
 
@@ -71,7 +72,7 @@ function InputBox() {
 
   return (
     <div className="my-4 mx-auto normal" style={{ width: "65vw" }}>
-      <Card className="text-center">
+      <Card className="text-center" bg="dark" text="light" border="light">
         <Card.Title className="pt-3 pb-0">Add Your Post!</Card.Title>
         <Card.Body>
           <div className="d-flex flex-row justify-content-evenly">

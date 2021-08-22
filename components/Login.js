@@ -8,10 +8,7 @@ function Login() {
   }
 
   return (
-    <div
-      className="d-flex flex-column"
-      style={{ height: "100vh", backgroundColor: "black" }}
-    >
+    <div className="d-flex flex-column" style={{ maxHeight: "100vh" }}>
       <div className="mx-auto mt-4">
         <Image
           src="/Logo.png"
@@ -20,15 +17,9 @@ function Login() {
           height="500"
         />
       </div>
-      <div className="mx-auto m-2">
-        <Button onClick={signIn} className="mx-1" variant="light">
+      <div className="mx-auto mt-3">
+        <Button onClick={signIn} variant="light">
           Login with Google
-        </Button>
-        <Button className="mx-2" variant="light">
-          Login with Twitter
-        </Button>
-        <Button variant="light" className="mx-1">
-          Login with Facebook
         </Button>
       </div>
     </div>

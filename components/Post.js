@@ -10,6 +10,7 @@ import { useToasts } from "react-toast-notifications";
 import Image from "next/image";
 import classes from "./Post.module.css";
 import CurrentUser from "../contexts/CurrentUser";
+import ConfirmRepost from "./UserFeedback/ConfirmRepost";
 
 function Post({
   name,
@@ -27,6 +28,7 @@ function Post({
 }) {
   const [showComments, setShowComments] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showRepostModal, setShowRepostModal] = useState(false);
 
   const router = useRouter();
   const currentUser = useContext(CurrentUser);
@@ -63,7 +65,9 @@ function Post({
         .update({
           likes: FieldValue.arrayRemove(user.email),
         })
-        .catch(alert);
+        .catch(() =>
+          addToast("Error! Can't unlike the post.", { appearance: "error" })
+        );
       return;
     }
 
@@ -71,7 +75,9 @@ function Post({
       .update({
         likes: FieldValue.arrayUnion(user.email),
       })
-      .catch(alert);
+      .catch(() =>
+        addToast("Error! Can't like the post.", { appearance: "error" })
+      );
   }
 
   function deletePostHandler() {
@@ -82,6 +88,16 @@ function Post({
       .then(() => {
         if (postImages) {
           postImages.map((photo) => {
+            console.log(
+              db
+                .collection("posts")
+                .where("postimages", "array-contains", photo)
+            );
+            // if (db.collection("posts").where("postimages", "array-contains", photo) != null) {
+            //   storage.refFromURL(photo).delete();
+
+            // }
+
             storage.refFromURL(photo).delete();
           });
         }
@@ -142,8 +158,8 @@ function Post({
   function makeImages() {
     if (!postImages) return;
     else if (postImages.length === 1) {
-      return <Card.Img variant="bottom" fluid src={postImages} />;
-    } else {
+      return <Card.Img variant="bottom" src={postImages} />;
+    } else if (postImages.length >= 2) {
       return (
         <Carousel>
           {postImages.map(function (img, i) {
@@ -167,6 +183,12 @@ function Post({
         id={id}
       />
 
+      <ConfirmRepost
+        hideModal={() => setShowRepostModal(false)}
+        show={showRepostModal}
+        repost={repostHandler}
+      />
+
       <DeletePostModal
         id={id}
         hideModal={hideDeletePostModal}
@@ -174,7 +196,7 @@ function Post({
         deletePost={deletePostHandler}
       />
 
-      <Card className="w-90 my-5 normal">
+      <Card className="w-90 my-5 normal" bg="dark" text="light" border="white">
         {processRepostHeader()}
         <Card.Body>
           <Card.Text as="div">
@@ -217,14 +239,14 @@ function Post({
 
         <Card.Footer className="d-flex justify-content-start">
           <Button
-            variant="outline-dark"
+            variant="info"
             className="m-1"
             onClick={() => setShowComments(true)}
           >
             Comments ({comments.length})
           </Button>
           <Button
-            variant={`${hasLiked ? "primary" : "outline-primary"}`}
+            variant={`${hasLiked ? "light" : "outline-light"}`}
             className="m-1"
             onClick={toggleLiked}
           >
@@ -234,7 +256,7 @@ function Post({
             <Button
               className="m-1 ms-auto"
               variant="primary"
-              onClick={repostHandler}
+              onClick={() => setShowRepostModal(true)}
             >
               Repost
             </Button>

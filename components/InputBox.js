@@ -72,7 +72,7 @@ function InputBox() {
 
   return (
     <div className="my-4 mx-auto normal" style={{ width: "65vw" }}>
-      <Card className="text-center" bg="dark" text="light" border="light">
+      <Card className="text-center neuEff" bg="dark" text="light">
         <Card.Title className="pt-3 pb-0">Add Your Post!</Card.Title>
         <Card.Body>
           <div className="d-flex flex-row justify-content-evenly">

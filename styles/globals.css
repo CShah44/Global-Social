@@ -1,3 +1,7 @@
+body {
+  background-color: #212529;
+}
+
 .heading {
   font-family: "Bebas Neue", cursive;
 }
@@ -7,18 +11,34 @@
 }
 
 .glassyheader {
+  /*
+  
+  this is neumorphism effect
+
+  */
+  border-radius: 0px;
+  background: linear-gradient(145deg, #23282c, #1e2125);
+  box-shadow: 9px 9px 18px #141719, -9px -9px 18px #2e3339;
+
+  /* 
+  
+  this is glass effect
+  
   background: rgba(0, 0, 0, 0.1);
-  box-shadow: 0 7px 6px 0 rgba(142, 145, 185, 0.27);
+  box-shadow: 0 7px 6px 0 #2125298a;
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
   border-radius: 10px;
-}
-
-body {
-  background-color: #212529;
+  */
 }
 
 .dark3 {
   /* background-color: #2e2e2e; */
   background-color: #252525;
+}
+
+.neuEff {
+  border-radius: 0px;
+  background: #212529;
+  box-shadow: 20px 20px 60px #181b1e, -20px -20px 60px #2a2f34;
 }

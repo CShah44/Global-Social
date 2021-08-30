@@ -92,6 +92,7 @@ function Post({
               db
                 .collection("posts")
                 .where("postimages", "array-contains", photo)
+                .get()
             );
             // if (db.collection("posts").where("postimages", "array-contains", photo) != null) {
             //   storage.refFromURL(photo).delete();
@@ -148,6 +149,7 @@ function Post({
         },
       })
       .then(() => {
+        setShowRepostModal(false);
         addToast("Re-posted!", { appearance: "success" });
       })
       .catch(() => {
@@ -196,7 +198,7 @@ function Post({
         deletePost={deletePostHandler}
       />
 
-      <Card className="w-90 my-5 normal" bg="dark" text="light" border="white">
+      <Card className="w-90 my-5 normal neuEff" bg="dark" text="light">
         {processRepostHeader()}
         <Card.Body>
           <Card.Text as="div">

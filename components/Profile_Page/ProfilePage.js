@@ -2,6 +2,8 @@ import InputBox from "../InputBox";
 import { Card, Image, InputGroup, FormControl, Button } from "react-bootstrap";
 import { db } from "../../firebase";
 import { useContext, useRef, useState } from "react";
+import "emoji-mart/css/emoji-mart.css";
+import { Picker } from "emoji-mart";
 import CurrentUser from "../../contexts/CurrentUser";
 
 export default function ProfilePage({ user, docId }) {
@@ -10,6 +12,7 @@ export default function ProfilePage({ user, docId }) {
 
   const [isEditing, setIsEditing] = useState(false);
   const inputRef = useRef(null);
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
   function clearField(e) {
     e.preventDefault();
@@ -47,8 +50,7 @@ export default function ProfilePage({ user, docId }) {
         style={{ width: "65vw" }}
         bg="dark"
         text="light"
-        border="light"
-        className="my-4 fs-5"
+        className="neuEff my-4 fs-5"
       >
         <Card.Body className="d-flex flex-column flex-wrap p-5">
           <div className="d-flex flex-row flex-wrap ">
@@ -77,6 +79,12 @@ export default function ProfilePage({ user, docId }) {
                   style={{ resize: "none" }}
                   placeholder="Lets see what changes do you make in your about section..."
                 />
+                <Button
+                  variant="info"
+                  onClick={() => setShowEmojiPicker((p) => !p)}
+                >
+                  😎
+                </Button>
               </InputGroup>
               <Button
                 className="me-1 px-3"
@@ -88,6 +96,25 @@ export default function ProfilePage({ user, docId }) {
               <Button onClick={clearField} variant="warning">
                 Cancel
               </Button>
+              <div>
+                {showEmojiPicker && (
+                  <Picker
+                    set="google"
+                    enableFrequentEmojiSort
+                    style={{
+                      position: "absolute",
+                      marginTop: "5em",
+                      right: "20px",
+                      zIndex: 1,
+                    }}
+                    theme="dark"
+                    onClick={(emo) => {
+                      inputRef.current.value += emo.native;
+                      return console.log("done");
+                    }}
+                  />
+                )}
+              </div>
             </div>
           ) : (
             <>

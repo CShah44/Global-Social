@@ -115,19 +115,11 @@ function Post({
 
   function processRepostHeader() {
     if (repost) {
-      const repostName = repost.name;
-      const repostTime = repost.timestamp;
-      const repostUID = repost.uid;
-
       return (
-        <Link href={`${router.basePath}/user/${repostUID}`}>
+        <Link href={`${router.basePath}/user/${uid}`}>
           <Card.Header style={{ cursor: "pointer" }}>
-            Originally posted by <strong> {repostName}</strong>,{" "}
-            {
-              <TimeAgo
-                datetime={new Date(repostTime.toDate()).toLocaleString()}
-              />
-            }
+            {name === user.displayName ? "You" : `${name}`} Reposted ,{" "}
+            {timeStamp}
           </Card.Header>
         </Link>
       );
@@ -142,12 +134,13 @@ function Post({
         email: user.email,
         image: user.photoURL,
         uid: user.uid,
-        postImages: postImages,
+        postImages: postImages ? psotImages : null,
         timestamp: FieldValue.serverTimestamp(),
         comments: [],
         likes: [],
         repost: {
           name: name,
+          image: image,
           timestamp: timestamp,
           uid: uid,
         },
@@ -188,24 +181,54 @@ function Post({
         <Card.Body>
           <Card.Text as="div">
             <div className="d-flex flex-grow-1">
-              <img
-                src={image}
-                width="40"
-                height="40"
-                className="rounded m-1"
-                alt=""
-              />
+              {repost ? (
+                <>
+                  <img
+                    src={repost.image}
+                    width="40"
+                    height="40"
+                    className="rounded m-1"
+                    alt=""
+                  />
 
-              <span className="px-2">
-                <Link href={`${router.basePath}/user/${uid}`}>
-                  <span style={{ fontSize: "1.1em", cursor: "pointer" }}>
-                    {name}
+                  <span className="px-2">
+                    <Link href={`${router.basePath}/user/${repost.uid}`}>
+                      <span style={{ fontSize: "1.1em", cursor: "pointer" }}>
+                        {repost.name}
+                      </span>
+                    </Link>
+                    <br />
+                    {
+                      <TimeAgo
+                        style={{ fontSize: "0.8em" }}
+                        datetime={new Date(
+                          repost.timestamp.toDate()
+                        ).toLocaleString()}
+                      />
+                    }
                   </span>
-                </Link>
-                <br />
-                {timeStamp}
-              </span>
+                </>
+              ) : (
+                <>
+                  <img
+                    src={image}
+                    width="40"
+                    height="40"
+                    className="rounded m-1"
+                    alt=""
+                  />
 
+                  <span className="px-2">
+                    <Link href={`${router.basePath}/user/${uid}`}>
+                      <span style={{ fontSize: "1.1em", cursor: "pointer" }}>
+                        {name}
+                      </span>
+                    </Link>
+                    <br />
+                    {timeStamp}
+                  </span>
+                </>
+              )}
               {showUserOptions && (
                 <Button
                   variant="outline-danger ms-auto"

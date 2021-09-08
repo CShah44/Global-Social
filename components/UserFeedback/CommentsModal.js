@@ -51,11 +51,18 @@ function CommentsModal({ id, show, comments, hideModal }) {
         <Modal.Title>Comments</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <ListGroup variant="flush">
+        <ListGroup
+          style={{
+            maxHeight: "20rem",
+            overflowY: "scroll",
+            scrollbarWidth: "thin",
+          }}
+          variant="flush"
+        >
           {comments.length > 0 ? (
             comments.map(function (comment, i) {
               return (
-                <ListGroup.Item key={i} className="d-flex p-1 py-2">
+                <ListGroup.Item key={i} className="d-flex p-1 py-3">
                   <span className="fw-bold me-2">{comment.name}</span>{" "}
                   {comment.comment}
                   {user.email === comment.email && (

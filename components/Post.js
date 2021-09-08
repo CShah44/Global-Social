@@ -29,6 +29,7 @@ function Post({
   const [showComments, setShowComments] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showRepostModal, setShowRepostModal] = useState(false);
+  const [disableLikeButton, setDisableLikeButton] = useState(false);
 
   const router = useRouter();
   const currentUser = useContext(CurrentUser);
@@ -58,12 +59,17 @@ function Post({
   }
 
   function toggleLiked() {
+    setDisableLikeButton(true);
+
     const postRef = db.collection("posts").doc(id);
 
     if (hasLiked) {
       postRef
         .update({
           likes: FieldValue.arrayRemove(user.email),
+        })
+        .then(() => {
+          enableLikeButton();
         })
         .catch(() =>
           addToast("Error! Can't unlike the post.", { appearance: "error" })
@@ -75,9 +81,18 @@ function Post({
       .update({
         likes: FieldValue.arrayUnion(user.email),
       })
+      .then(() => {
+        enableLikeButton();
+      })
       .catch(() =>
         addToast("Error! Can't like the post.", { appearance: "error" })
       );
+  }
+
+  function enableLikeButton() {
+    setTimeout(() => {
+      setDisableLikeButton(false);
+    }, 1000);
   }
 
   function deletePostHandler() {
@@ -87,21 +102,10 @@ function Post({
       .delete()
       .then(() => {
         if (postImages) {
-          postImages.map((photo) => {
-            console.log(
-              db
-                .collection("posts")
-                .where("postimages", "array-contains", photo)
-                .get()
-            );
-            // if (db.collection("posts").where("postimages", "array-contains", photo) != null) {
-            //   storage.refFromURL(photo).delete();
-
-            // }
-
-            storage.refFromURL(photo).delete();
-          });
+          return storage.refFromURL(postImages).delete();
         }
+      })
+      .then(() => {
         addToast("Deleted Post!", { appearance: "info" });
       })
       .catch(() => {
@@ -155,25 +159,6 @@ function Post({
       .catch(() => {
         addToast("Could not Re-Post!", { appearance: "error" });
       });
-  }
-
-  function makeImages() {
-    if (!postImages) return;
-    else if (postImages.length === 1) {
-      return <Card.Img variant="bottom" src={postImages} />;
-    } else if (postImages.length >= 2) {
-      return (
-        <Carousel>
-          {postImages.map(function (img, i) {
-            return (
-              <Carousel.Item className={`${classes.ph} ${classes.phr}`} key={i}>
-                <Image layout="fill" objectFit="cover" src={img} />
-              </Carousel.Item>
-            );
-          })}
-        </Carousel>
-      );
-    }
   }
 
   return (
@@ -237,7 +222,13 @@ function Post({
           </Card.Text>
         </Card.Body>
 
-        {makeImages()}
+        {postImages && (
+          <Card.Img
+            variant="bottom"
+            src={postImages}
+            className={`${classes.ph} ${classes.phr}`}
+          />
+        )}
 
         <Card.Footer className="d-flex justify-content-start">
           <Button
@@ -251,6 +242,7 @@ function Post({
             variant={`${hasLiked ? "light" : "outline-light"}`}
             className="m-1"
             onClick={toggleLiked}
+            disabled={disableLikeButton}
           >
             Like ({likes.length})
           </Button>

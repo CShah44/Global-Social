@@ -3,7 +3,6 @@ import { Card, Image, InputGroup, FormControl, Button } from "react-bootstrap";
 import { db } from "../../firebase";
 import { useContext, useRef, useState } from "react";
 import "emoji-mart/css/emoji-mart.css";
-import { Picker } from "emoji-mart";
 import CurrentUser from "../../contexts/CurrentUser";
 import EmojiPickerModal from "../UserFeedback/EmojiPickerModal";
 

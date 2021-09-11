@@ -7,7 +7,6 @@ import DeletePostModal from "./UserFeedback/DeletePostModal";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import { useToasts } from "react-toast-notifications";
-import Image from "next/image";
 import classes from "./Post.module.css";
 import CurrentUser from "../contexts/CurrentUser";
 import ConfirmRepost from "./UserFeedback/ConfirmRepost";

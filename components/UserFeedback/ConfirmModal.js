@@ -1,22 +1,22 @@
 import { Modal, Button } from "react-bootstrap";
 
-function ConfirmRepost({ repost, show, hideModal }) {
+function ConfirmModal({ func, show, hideModal, text, title }) {
   return (
     <Modal className="normal" show={show} centered onHide={hideModal}>
       <Modal.Header>
-        <Modal.Title>Confirm Repost</Modal.Title>
+        <Modal.Title> {title} </Modal.Title>
       </Modal.Header>
-      <Modal.Body>Are you sure you want to repost? 😎</Modal.Body>
+      <Modal.Body> {text} </Modal.Body>
       <Modal.Footer>
         <Button variant="secondary" onClick={hideModal}>
           Close
         </Button>
-        <Button variant="primary" onClick={repost}>
-          Yes, Repost it!
+        <Button variant="primary" onClick={func}>
+          Yes
         </Button>
       </Modal.Footer>
     </Modal>
   );
 }
 
-export default ConfirmRepost;
+export default ConfirmModal;

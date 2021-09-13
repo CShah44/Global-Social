@@ -1,16 +1,14 @@
-import { Fragment, useContext, useState } from "react";
-import { Card, Button, Carousel } from "react-bootstrap";
+import { useContext, useState } from "react";
+import { Card, Button } from "react-bootstrap";
 import CommentsModal from "./UserFeedback/CommentsModal";
 import TimeAgo from "timeago-react";
 import { db, FieldValue, storage } from "../firebase";
-import DeletePostModal from "./UserFeedback/DeletePostModal";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import { useToasts } from "react-toast-notifications";
-import Image from "next/image";
 import classes from "./Post.module.css";
 import CurrentUser from "../contexts/CurrentUser";
-import ConfirmRepost from "./UserFeedback/ConfirmRepost";
+import ConfirmModal from "./UserFeedback/ConfirmModal";
 
 function Post({
   name,
@@ -155,7 +153,7 @@ function Post({
   }
 
   return (
-    <Fragment>
+    <>
       <CommentsModal
         comments={comments}
         hideModal={hideCommentsModal}
@@ -163,17 +161,22 @@ function Post({
         id={id}
       />
 
-      <ConfirmRepost
+      {/* for repost confirmation */}
+      <ConfirmModal
         hideModal={() => setShowRepostModal(false)}
         show={showRepostModal}
-        repost={repostHandler}
+        func={repostHandler}
+        text="Are you sure you want to repost? 😎"
+        title="Confirm Reposting"
       />
 
-      <DeletePostModal
-        id={id}
+      {/* for delete post confirmation */}
+      <ConfirmModal
+        title="Delete Post"
+        text="Are you sure you want to delete the post?"
         hideModal={hideDeletePostModal}
         show={showDeleteModal}
-        deletePost={deletePostHandler}
+        func={deletePostHandler}
       />
 
       <Card className="w-90 my-5 normal neuEff" bg="dark" text="light">
@@ -280,7 +283,7 @@ function Post({
           )}
         </Card.Footer>
       </Card>
-    </Fragment>
+    </>
   );
 }
 

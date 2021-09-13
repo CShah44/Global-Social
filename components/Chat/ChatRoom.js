@@ -5,7 +5,7 @@ function ChatRoom({ room }) {
 
   return (
     <div className="text-white">
-      I HAVE TO ADD A BACK BUTTON ALSO. THIS IS ROOM PROP OBJECT:
+      I HAVE TO ADD A BACK BUTTON ALSO. THIS IS ROOM PROP OBJECT: {room}
     </div>
   );
 }

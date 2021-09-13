@@ -11,12 +11,10 @@ function Room() {
   const { room } = router.query;
 
   const currentUser = useContext(CurrentUser);
-  const id = currentUser.user.id;
-  const name = currentUser.user.name;
+  const id = currentUser.user.uid;
+  const name = currentUser.user.displayName;
 
   const roomRef = db.collection("rooms").doc(room);
-  const data = roomRef.get().then((snap) => snap.data());
-  console.log(data);
 
   return (
     <>
@@ -30,7 +28,7 @@ function Room() {
         <title>Global Social · Chat -- {room} </title>
       </Head>
       <ToastProvider placement="bottom-center" autoDismiss>
-        {<ChatRoom room={room} />}
+        <ChatRoom room={room} name={name} id={id} />
       </ToastProvider>
     </>
   );

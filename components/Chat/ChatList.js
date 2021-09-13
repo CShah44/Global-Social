@@ -3,7 +3,7 @@ import { ListGroup, Card } from "react-bootstrap";
 import { useCollection } from "react-firebase-hooks/firestore";
 import Link from "next/link";
 
-function ChatList({ name, id, router }) {
+function ChatList({ name, id }) {
   const [yourRooms] = useCollection(
     db
       .collection("rooms")
@@ -19,10 +19,10 @@ function ChatList({ name, id, router }) {
       <h1 className="text-white text-bold p-3 heading">Your Chats</h1>
 
       <ListGroup variant="flush" className="p-2">
-        {yourRooms?.docs?.map((doc) => {
+        {yourRooms?.docs?.map((doc, index) => {
           return (
-            <Link href={`chat/${doc.id}`}>
-              <ListGroup.Item key={doc.ref}>{doc.id}</ListGroup.Item>
+            <Link key={index} href={`chat/${doc.id}`}>
+              <ListGroup.Item>{doc.id}</ListGroup.Item>
             </Link>
           );
         })}

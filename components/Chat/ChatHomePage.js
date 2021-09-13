@@ -169,7 +169,7 @@ function ChatHomePage() {
         </Card.Body>
       </Card>
 
-      <ChatList name={name} id={id} router={router} />
+      <ChatList name={name} id={id} />
     </>
   );
 }

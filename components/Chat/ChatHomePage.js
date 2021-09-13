@@ -1,94 +1,122 @@
 import { db, FieldValue } from "../../firebase";
 import { useRouter } from "next/router";
 import { useContext, useState } from "react";
-import { Form, Button } from "react-bootstrap";
+import { Form, Button, ListGroup } from "react-bootstrap";
 import { useToasts } from "react-toast-notifications";
 import CurrentUser from "../../contexts/CurrentUser";
+import { useCollection } from "react-firebase-hooks/firestore";
 
 function ChatHomePage() {
   const router = useRouter();
   const { addToast } = useToasts();
+
   const currentUser = useContext(CurrentUser);
   const id = currentUser.user.uid;
   const name = currentUser.user.displayName;
-
-  const [joinRoomInput, setJoinRoomInput] = useState({
+  const [input, setInput] = useState({
     roomname: "",
     password: "",
   });
 
-  const [addRoomInput, setAddRoomInput] = useState({
-    roomname: "",
-    password: "",
-  });
+  const [yourRooms] = useCollection(
+    db
+      .collection("rooms")
+      .where("users", "array-contains", { name: name, id: id })
+  );
+
+  function clearInput() {
+    setInput({
+      roomname: "",
+      password: "",
+    });
+  }
 
   function addRoom(e) {
     e.preventDefault();
-    const roomRef = db.collection("rooms").doc(addRoomInput.roomname);
+    clearInput();
 
-    roomRef.get().then((docsnap) => {
-      if (docsnap.exists) {
-        return addToast("This Room already exists. Try another name.", {
-          appearance: "warning",
-        });
-      } else {
-        roomRef.set({
-          password: addRoomInput.password,
-          users: [{ name: name, id: id }],
-        });
+    if (input.roomname === "" || input.password === "")
+      return addToast("Enter valid roomname/password", {
+        appearance: "warning",
+      });
+    else {
+      const roomRef = db.collection("rooms").doc(input.roomname);
 
-        setAddRoomInput({ roomname: "", password: "" });
+      roomRef.get().then((docsnap) => {
+        if (docsnap.exists) {
+          return addToast("This Room already exists. Try another name.", {
+            appearance: "warning",
+          });
+        } else {
+          roomRef.set({
+            password: input.password,
+            users: [{ name: name, id: id }],
+          });
 
-        return addToast("Room created", { appearance: "success" });
-      }
-    });
+          setInput({ roomname: "", password: "" });
+
+          return addToast("Room created", { appearance: "success" });
+        }
+      });
+    }
   }
 
   function joinRoom(e) {
     e.preventDefault();
+    clearInput();
+    if (input.roomname === "" || input.password === "")
+      return addToast("Enter valid roomname/password", {
+        appearance: "warning",
+      });
+    else {
+      const roomRef = db.collection("rooms").doc(input.roomname);
 
-    const roomRef = db.collection("rooms").doc(joinRoomInput.roomname);
+      roomRef.get().then((docsnap) => {
+        if (docsnap.exists) {
+          if (input.password === docsnap.data().password) {
+            let alreadyExists = false;
 
-    roomRef.get().then((docsnap) => {
-      if (docsnap.exists) {
-        if (joinRoomInput.password === docsnap.data().password) {
-          const alreadyExists = docsnap
-            .data()
-            .users.find({ name: name, id: id });
-          if (alreadyExists)
-            return addToast("You are already in that room. 😒", {
-              appearance: "error",
+            const tempUserList = docsnap.data().users;
+
+            if (tempUserList.includes({ name: name, id: id }))
+              return (alreadyExists = true);
+
+            if (alreadyExists)
+              return addToast("You are already in that room. 😒", {
+                appearance: "error",
+              });
+
+            roomRef.update({
+              users: FieldValue.arrayUnion({ name: name, id: id }),
             });
 
-          roomRef.update({
-            users: FieldValue.arrayUnion({ name: name, id: id }),
-          });
+            addToast("Joined Room", { appearance: "success" });
 
-          addToast("Room created", { appearance: "success" });
+            setInput({ roomname: "", password: "" });
 
-          setJoinRoomInput({ roomname: "", password: "" });
-
-          return router.push(`chat/${joinRoomInput.roomname}`);
+            return router.push(`chat/${input.roomname}`);
+          } else {
+            return addToast("Wrong Password", { appearance: "error" });
+          }
         } else {
-          return addToast("Wrong Password", { appearance: "error" });
+          return addToast("No such room exists. Check your input.", {
+            appearance: "error",
+          });
         }
-      } else {
-        return addToast("No such room exists. Check your inpupt.", {
-          appearance: "error",
-        });
-      }
-    });
+      });
+    }
   }
 
   return (
     <>
       <Form>
-        <Form.Label> Add A Room </Form.Label>
         <Form.Group className="mb-3">
-          <Form.Label>Enter the name of the room </Form.Label>
+          <Form.Label className="text-white">
+            Enter the name of the room{" "}
+          </Form.Label>
           <Form.Control
             onChange={(e) =>
-              setAddRoomInput((prevState) => ({
+              setInput((prevState) => ({
                 roomname: e.target.value,
                 password: prevState.password,
               }))
@@ -97,55 +125,39 @@ function ChatHomePage() {
           />
         </Form.Group>
         <Form.Group className="mb-3">
-          <Form.Label>Password</Form.Label>
+          <Form.Label className="text-white">Password</Form.Label>
           <Form.Control
             onChange={(e) =>
-              setAddRoomInput((prevState) => ({
+              setInput((prevState) => ({
                 roomname: prevState.roomname,
                 password: e.target.value,
               }))
             }
             type="password"
             placeholder="Password"
+            minLength="6"
           />
         </Form.Group>
         <Button variant="primary" onClick={addRoom} type="submit">
-          Add Room
+          Create Room
         </Button>
-      </Form>
-      <hr />
-      <Form>
-        <Form.Label> Join A Room </Form.Label>
-        <Form.Group className="mb-3" controlId="roomname">
-          <Form.Label>Enter the name of the room </Form.Label>
-          <Form.Control
-            onChange={(e) =>
-              setJoinRoomInput((prevState) => ({
-                roomname: e.target.value,
-                password: prevState.password,
-              }))
-            }
-            type="text"
-            placeholder="Enter Room Name"
-          />
-        </Form.Group>
-        <Form.Group className="mb-3" controlId="roompassword">
-          <Form.Label>Password</Form.Label>
-          <Form.Control
-            onChange={(e) =>
-              setJoinRoomInput((prevState) => ({
-                roomname: prevState.roomname,
-                password: e.target.value,
-              }))
-            }
-            type="password"
-            placeholder="Password"
-          />
-        </Form.Group>
-        <Button onClick={joinRoom} variant="primary" type="submit">
+        <Button variant="primary" onClick={joinRoom} type="submit">
           Join Room
         </Button>
       </Form>
+      <h1 className="text-white">Your Rooms</h1>
+      <ListGroup variant="flush">
+        {yourRooms?.docs?.map((doc) => {
+          return (
+            <ListGroup.Item
+              key={doc.ref}
+              onClick={() => router.push(`chat/${doc.id}`)}
+            >
+              {doc.id}
+            </ListGroup.Item>
+          );
+        })}
+      </ListGroup>
     </>
   );
 }

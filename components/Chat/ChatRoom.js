@@ -3,18 +3,45 @@ import { useRef, useState } from "react";
 import { Card, Button, InputGroup, FormControl } from "react-bootstrap";
 import { db, FieldValue } from "../../firebase";
 import ParticipantsModal from "./ParticipantsModal";
+import { useCollectionData } from "react-firebase-hooks/firestore";
+import Message from "./Message";
+import { useToasts } from "react-toast-notifications";
 
 function ChatRoom({ room, name, id }) {
-  const roomRef = db.collection("rooms").doc(room); // needed if user leaves the room......
+  const roomRef = db.collection("rooms").doc(room);
+
+  const messagesRef = roomRef.collection("messages");
+  const query = messagesRef.orderBy("createdAt").limit(25);
+
+  const [messages] = useCollectionData(query);
+  console.log(messages);
+
   const router = useRouter();
 
   const [showParticipants, setShowParticipants] = useState(false);
 
   const inputRef = useRef(null);
 
-  function submitHandler(e) {
+  const { addToast } = useToasts();
+
+  async function submitHandler(e) {
     e.preventDefault();
+
+    if (inputRef.current.value.length <= 0) {
+      return;
+      // TODO show alert here..
+    }
+
+    await messagesRef.add({
+      text: inputRef.current.value,
+      createdAt: FieldValue.serverTimestamp(),
+      id,
+      name,
+    });
+
+    // TODO: remove this line
     console.log("msg sent");
+
     inputRef.current.value = "";
   }
 
@@ -54,7 +81,13 @@ function ChatRoom({ room, name, id }) {
           </Button>
         </Card.Title>
         <Card.Body>
-          PUT ALL THOSE MESSAGES HERE.. AND SHOW LIST OF USERS SOMEWHERE AS WELL
+          {messages ? (
+            messages.map((msg) => (
+              <Message key={msg.id} message={msg} userId={id} />
+            ))
+          ) : (
+            <div className="text-white"> No messages yet.. </div>
+          )}
         </Card.Body>
         <Card.Footer>
           <InputGroup className="flex-fill p-2">
@@ -64,7 +97,7 @@ function ChatRoom({ room, name, id }) {
               style={{ resize: "none", width: "65px" }}
               ref={inputRef}
             ></FormControl>
-            <Button variant="info" type="submit">
+            <Button variant="info" type="submit" onClick={submitHandler}>
               Send
             </Button>
           </InputGroup>

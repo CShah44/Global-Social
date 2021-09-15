@@ -1,5 +1,5 @@
-import { Fragment, useContext, useState } from "react";
-import { Card, Button, Carousel } from "react-bootstrap";
+import { useContext, useState } from "react";
+import { Card, Button } from "react-bootstrap";
 import CommentsModal from "./UserFeedback/CommentsModal";
 import TimeAgo from "timeago-react";
 import { db, FieldValue, storage } from "../firebase";
@@ -62,23 +62,11 @@ function Post({
 
     const postRef = db.collection("posts").doc(id);
 
-    if (hasLiked) {
-      postRef
-        .update({
-          likes: FieldValue.arrayRemove(user.email),
-        })
-        .then(() => {
-          enableLikeButton();
-        })
-        .catch(() =>
-          addToast("Error! Can't unlike the post.", { appearance: "error" })
-        );
-      return;
-    }
-
     postRef
       .update({
-        likes: FieldValue.arrayUnion(user.email),
+        likes: hasLiked
+          ? FieldValue.arrayRemove(user.email)
+          : FieldValue.arrayUnion(user.email),
       })
       .then(() => {
         enableLikeButton();
@@ -133,7 +121,7 @@ function Post({
         email: user.email,
         image: user.photoURL,
         uid: user.uid,
-        postImages: postImages ? psotImages : null,
+        postImages: postImages ? postImages : null,
         timestamp: FieldValue.serverTimestamp(),
         comments: [],
         likes: [],
@@ -154,7 +142,7 @@ function Post({
   }
 
   return (
-    <Fragment>
+    <>
       <CommentsModal
         comments={comments}
         hideModal={hideCommentsModal}
@@ -279,7 +267,7 @@ function Post({
           )}
         </Card.Footer>
       </Card>
-    </Fragment>
+    </>
   );
 }
 

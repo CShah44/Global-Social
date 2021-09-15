@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Card, Button, InputGroup, FormControl } from "react-bootstrap";
 import { db, FieldValue } from "../../firebase";
 import ParticipantsModal from "./ParticipantsModal";
@@ -14,6 +14,8 @@ function ChatRoom({ room, name, id }) {
   const query = messagesRef.orderBy("createdAt").limit(25);
   const [messages, loading] = useCollectionData(query);
 
+  const [users, setUsers] = useState([]);
+
   const router = useRouter();
 
   const [showParticipants, setShowParticipants] = useState(false);
@@ -21,6 +23,12 @@ function ChatRoom({ room, name, id }) {
   const scrollRef = useRef();
 
   const { addToast } = useToasts();
+
+  useEffect(() => {
+    roomRef.get().then((data) => {
+      setUsers(data.data().users);
+    });
+  }, []);
 
   async function submitHandler(e) {
     e.preventDefault();
@@ -47,13 +55,16 @@ function ChatRoom({ room, name, id }) {
         users: FieldValue.arrayRemove({ name: name, id: id }),
       })
       .then(() => {
+        setShowParticipants(false);
         addToast("You left the chat.", { appearance: "info" });
+        router.replace("/chat");
       });
   }
 
   return (
     <>
       <ParticipantsModal
+        users={users}
         show={showParticipants}
         hideModal={() => setShowParticipants(false)}
         leaveRoom={leaveRoom}

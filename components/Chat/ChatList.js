@@ -19,13 +19,17 @@ function ChatList({ name, id }) {
       <h1 className="text-white text-bold p-3 heading">Your Chats</h1>
 
       <ListGroup variant="flush" className="p-2">
-        {yourRooms?.docs?.map((doc, index) => {
-          return (
-            <Link key={index} href={`chat/${doc.id}`}>
-              <ListGroup.Item>{doc.id}</ListGroup.Item>
-            </Link>
-          );
-        })}
+        {yourRooms.docs.length > 0 ? (
+          yourRooms.docs?.map((doc, index) => {
+            return (
+              <Link key={index} href={`chat/${doc.id}`}>
+                <ListGroup.Item>{doc.id}</ListGroup.Item>
+              </Link>
+            );
+          })
+        ) : (
+          <div className="p-2"> You haven't joined any chat rooms yet! </div>
+        )}
       </ListGroup>
     </Card>
   );

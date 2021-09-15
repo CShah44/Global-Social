@@ -12,15 +12,13 @@ function ChatRoom({ room, name, id }) {
 
   const messagesRef = roomRef.collection("messages");
   const query = messagesRef.orderBy("createdAt").limit(25);
-
   const [messages] = useCollectionData(query);
-  console.log(messages);
 
   const router = useRouter();
 
   const [showParticipants, setShowParticipants] = useState(false);
-
   const inputRef = useRef(null);
+  const scrollRef = useRef();
 
   const { addToast } = useToasts();
 
@@ -28,8 +26,7 @@ function ChatRoom({ room, name, id }) {
     e.preventDefault();
 
     if (inputRef.current.value.length <= 0) {
-      return;
-      // TODO show alert here..
+      return addToast("The message is empty..", { appearance: "error" });
     }
 
     await messagesRef.add({
@@ -39,17 +36,19 @@ function ChatRoom({ room, name, id }) {
       name,
     });
 
-    // TODO: remove this line
-    console.log("msg sent");
-
     inputRef.current.value = "";
+
+    scrollRef.current.scrollIntoView({ behavior: "smooth" });
   }
 
   function leaveRoom() {
-    roomRef.update({
-      users: FieldValue.arrayRemove({ name: name, id: id }),
-    });
-    //show alert messages..
+    roomRef
+      .update({
+        users: FieldValue.arrayRemove({ name: name, id: id }),
+      })
+      .then(() => {
+        addToast("You left the chat.", { appearance: "info" });
+      });
   }
 
   return (
@@ -88,6 +87,7 @@ function ChatRoom({ room, name, id }) {
           ) : (
             <div className="text-white"> No messages yet.. </div>
           )}
+          <span ref={scrollRef}></span>
         </Card.Body>
         <Card.Footer>
           <InputGroup className="flex-fill p-2">

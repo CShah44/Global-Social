@@ -103,13 +103,6 @@ function ChatHomePage() {
 
   return (
     <>
-      {/* instead put an image here...... */}
-      {/* <div
-        className="d-flex heading justify-content-center mt-2 align-items-center mx-auto text-white"
-        style={{ fontSize: "3rem" }}
-      >
-        Global Social - Sociology{" "}
-      </div> */}
       <Card
         style={{ width: "65vw" }}
         bg="dark"

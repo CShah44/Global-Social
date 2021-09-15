@@ -12,7 +12,7 @@ function ChatRoom({ room, name, id }) {
 
   const messagesRef = roomRef.collection("messages");
   const query = messagesRef.orderBy("createdAt").limit(25);
-  const [messages] = useCollectionData(query);
+  const [messages, loading] = useCollectionData(query);
 
   const router = useRouter();
 
@@ -79,14 +79,12 @@ function ChatRoom({ room, name, id }) {
             See Participants
           </Button>
         </Card.Title>
-        <Card.Body>
-          {messages ? (
-            messages.map((msg) => (
-              <Message key={msg.id} message={msg} userId={id} />
-            ))
-          ) : (
-            <div className="text-white"> No messages yet.. </div>
-          )}
+        <Card.Body className="overflow-auto">
+          {loading && <div className="text-white">Loading</div>}
+          {messages &&
+            messages.map((msg, index) => (
+              <Message key={index} message={msg} userId={id} />
+            ))}
           <span ref={scrollRef}></span>
         </Card.Body>
         <Card.Footer>

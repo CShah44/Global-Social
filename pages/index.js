@@ -7,12 +7,6 @@ export default function Home() {
   return (
     <div className="darkbg text-white">
       <Head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito&display=swap"
-          rel="stylesheet"
-        />
         <title>Global Social</title>
       </Head>
       <Header />

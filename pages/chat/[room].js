@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import { ToastProvider } from "react-toast-notifications";
 import Head from "next/head";
 import CurrentUser from "../../contexts/CurrentUser";
-import { useContext, useEffect } from "react";
+import { useContext } from "react";
 import { db } from "../../firebase";
 
 function Room() {

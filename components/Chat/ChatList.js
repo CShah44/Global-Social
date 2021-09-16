@@ -19,7 +19,7 @@ function ChatList({ name, id }) {
       <h1 className="text-white text-bold p-3 heading">Your Chats</h1>
 
       <ListGroup variant="flush" className="p-2">
-        {yourRooms.docs.length > 0 ? (
+        {yourRooms?.docs?.length > 0 ? (
           yourRooms.docs?.map((doc, index) => {
             return (
               <Link key={index} href={`chat/${doc.id}`}>

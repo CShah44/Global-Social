@@ -30,6 +30,13 @@ function ChatRoom({ room, name, id }) {
     });
   }, []);
 
+  useEffect(() => {
+    if (!users.includes({ name, id })) {
+      router.replace("/chat");
+      return addToast("You are not in this chat room", { appearance: "error" });
+    }
+  }, [users]);
+
   async function submitHandler(e) {
     e.preventDefault();
 

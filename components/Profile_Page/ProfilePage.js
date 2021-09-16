@@ -5,6 +5,7 @@ import { useContext, useRef, useState } from "react";
 import "emoji-mart/css/emoji-mart.css";
 import CurrentUser from "../../contexts/CurrentUser";
 import EmojiPickerModal from "../UserFeedback/EmojiPickerModal";
+import Link from "next/link";
 
 export default function ProfilePage({ user, docId }) {
   const currentUserCtx = useContext(CurrentUser);
@@ -73,6 +74,11 @@ export default function ProfilePage({ user, docId }) {
                 <br />
                 <span className="fs-5 m-3 text-muted">{user.email}</span>
               </p>
+              <Link href="/chat">
+                <Button className="ms-auto align-self-center p-3 fs-4">
+                  Chat
+                </Button>
+              </Link>
             </div>
 
             {isEditing ? (

@@ -1,8 +1,13 @@
+import { useContext } from "react";
 import { useCollection } from "react-firebase-hooks/firestore";
+import CurrentUser from "../../contexts/CurrentUser";
 import { db } from "../../firebase";
 import Post from "../Post";
 
 function UserPosts({ user }) {
+  const currentUser = useContext(CurrentUser);
+  const email = currentUser.user.email;
+
   const [userPosts] = useCollection(
     db
       .collection("posts")
@@ -26,7 +31,7 @@ function UserPosts({ user }) {
               postImages={post.data().postImages}
               comments={post.data().comments}
               likes={post.data().likes}
-              showUserOptions={post.data().email === user.email ? true : false}
+              showUserOptions={post.data().email === email ? true : false}
               repost={post.data().repost}
               uid={post.data().uid}
             />

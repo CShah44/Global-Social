@@ -6,6 +6,7 @@ import "emoji-mart/css/emoji-mart.css";
 import CurrentUser from "../../contexts/CurrentUser";
 import EmojiPickerModal from "../UserFeedback/EmojiPickerModal";
 import Link from "next/link";
+import { useToasts } from "react-toast-notifications";
 
 export default function ProfilePage({ user, docId }) {
   const currentUserCtx = useContext(CurrentUser);
@@ -14,6 +15,8 @@ export default function ProfilePage({ user, docId }) {
   const [isEditing, setIsEditing] = useState(false);
   const inputRef = useRef(null);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+
+  const { addToast } = useToasts();
 
   function clearField(e) {
     e.preventDefault();
@@ -32,7 +35,9 @@ export default function ProfilePage({ user, docId }) {
       .update({
         about: inputRef.current.value,
       })
-      .catch(alert);
+      .catch(() => {
+        addToast("Couldn't update your profile!", { appearance: "error" });
+      });
   }
 
   let editButton;
@@ -74,11 +79,13 @@ export default function ProfilePage({ user, docId }) {
                 <br />
                 <span className="fs-5 m-3 text-muted">{user.email}</span>
               </p>
-              <Link href="/chat">
-                <Button className="ms-auto align-self-center p-3 fs-4">
-                  Chat
-                </Button>
-              </Link>
+              {user.email === currentUser.email && (
+                <Link href="/chat">
+                  <Button className="ms-auto align-self-center p-3 fs-4">
+                    Chat
+                  </Button>
+                </Link>
+              )}
             </div>
 
             {isEditing ? (

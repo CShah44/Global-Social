@@ -6,8 +6,17 @@ import CurrentUser from "../contexts/CurrentUser";
 import { Spinner } from "react-bootstrap";
 import "../styles/globals.css";
 import Login from "../components/Login";
+import { CacheProvider } from "@emotion/react";
+import createEmotionCache from "../styles/createEmotionCache";
+import CssBaseline from "@mui/material/CssBaseline";
+// import theme from "../styles/theme";
+// import { ThemeProvider } from "@mui/material/styles";
 
-function MyApp({ Component, pageProps }) {
+const clientSideEmotionCache = createEmotionCache();
+
+function MyApp(props) {
+  const { Component, emotionCache = clientSideEmotionCache, pageProps } = props;
+
   const [user, loading, error] = useAuthState(auth);
 
   let data = {};
@@ -56,9 +65,12 @@ function MyApp({ Component, pageProps }) {
     : {};
 
   return (
-    <CurrentUser.Provider value={value}>
-      <Component {...pageProps} />
-    </CurrentUser.Provider>
+    <CacheProvider value={emotionCache}>
+      <CssBaseline />
+      <CurrentUser.Provider value={value}>
+        <Component {...pageProps} />
+      </CurrentUser.Provider>
+    </CacheProvider>
   );
 }
 

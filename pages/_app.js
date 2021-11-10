@@ -9,8 +9,8 @@ import Login from "../components/Login";
 import { CacheProvider } from "@emotion/react";
 import createEmotionCache from "../styles/createEmotionCache";
 import CssBaseline from "@mui/material/CssBaseline";
-// import theme from "../styles/theme";
-// import { ThemeProvider } from "@mui/material/styles";
+import theme from "../styles/theme";
+import { ThemeProvider } from "@mui/material/styles";
 
 const clientSideEmotionCache = createEmotionCache();
 
@@ -66,10 +66,12 @@ function MyApp(props) {
 
   return (
     <CacheProvider value={emotionCache}>
-      <CssBaseline />
-      <CurrentUser.Provider value={value}>
-        <Component {...pageProps} />
-      </CurrentUser.Provider>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <CurrentUser.Provider value={value}>
+          <Component {...pageProps} />
+        </CurrentUser.Provider>
+      </ThemeProvider>
     </CacheProvider>
   );
 }

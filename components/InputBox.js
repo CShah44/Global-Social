@@ -3,12 +3,16 @@ import { db, storage } from "../firebase";
 import firebase from "firebase";
 import {
   Card,
-  InputGroup,
-  FormControl,
-  Image,
+  CardHeader,
+  CardContent,
+  CardActions,
   Button,
-  ProgressBar,
-} from "react-bootstrap";
+  CircularProgress,
+  Box,
+  Typography,
+  TextField,
+  Avatar,
+} from "@mui/material";
 import { useToasts } from "react-toast-notifications";
 import CurrentUser from "../contexts/CurrentUser";
 
@@ -106,85 +110,80 @@ function InputBox() {
         appearance: "warning",
       });
     }
-
-    setProgress(e.target.value);
+    let v = (e.target.value.length / 240) * 100;
+    setProgress(v);
   }
 
   return (
-    <div className="my-4 mx-auto normal" style={{ width: "65vw" }}>
-      <Card className="text-center neuEff" bg="dark" text="light">
-        <Card.Title className="pt-3 pb-0">Add Your Post!</Card.Title>
-        <Card.Body>
-          <div className="d-flex flex-row justify-content-evenly">
-            <Image
-              src={user.photoURL}
-              className="me-auto my-2"
-              roundedCircle
-              width={50}
-              height={50}
-              layout="fixed"
-            />
-
-            <InputGroup className=" flex-fill p-2">
-              <FormControl
-                as="textarea"
-                maxLength={240}
-                ref={inputRef}
-                onChange={changeProgress}
-                style={{ resize: "none" }}
-                placeholder={`What's on your mind, ${user.displayName}?`}
-              ></FormControl>
-            </InputGroup>
-          </div>
-
-          <Card.Text as="div">
-            <ProgressBar
-              now={progress.length}
-              max={240}
-              animated
-              className="m-2 mt-0 ms-auto me-2"
-              style={{ height: "5px", width: "92%" }}
-            />
-          </Card.Text>
-
-          <Button
-            className="mt-1 ms-auto"
-            variant="outline-primary"
-            onClick={sendPostHandler}
-          >
+    <Box marginTop="3em" width="65vw">
+      <Card sx={{ padding: "5px" }}>
+        <CardHeader
+          titleTypographyProps={{ variant: "h5" }}
+          title="Add Your Post!"
+        />
+        <CardContent
+          sx={{
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <Avatar src={user.photoURL} sx={{ margin: "0.5em" }} />
+          <TextField
+            label={`What's Up, ${user.displayName}?`}
+            multiline
+            fullWidth
+            variant="filled"
+            placeholder="Type Your Message..."
+            ref={inputRef}
+            onChange={changeProgress}
+            error={progress >= 100}
+            sx={{ resize: "none" }}
+          />
+          <CircularProgressWithLabel value={progress} />
+        </CardContent>
+        <CardActions sx={{ margin: "1em" }}>
+          <Button size="large" variant="contained" onClick={sendPostHandler}>
             Post
           </Button>
-        </Card.Body>
-        <Card.Footer className="d-flex align-items-center justify-content-center">
-          <div className="my-1" onClick={() => filePickerRef.current.click()}>
-            <Button variant="outline-light">Add a Photo</Button>
-            <input
-              ref={filePickerRef}
-              hidden
-              type="file"
-              onChange={addImageToPostHandler}
-            />
-          </div>
-
-          {imageToPost && (
-            <div
-              onClick={removeImage}
-              className="px-4 d-flex align-items-center"
-              style={{ cursor: "pointer" }}
-            >
-              <img
-                src={imageToPost}
-                width="80"
-                height="50"
-                style={{ objectFit: "contain" }}
-              />
-              <p className="fs-6 text-center px-2 my-auto">Remove</p>
-            </div>
-          )}
-        </Card.Footer>
+          <Button variant="contained" size="large">
+            {" "}
+            Upload{" "}
+          </Button>
+        </CardActions>
       </Card>
-    </div>
+    </Box>
   );
 }
 
 export default InputBox;
+
+function CircularProgressWithLabel({ value }) {
+  return (
+    <Box sx={{ position: "relative", display: "inline-flex" }}>
+      <CircularProgress
+        sx={{ margin: "0.3em" }}
+        color={value >= 100 ? "error" : "primary"}
+        variant="determinate"
+        value={value}
+      />
+      <Box
+        sx={{
+          top: 0,
+          left: 0,
+          bottom: 0,
+          right: 0,
+          position: "absolute",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <Typography variant="caption" component="div" color="text.secondary">
+          {`${Math.round(value)}%`}
+        </Typography>
+      </Box>
+    </Box>
+  );
+}

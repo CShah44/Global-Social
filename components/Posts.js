@@ -1,4 +1,4 @@
-import { Spinner } from "react-bootstrap";
+import { Stack } from "@mui/material";
 import { useCollection } from "react-firebase-hooks/firestore";
 import { db } from "../firebase";
 import Post from "./Post";
@@ -9,8 +9,7 @@ function Posts() {
   );
 
   return (
-    <div className="scrollbar-hide mx-auto" style={{ width: "65vw" }}>
-      {loading && <Spinner animation="border" variant="dark" />}
+    <Stack width="65vw" spacing={3}>
       {realtimePosts &&
         realtimePosts?.docs.map((post) => (
           <Post
@@ -21,7 +20,6 @@ function Posts() {
             email={post.data().email}
             timestamp={post.data().timestamp}
             image={post.data().image}
-            postImages={post.data().postImages}
             comments={post.data().comments}
             likes={post.data().likes}
             showDeleteButton={false}
@@ -29,7 +27,7 @@ function Posts() {
             uid={post.data().uid}
           />
         ))}
-    </div>
+    </Stack>
   );
 }
 

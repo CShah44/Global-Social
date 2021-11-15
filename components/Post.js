@@ -1,12 +1,21 @@
 import { useContext, useState } from "react";
-import { Card, Button } from "react-bootstrap";
+import {
+  Card,
+  CardActions,
+  CardHeader,
+  CardContent,
+  CardMedia,
+  Button,
+  Avatar,
+  Stack,
+  Typography,
+} from "@mui/material";
 import CommentsModal from "./UserFeedback/CommentsModal";
 import TimeAgo from "timeago-react";
 import { db, FieldValue, storage } from "../firebase";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import { useToasts } from "react-toast-notifications";
-import classes from "./Post.module.css";
 import CurrentUser from "../contexts/CurrentUser";
 import ConfirmModal from "./UserFeedback/ConfirmModal";
 
@@ -20,7 +29,6 @@ function Post({
   id,
   comments,
   likes,
-  showUserOptions,
   uid,
   repost,
 }) {
@@ -43,10 +51,25 @@ function Post({
       datetime={new Date(timestamp?.toDate()).toLocaleString()}
     />
   ) : (
-    <span className="px-2" style={{ fontSize: "0.8em" }}>
+    <span style={{ paddingLeft: 2, paddingRight: 2, fontSize: "0.8em" }}>
       Loading...
     </span>
   );
+
+  const data = {
+    image: repost ? repost.image : image,
+    uid: repost ? repost.uid : uid,
+    name: repost ? repost.name : name,
+    time: repost ? (
+      <TimeAgo
+        style={{ fontSize: "0.8em" }}
+        datetime={new Date(repost.timestamp.toDate()).toLocaleString()}
+      />
+    ) : (
+      timeStamp
+    ),
+    showDelete: user.uid === uid,
+  };
 
   function hideCommentsModal() {
     setShowComments(false);
@@ -99,19 +122,6 @@ function Post({
       });
   }
 
-  function processRepostHeader() {
-    if (repost) {
-      return (
-        <Link href={`${router.basePath}/user/${uid}`}>
-          <Card.Header style={{ cursor: "pointer" }}>
-            {name === user.displayName ? "You" : `${name}`} Reposted ,{" "}
-            {timeStamp}
-          </Card.Header>
-        </Link>
-      );
-    } else return null;
-  }
-
   function repostHandler() {
     db.collection("posts")
       .add({
@@ -126,7 +136,6 @@ function Post({
         likes: [],
         repost: {
           name: name,
-          image: image,
           timestamp: timestamp,
           uid: uid,
         },
@@ -167,109 +176,51 @@ function Post({
         func={deletePostHandler}
       />
 
-      <Card className="w-90 my-5 normal neuEff" bg="dark" text="light">
-        {processRepostHeader()}
-        <Card.Body>
-          <Card.Text as="div">
-            <div className="d-flex flex-grow-1">
-              {repost ? (
-                <>
-                  <img
-                    src={repost.image}
-                    width="40"
-                    height="40"
-                    className="rounded m-1"
-                    alt=""
-                  />
-
-                  <span className="px-2">
-                    <Link href={`${router.basePath}/user/${repost.uid}`}>
-                      <span style={{ fontSize: "1.1em", cursor: "pointer" }}>
-                        {repost.name}
-                      </span>
-                    </Link>
-                    <br />
-                    {
-                      <TimeAgo
-                        style={{ fontSize: "0.8em" }}
-                        datetime={new Date(
-                          repost.timestamp.toDate()
-                        ).toLocaleString()}
-                      />
-                    }
-                  </span>
-                </>
-              ) : (
-                <>
-                  <img
-                    src={image}
-                    width="40"
-                    height="40"
-                    className="rounded m-1"
-                    alt=""
-                  />
-
-                  <span className="px-2">
-                    <Link href={`${router.basePath}/user/${uid}`}>
-                      <span style={{ fontSize: "1.1em", cursor: "pointer" }}>
-                        {name}
-                      </span>
-                    </Link>
-                    <br />
-                    {timeStamp}
-                  </span>
-                </>
-              )}
-              {showUserOptions && (
-                <Button
-                  variant="outline-danger ms-auto"
-                  className="p-2"
-                  onClick={() => setShowDeleteModal(true)}
-                >
-                  Delete Post
-                </Button>
-              )}
-            </div>
-          </Card.Text>
-          <Card.Text as="div" className="p-0 mt-2 ms-2">
-            {message}
-          </Card.Text>
-        </Card.Body>
-
-        {postImages && (
-          <Card.Img
-            variant="bottom"
-            src={postImages}
-            className={`${classes.ph} ${classes.phr}`}
-          />
+      <Card className="neuEff" sx={{ width: "65vw" }}>
+        {repost && (
+          <Link href={`${router.basePath}/user/${uid}`}>
+            <CardHeader
+              title={
+                name === user.displayName ? "You Reposted" : `${name} Reposted`
+              }
+              sx={{ cursor: "pointer" }}
+              subtitle={timeStamp}
+            />
+          </Link>
         )}
-
-        <Card.Footer className="d-flex justify-content-start">
-          <Button
-            variant="info"
-            className="m-1"
-            onClick={() => setShowComments(true)}
-          >
+        <CardContent>
+          <Stack alignItems="center" direction="row" spacing={2}>
+            <Avatar sx={{ margin: "0.5px" }} src={data.image} />
+            <Link href={`${router.basePath}/user/${data.uid}`}>
+              <Typography variant="h6">{data.name}</Typography>
+            </Link>
+            {data.time}
+          </Stack>
+          <Typography gutterBottom marginTop="0.5em">
+            {message}
+          </Typography>
+        </CardContent>
+        <CardMedia component="img" src={postImages} />
+        <CardActions>
+          <Button onClick={() => setShowComments(true)}>
             Comments ({comments.length})
           </Button>
           <Button
-            variant={`${hasLiked ? "light" : "outline-light"}`}
-            className="m-1"
+            variant={`${hasLiked ? "contained" : "outlined"}`}
             onClick={toggleLiked}
             disabled={disableLikeButton}
           >
             Like ({likes.length})
           </Button>
           {user.email != email && (
-            <Button
-              className="m-1 ms-auto"
-              variant="primary"
-              onClick={() => setShowRepostModal(true)}
-            >
-              Repost
+            <Button onClick={() => setShowRepostModal(true)}>Repost</Button>
+          )}
+          {data.showDelete && (
+            <Button color="error" onClick={() => setShowDeleteModal(true)}>
+              Delete Post
             </Button>
           )}
-        </Card.Footer>
+        </CardActions>
       </Card>
     </>
   );

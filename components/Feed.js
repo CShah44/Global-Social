@@ -1,13 +1,20 @@
+import { Stack } from "@mui/material";
 import InputBox from "./InputBox";
 import Posts from "./Posts";
 
 function Feed() {
   return (
-    <div className="d-flex container-sm flex-column justify-content-center">
+    <Stack
+      marginBottom="5em"
+      display="flex"
+      justifyContent="center"
+      alignItems="center"
+      spacing={2}
+    >
       <InputBox />
 
       <Posts />
-    </div>
+    </Stack>
   );
 }
 

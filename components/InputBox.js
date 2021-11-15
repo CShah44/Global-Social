@@ -45,7 +45,7 @@ function InputBox() {
   };
 
   async function sendPostHandler() {
-    if (inputRef.current.value.length <= 0) {
+    if (inputRef.current.value?.length <= 0) {
       addToast("I don't like posting empty stuff. Go, write something.", {
         appearance: "warning",
       });
@@ -115,7 +115,7 @@ function InputBox() {
   }
 
   return (
-    <Box marginTop="3em" width="65vw">
+    <Box marginBottom="3em" marginTop="3em" width="65vw">
       <Card sx={{ padding: "5px" }}>
         <CardHeader
           titleTypographyProps={{ variant: "h5" }}
@@ -148,8 +148,7 @@ function InputBox() {
             Post
           </Button>
           <Button variant="contained" size="large">
-            {" "}
-            Upload{" "}
+            Upload
           </Button>
         </CardActions>
       </Card>

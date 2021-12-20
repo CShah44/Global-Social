@@ -3,7 +3,6 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import { auth, db } from "../firebase";
 import { useEffect } from "react";
 import CurrentUser from "../contexts/CurrentUser";
-import { Spinner } from "react-bootstrap";
 import "../styles/globals.css";
 import Login from "../components/Login";
 import { CacheProvider } from "@emotion/react";
@@ -52,7 +51,7 @@ function MyApp(props) {
     );
   }, [user]);
 
-  if (loading) return <Spinner animation="border" variant="dark" />;
+  if (loading) return console.log("Loading.");
   if (!user) return <Login />;
 
   const value = user

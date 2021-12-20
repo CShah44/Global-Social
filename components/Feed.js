@@ -10,6 +10,11 @@ function Feed() {
       justifyContent="center"
       alignItems="center"
       spacing={2}
+      sx={{
+        width: { xs: "100vw", md: "65vw" },
+        marginLeft: "auto",
+        marginRight: "auto",
+      }}
     >
       <InputBox />
 

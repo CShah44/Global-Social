@@ -71,17 +71,8 @@ function Post({
     showDelete: user.uid === uid,
   };
 
-  function hideCommentsModal() {
-    setShowComments(false);
-  }
-
-  function hideDeletePostModal() {
-    setShowDeleteModal(false);
-  }
-
   function toggleLiked() {
     setDisableLikeButton(true);
-
     const postRef = db.collection("posts").doc(id);
 
     postRef
@@ -105,7 +96,7 @@ function Post({
   }
 
   function deletePostHandler() {
-    hideDeletePostModal();
+    setShowDeleteModal(false);
     db.collection("posts")
       .doc(id)
       .delete()
@@ -153,7 +144,7 @@ function Post({
     <>
       <CommentsModal
         comments={comments}
-        hideModal={hideCommentsModal}
+        hideModal={() => setShowComments(false)}
         show={showComments}
         id={id}
       />
@@ -171,12 +162,12 @@ function Post({
       <ConfirmModal
         title="Delete Post"
         text="Are you sure you want to delete the post?"
-        hideModal={hideDeletePostModal}
+        hideModal={() => setShowDeleteModal(false)}
         show={showDeleteModal}
         func={deletePostHandler}
       />
 
-      <Card className="neuEff" sx={{ width: "65vw" }}>
+      <Card className="neuEff" sx={{ width: "100%" }}>
         {repost && (
           <Link href={`${router.basePath}/user/${uid}`}>
             <CardHeader

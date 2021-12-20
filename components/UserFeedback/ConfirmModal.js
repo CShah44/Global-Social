@@ -1,21 +1,26 @@
-import { Modal, Button } from "react-bootstrap";
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  Button,
+  DialogActions,
+} from "@mui/material";
 
 function ConfirmModal({ func, show, hideModal, text, title }) {
   return (
-    <Modal className="normal" show={show} centered onHide={hideModal}>
-      <Modal.Header>
-        <Modal.Title> {title} </Modal.Title>
-      </Modal.Header>
-      <Modal.Body> {text} </Modal.Body>
-      <Modal.Footer>
-        <Button variant="secondary" onClick={hideModal}>
-          Close
-        </Button>
-        <Button variant="primary" onClick={func}>
+    <Dialog className="normal" open={show} onClose={hideModal}>
+      <DialogTitle>{title}</DialogTitle>
+      <DialogContent>
+        <DialogContentText>{text} </DialogContentText>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={hideModal}>Close</Button>
+        <Button onClick={func} autoFocus>
           Yes
         </Button>
-      </Modal.Footer>
-    </Modal>
+      </DialogActions>
+    </Dialog>
   );
 }
 

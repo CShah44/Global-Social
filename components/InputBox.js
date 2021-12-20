@@ -115,44 +115,54 @@ function InputBox() {
   }
 
   return (
-    <Box marginBottom="3em" marginTop="3em" width="65vw">
-      <Card sx={{ padding: "5px" }}>
-        <CardHeader
-          titleTypographyProps={{ variant: "h5" }}
-          title="Add Your Post!"
+    <Card
+      sx={{
+        padding: "5px",
+        width: "100%",
+        marginTop: "3em",
+        marginBottom: "3em",
+      }}
+    >
+      <CardHeader
+        titleTypographyProps={{ variant: "h5" }}
+        title="Add Your Post!"
+      />
+      <CardContent
+        sx={{
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <Avatar src={user.photoURL} sx={{ margin: "0.5em" }} />
+        <TextField
+          label={`What's Up, ${user.displayName}?`}
+          multiline
+          fullWidth
+          variant="filled"
+          placeholder="Type Your Message..."
+          ref={inputRef}
+          onChange={changeProgress}
+          error={progress > 100}
+          sx={{ resize: "none" }}
         />
-        <CardContent
-          sx={{
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
+        <CircularProgressWithLabel value={progress} />
+      </CardContent>
+      <CardActions sx={{ margin: "1em" }}>
+        <Button
+          disabled={progress > 100}
+          size="large"
+          variant="contained"
+          onClick={sendPostHandler}
         >
-          <Avatar src={user.photoURL} sx={{ margin: "0.5em" }} />
-          <TextField
-            label={`What's Up, ${user.displayName}?`}
-            multiline
-            fullWidth
-            variant="filled"
-            placeholder="Type Your Message..."
-            ref={inputRef}
-            onChange={changeProgress}
-            error={progress >= 100}
-            sx={{ resize: "none" }}
-          />
-          <CircularProgressWithLabel value={progress} />
-        </CardContent>
-        <CardActions sx={{ margin: "1em" }}>
-          <Button size="large" variant="contained" onClick={sendPostHandler}>
-            Post
-          </Button>
-          <Button variant="contained" size="large">
-            Upload
-          </Button>
-        </CardActions>
-      </Card>
-    </Box>
+          Post
+        </Button>
+        <Button variant="contained" size="large">
+          Upload
+        </Button>
+      </CardActions>
+    </Card>
   );
 }
 

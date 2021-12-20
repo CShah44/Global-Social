@@ -1,36 +1,42 @@
 import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
   Button,
-  Modal,
-  ListGroup,
-  InputGroup,
-  FormControl,
-} from "react-bootstrap";
+  TextField,
+  List,
+  ListItem,
+  ListItemText,
+  DialogActions,
+} from "@mui/material";
+
 import { db, FieldValue } from "../../firebase";
-import { useContext, useRef } from "react";
+import { useState, useContext, useRef } from "react";
 import CurrentUser from "../../contexts/CurrentUser";
 
 function CommentsModal({ id, show, comments, hideModal }) {
   const inputRef = useRef(null);
   const currentUser = useContext(CurrentUser);
   const user = currentUser.user;
+  const [progress, setProgress] = useState(0);
+  const [input, setInput] = useState("");
 
   function addCommentHandler(e) {
     e.preventDefault();
 
-    if (!inputRef.current.value) return;
+    if (progress <= 0) return;
 
     db.collection("posts")
       .doc(id)
       .update({
         comments: FieldValue.arrayUnion({
           name: user.displayName,
-          comment: inputRef.current.value,
+          comment: input,
           email: user.email,
         }),
       })
       .catch(alert);
-
-    inputRef.current.value = "";
+    setInput("");
   }
 
   function deleteCommentHandler(comment) {
@@ -45,61 +51,71 @@ function CommentsModal({ id, show, comments, hideModal }) {
       });
   }
 
+  function changeProgress(e) {
+    setInput(e.target.value);
+
+    let v = (e.target.value.length / 150) * 100;
+    setProgress(v);
+  }
+
   return (
-    <Modal className="normal" size="lg" show={show} onHide={hideModal} centered>
-      <Modal.Header>
-        <Modal.Title>Comments</Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        <ListGroup
-          style={{
-            maxHeight: "20rem",
-            overflowY: "scroll",
-            scrollbarWidth: "thin",
-          }}
-          variant="flush"
-        >
+    <Dialog
+      fullWidth
+      maxWidth="md"
+      open={show}
+      onClose={hideModal}
+      className="normal"
+      scroll="paper"
+    >
+      <DialogTitle>Comments</DialogTitle>
+      <DialogContent>
+        <List sx={{ width: "100%" }}>
           {comments.length > 0 ? (
             comments.map(function (comment, i) {
               return (
-                <ListGroup.Item key={i} className="d-flex p-1 py-3">
-                  <span className="fw-bold me-2">{comment.name}</span>{" "}
-                  {comment.comment}
-                  {user.email === comment.email && (
-                    <Button
-                      variant="outline-danger"
-                      className="ms-auto"
-                      onClick={() => deleteCommentHandler(comment)}
-                    >
-                      Delete
-                    </Button>
-                  )}
-                </ListGroup.Item>
+                <ListItem
+                  key={i}
+                  secondaryAction={
+                    user.email === comment.email ? (
+                      <Button onClick={() => deleteCommentHandler(comment)}>
+                        Delete
+                      </Button>
+                    ) : null
+                  }
+                >
+                  <ListItemText
+                    primary={comment.name}
+                    secondary={comment.comment}
+                  />
+                </ListItem>
               );
             })
           ) : (
-            <ListGroup.Item className="fw-bold fs-4">
-              {" "}
-              Be the first one to comment!{" "}
-            </ListGroup.Item>
+            <ListItem>
+              <ListItemText primary="Be the first one to comment..." />
+            </ListItem>
           )}
-        </ListGroup>
-      </Modal.Body>
-      <Modal.Footer>
-        <InputGroup className="flex-fill p-2">
-          <FormControl
-            as="textarea"
-            ref={inputRef}
-            maxLength={100}
-            style={{ resize: "none" }}
-            placeholder="Add a comment"
-          />
-          <Button type="submit" onClick={addCommentHandler}>
-            Add
-          </Button>
-        </InputGroup>
-      </Modal.Footer>
-    </Modal>
+        </List>
+      </DialogContent>
+      <DialogActions>
+        <TextField
+          variant="outlined"
+          sx={{ resize: "none" }}
+          placeholder="Add a comment"
+          onChange={changeProgress}
+          value={input}
+          error={progress > 100}
+        />
+        <Button
+          color="secondary"
+          variant="outlined"
+          disabled={progress > 100}
+          onClick={addCommentHandler}
+        >
+          Add
+        </Button>
+      </DialogActions>
+    </Dialog>
   );
 }
 

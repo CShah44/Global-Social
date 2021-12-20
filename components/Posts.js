@@ -9,7 +9,7 @@ function Posts() {
   );
 
   return (
-    <Stack width="65vw" spacing={3}>
+    <Stack sx={{ width: "100%" }} spacing={3}>
       {realtimePosts &&
         realtimePosts?.docs.map((post) => (
           <Post

@@ -1,4 +1,3 @@
-import InputBox from "../InputBox";
 import { Card, Image, InputGroup, FormControl, Button } from "react-bootstrap";
 import { db } from "../../firebase";
 import { useContext, useRef, useState } from "react";
@@ -110,8 +109,6 @@ export default function ProfilePage({ user, docId }) {
           )}
         </Card.Body>
       </Card>
-
-      {user.email === currentUser.email && <InputBox />}
     </div>
   );
 }

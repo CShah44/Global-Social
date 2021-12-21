@@ -1,5 +1,4 @@
 import { Stack } from "@mui/material";
-import InputBox from "./InputBox";
 import Posts from "./Posts";
 
 function Feed() {
@@ -12,12 +11,11 @@ function Feed() {
       spacing={2}
       sx={{
         width: { xs: "100vw", md: "65vw" },
+        my: "5em",
         marginLeft: "auto",
         marginRight: "auto",
       }}
     >
-      <InputBox />
-
       <Posts />
     </Stack>
   );

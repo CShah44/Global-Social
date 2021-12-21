@@ -45,13 +45,13 @@ function MyApp(props) {
             );
           }
         })
-        .catch((e) => {
+        .catch(() => {
           return <Login />;
         })
     );
   }, [user]);
 
-  if (loading) return console.log("Loading.");
+  if (loading) return null;
   if (!user) return <Login />;
 
   const value = user

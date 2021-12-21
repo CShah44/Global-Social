@@ -1,11 +1,7 @@
 import { useContext, useRef, useState } from "react";
-import { db, storage } from "../firebase";
+import { db, storage } from "../../firebase";
 import firebase from "firebase";
 import {
-  Card,
-  CardHeader,
-  CardContent,
-  CardActions,
   Button,
   CircularProgress,
   Box,
@@ -13,10 +9,10 @@ import {
   TextField,
   Avatar,
 } from "@mui/material";
-import { useToasts } from "react-toast-notifications";
-import CurrentUser from "../contexts/CurrentUser";
+import CurrentUser from "../../contexts/CurrentUser";
 
-function InputBox() {
+// UI to be changes.
+function AddPostComponent() {
   const currentUser = useContext(CurrentUser);
   const user = currentUser.user;
 
@@ -26,7 +22,6 @@ function InputBox() {
   const [progress, setProgress] = useState(0);
 
   const inputRef = useRef(null);
-  const { addToast } = useToasts();
 
   const addImageToPostHandler = (e) => {
     const reader = new FileReader();
@@ -46,9 +41,7 @@ function InputBox() {
 
   async function sendPostHandler() {
     if (inputRef.current.value?.length <= 0) {
-      addToast("I don't like posting empty stuff. Go, write something.", {
-        appearance: "warning",
-      });
+      console.log("WRITE MORE");
       return;
     }
 
@@ -97,61 +90,51 @@ function InputBox() {
         }
       })
       .then(() => {
-        addToast("Added Post!", { appearance: "success" });
+        console.log("post added");
       })
       .catch(() => {
-        addToast("Could not post!", { appearance: "error" });
+        console.log("post error");
       });
   }
 
   function changeProgress(e) {
-    if (e.target.value.length === 240) {
-      addToast("You have reached maximum character limit. Stop typing!", {
-        appearance: "warning",
-      });
-    }
     let v = (e.target.value.length / 240) * 100;
     setProgress(v);
   }
 
   return (
-    <Card
-      sx={{
-        padding: "5px",
-        width: "100%",
-        marginTop: "3em",
-        marginBottom: "3em",
-      }}
-    >
-      <CardHeader
-        titleTypographyProps={{ variant: "h5" }}
-        title="Add Your Post!"
-      />
-      <CardContent
+    <Box sx={{ width: { md: "65vw", sm: "100vw" }, mx: "auto" }}>
+      <Box
         sx={{
           display: "flex",
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "center",
+          flexDirection: "column",
+          my: "5em",
         }}
       >
-        <Avatar src={user.photoURL} sx={{ margin: "0.5em" }} />
+        <Typography variant="h3">
+          What's on your mind, {user.displayName} ?
+        </Typography>
+        <Typography variant="h5">Add A New Post</Typography>
+      </Box>
+      <Box sx={{ display: "flex" }}>
         <TextField
-          label={`What's Up, ${user.displayName}?`}
           multiline
           fullWidth
           variant="filled"
           placeholder="Type Your Message..."
           ref={inputRef}
           onChange={changeProgress}
-          error={progress > 100}
+          error={progress >= 100}
           sx={{ resize: "none" }}
         />
-        <CircularProgressWithLabel value={progress} />
-      </CardContent>
-      <CardActions sx={{ margin: "1em" }}>
+        <CircularProgress
+          sx={{ margin: "0.3em" }}
+          color={progress >= 100 ? "error" : "primary"}
+          variant="determinate"
+          value={progress}
+        />
         <Button
-          disabled={progress > 100}
+          disabled={progress >= 100}
           size="large"
           variant="contained"
           onClick={sendPostHandler}
@@ -161,38 +144,9 @@ function InputBox() {
         <Button variant="contained" size="large">
           Upload
         </Button>
-      </CardActions>
-    </Card>
-  );
-}
-
-export default InputBox;
-
-function CircularProgressWithLabel({ value }) {
-  return (
-    <Box sx={{ position: "relative", display: "inline-flex" }}>
-      <CircularProgress
-        sx={{ margin: "0.3em" }}
-        color={value >= 100 ? "error" : "primary"}
-        variant="determinate"
-        value={value}
-      />
-      <Box
-        sx={{
-          top: 0,
-          left: 0,
-          bottom: 0,
-          right: 0,
-          position: "absolute",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <Typography variant="caption" component="div" color="text.secondary">
-          {`${Math.round(value)}%`}
-        </Typography>
       </Box>
     </Box>
   );
 }
+
+export default AddPostComponent;

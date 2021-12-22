@@ -7,11 +7,9 @@ import {
   Box,
   Typography,
   TextField,
-  Avatar,
 } from "@mui/material";
 import CurrentUser from "../../contexts/CurrentUser";
 
-// UI to be changes.
 function AddPostComponent() {
   const currentUser = useContext(CurrentUser);
   const user = currentUser.user;
@@ -19,9 +17,7 @@ function AddPostComponent() {
   const filePickerRef = useRef(null);
   const [imageToPost, setImageToPost] = useState(null);
 
-  const [progress, setProgress] = useState(0);
-
-  const inputRef = useRef(null);
+  const [message, setMessage] = useState({ text: "", progress: 0 });
 
   const addImageToPostHandler = (e) => {
     const reader = new FileReader();
@@ -40,7 +36,7 @@ function AddPostComponent() {
   };
 
   async function sendPostHandler() {
-    if (inputRef.current.value?.length <= 0) {
+    if (message.text?.length <= 0) {
       console.log("WRITE MORE");
       return;
     }
@@ -48,7 +44,7 @@ function AddPostComponent() {
     await db
       .collection("posts")
       .add({
-        message: inputRef.current.value,
+        message: message.text,
         name: user.displayName,
         email: user.email,
         image: user.photoURL,
@@ -59,8 +55,6 @@ function AddPostComponent() {
         repost: null,
       })
       .then((doc) => {
-        inputRef.current.value = "";
-        setProgress("");
         if (imageToPost) {
           const uploadTask = storage
             .ref(`posts/${doc.id}`)
@@ -95,11 +89,14 @@ function AddPostComponent() {
       .catch(() => {
         console.log("post error");
       });
+
+    setMessage({ text: "", progress: 0 });
   }
 
   function changeProgress(e) {
-    let v = (e.target.value.length / 240) * 100;
-    setProgress(v);
+    let x = e.target.value.replace(/\s+/g, "");
+    let v = (x.length / 240) * 100;
+    setMessage({ text: e.target.value, progress: v });
   }
 
   return (
@@ -109,41 +106,86 @@ function AddPostComponent() {
           display: "flex",
           flexDirection: "column",
           my: "5em",
+          gap: 1.5,
+          p: 1,
         }}
       >
         <Typography variant="h3">
-          What's on your mind, {user.displayName} ?
+          What's on your mind, {user.displayName}?
         </Typography>
-        <Typography variant="h5">Add A New Post</Typography>
+        <Typography variant="h5">Create New Post</Typography>
       </Box>
-      <Box sx={{ display: "flex" }}>
+      <Box
+        sx={{
+          display: "flex",
+          width: "100%",
+          gap: 1,
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
         <TextField
           multiline
           fullWidth
+          label="Enter your caption"
           variant="filled"
-          placeholder="Type Your Message..."
-          ref={inputRef}
           onChange={changeProgress}
-          error={progress >= 100}
+          error={message >= 100}
           sx={{ resize: "none" }}
+          helperText={message >= 100 && "Type less, say more! 😅"}
         />
-        <CircularProgress
-          sx={{ margin: "0.3em" }}
-          color={progress >= 100 ? "error" : "primary"}
-          variant="determinate"
-          value={progress}
-        />
-        <Button
-          disabled={progress >= 100}
-          size="large"
-          variant="contained"
-          onClick={sendPostHandler}
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "row",
+            gap: 2,
+            p: 2,
+            m: 2,
+            justifyContent: "space-around",
+          }}
         >
-          Post
-        </Button>
-        <Button variant="contained" size="large">
-          Upload
-        </Button>
+          <Button
+            disabled={message >= 100 || message <= 0}
+            size="large"
+            variant="contained"
+            onClick={sendPostHandler}
+          >
+            Create
+          </Button>
+          <Button
+            onClick={() => filePickerRef.current.click()}
+            variant="contained"
+            size="large"
+          >
+            Add A Picture
+            <input
+              ref={filePickerRef}
+              hidden
+              type="file"
+              onChange={addImageToPostHandler}
+            />
+          </Button>
+          {imageToPost && (
+            <Box>
+              <img
+                src={imageToPost}
+                width="80"
+                height="50"
+                style={{ objectFit: "contain" }}
+              />
+              <Button sx={{ m: 2, p: 1 }} variant="text" onClick={removeImage}>
+                Remove
+              </Button>
+            </Box>
+          )}
+          <CircularProgress
+            sx={{ margin: "0.5em", alignSelf: "flex-end" }}
+            color={message >= 100 ? "error" : "primary"}
+            variant="determinate"
+            value={message.progress}
+          />
+        </Box>
       </Box>
     </Box>
   );

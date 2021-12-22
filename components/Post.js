@@ -2,6 +2,7 @@ import { useContext, useState } from "react";
 import {
   Card,
   CardActions,
+  CardActionArea,
   CardHeader,
   CardContent,
   CardMedia,
@@ -176,22 +177,30 @@ function Post({
               }
               sx={{ cursor: "pointer" }}
               subtitle={timeStamp}
+              titleTypographyProps={{ variant: "body" }}
             />
           </Link>
         )}
-        <CardContent>
-          <Stack alignItems="center" direction="row" spacing={2}>
-            <Avatar sx={{ margin: "0.5px" }} src={data.image} />
-            <Link href={`${router.basePath}/user/${data.uid}`}>
-              <Typography variant="h6">{data.name}</Typography>
-            </Link>
-            {data.time}
-          </Stack>
-          <Typography gutterBottom marginTop="0.5em">
-            {message}
-          </Typography>
-        </CardContent>
-        <CardMedia component="img" src={postImages} />
+        <CardActionArea
+          // onDoubleClick={toggleLiked}
+          onClick={() => router.push(`post/${id}`)}
+        >
+          <CardContent>
+            <Stack alignItems="center" direction="row" spacing={2}>
+              <Avatar sx={{ margin: "0.5px" }} src={data.image} />
+              <Link href={`${router.basePath}/user/${data.uid}`}>
+                <Typography variant="h6">{data.name}</Typography>
+              </Link>
+              {data.time}
+            </Stack>
+            <Typography gutterBottom marginTop="0.5em">
+              {message}
+            </Typography>
+          </CardContent>
+          {postImages && (
+            <CardMedia component="img" src={postImages} height="500" />
+          )}
+        </CardActionArea>
         <CardActions>
           <Button onClick={() => setShowComments(true)}>
             Comments ({comments.length})

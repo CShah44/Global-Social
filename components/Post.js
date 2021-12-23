@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 import {
   Card,
   CardActions,
@@ -9,6 +9,8 @@ import {
   Button,
   Avatar,
   Stack,
+  Menu,
+  MenuItem,
   Typography,
 } from "@mui/material";
 import CommentsModal from "./UserFeedback/CommentsModal";
@@ -17,8 +19,8 @@ import { db, FieldValue, storage } from "../firebase";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import { useToasts } from "react-toast-notifications";
-import CurrentUser from "../contexts/CurrentUser";
 import ConfirmModal from "./UserFeedback/ConfirmModal";
+import getUser from "./Actions/getUser";
 
 function Post({
   name,
@@ -38,9 +40,18 @@ function Post({
   const [showRepostModal, setShowRepostModal] = useState(false);
   const [disableLikeButton, setDisableLikeButton] = useState(false);
 
+  const [anchorEl, setAnchorEl] = useState(null);
+  const open = Boolean(anchorEl);
+
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
   const router = useRouter();
-  const currentUser = useContext(CurrentUser);
-  const user = currentUser.user;
+  const user = getUser();
 
   const hasLiked = likes.includes(user.email);
 
@@ -169,30 +180,41 @@ function Post({
       />
 
       <Card className="neuEff" sx={{ width: "100%" }}>
-        {repost && (
-          <Link href={`${router.basePath}/user/${uid}`}>
-            <CardHeader
-              title={
-                name === user.displayName ? "You Reposted" : `${name} Reposted`
-              }
-              sx={{ cursor: "pointer" }}
-              subtitle={timeStamp}
-              titleTypographyProps={{ variant: "body" }}
-            />
-          </Link>
-        )}
-        <CardActionArea
-          // onDoubleClick={toggleLiked}
-          onClick={() => router.push(`post/${id}`)}
-        >
-          <CardContent>
-            <Stack alignItems="center" direction="row" spacing={2}>
-              <Avatar sx={{ margin: "0.5px" }} src={data.image} />
-              <Link href={`${router.basePath}/user/${data.uid}`}>
+        <CardHeader
+          title={
+            <Link href={`${router.basePath}/user/${uid}`}>
+              <Stack alignItems="center" direction="row" spacing={2}>
+                <Avatar sx={{ margin: "0.5px" }} src={data.image} />
                 <Typography variant="h6">{data.name}</Typography>
-              </Link>
-              {data.time}
-            </Stack>
+                {data.time}
+              </Stack>
+            </Link>
+          }
+          sx={{ cursor: "pointer" }}
+          subtitle={timeStamp}
+          titleTypographyProps={{ variant: "body" }}
+          action={
+            <>
+              <Button onClick={handleClick}>Options</Button>
+              <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
+                <MenuItem>
+                  <Link href={`${router.basePath}/user/${data.uid}`}>
+                    View Profile
+                  </Link>
+                </MenuItem>
+                <MenuItem>
+                  <Link href={`${router.basePath}/post/${id}`}>View Post</Link>
+                </MenuItem>
+              </Menu>
+            </>
+          }
+        />
+
+        <CardActionArea onDoubleClick={toggleLiked}>
+          <CardContent>
+            {repost && name === user.displayName
+              ? "You Reposted"
+              : `${name} Reposted`}
             <Typography gutterBottom marginTop="0.5em">
               {message}
             </Typography>

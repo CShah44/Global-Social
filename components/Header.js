@@ -3,14 +3,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { Navbar, Nav, Container, Button } from "react-bootstrap";
 import { useRouter } from "next/router";
-import { useContext } from "react";
-import CurrentUser from "../contexts/CurrentUser";
+import getUser from "./Actions/getUser";
 
 function Header() {
-  const currentUser = useContext(CurrentUser);
-  const user = currentUser.user;
-
   const router = useRouter();
+  const user = getUser();
 
   function processSignOut() {
     auth.signOut();

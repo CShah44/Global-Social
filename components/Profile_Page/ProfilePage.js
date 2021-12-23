@@ -1,14 +1,13 @@
 import { Card, Image, InputGroup, FormControl, Button } from "react-bootstrap";
 import { db } from "../../firebase";
-import { useContext, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import "emoji-mart/css/emoji-mart.css";
-import CurrentUser from "../../contexts/CurrentUser";
 import Link from "next/link";
 import { useToasts } from "react-toast-notifications";
+import getUser from "../Actions/getUser";
 
 export default function ProfilePage({ user, docId }) {
-  const currentUserCtx = useContext(CurrentUser);
-  const currentUser = currentUserCtx.user;
+  const currentUser = getUser();
 
   const [isEditing, setIsEditing] = useState(false);
   const inputRef = useRef(null);

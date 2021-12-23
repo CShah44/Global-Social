@@ -1,4 +1,4 @@
-import { useContext, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { db, storage } from "../../firebase";
 import firebase from "firebase";
 import {
@@ -8,11 +8,10 @@ import {
   Typography,
   TextField,
 } from "@mui/material";
-import CurrentUser from "../../contexts/CurrentUser";
+import getUser from "../../components/Actions/getUser";
 
 function AddPostComponent() {
-  const currentUser = useContext(CurrentUser);
-  const user = currentUser.user;
+  const user = getUser();
 
   const filePickerRef = useRef(null);
   const [imageToPost, setImageToPost] = useState(null);

@@ -1,6 +1,12 @@
 import { useRouter } from "next/router";
 import { db } from "../../firebase";
-import { Box, List, ListItem, ListItemText } from "@mui/material";
+import {
+  Box,
+  CircularProgress,
+  List,
+  ListItem,
+  ListItemText,
+} from "@mui/material";
 import { useDocumentData } from "react-firebase-hooks/firestore";
 import getUser from "../../components/Actions/getUser";
 
@@ -16,10 +22,14 @@ function ViewPost() {
     return <div>No data.</div>;
   }
 
+  if (loading) {
+    return <CircularProgress />;
+  }
+
   return (
     <Box sx={{ width: { md: "65vw", sm: "100vw" }, mx: "auto" }}>
       <List>
-        {ref?.comments.length > 0 ? (
+        {ref.comments.length > 0 ? (
           comments.map(function (comment, i) {
             return (
               <ListItem

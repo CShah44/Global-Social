@@ -13,12 +13,15 @@ import {
   MenuItem,
   Typography,
 } from "@mui/material";
+import {
+  deletePostHandler,
+  repostHandler,
+  toggleLiked,
+} from "./Actions/PostActions";
 import CommentsModal from "./UserFeedback/CommentsModal";
 import TimeAgo from "timeago-react";
-import { db, FieldValue, storage } from "../firebase";
 import { useRouter } from "next/router";
 import Link from "next/link";
-import { useToasts } from "react-toast-notifications";
 import ConfirmModal from "./UserFeedback/ConfirmModal";
 import getUser from "./Actions/getUser";
 
@@ -46,6 +49,7 @@ function Post({
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
+
   const handleClose = () => {
     setAnchorEl(null);
   };
@@ -54,8 +58,6 @@ function Post({
   const user = getUser();
 
   const hasLiked = likes.includes(user.email);
-
-  const { addToast } = useToasts();
 
   const timeStamp = timestamp ? (
     <TimeAgo
@@ -83,75 +85,6 @@ function Post({
     showDelete: user.uid === uid,
   };
 
-  function toggleLiked() {
-    setDisableLikeButton(true);
-    const postRef = db.collection("posts").doc(id);
-
-    postRef
-      .update({
-        likes: hasLiked
-          ? FieldValue.arrayRemove(user.email)
-          : FieldValue.arrayUnion(user.email),
-      })
-      .then(() => {
-        enableLikeButton();
-      })
-      .catch(() =>
-        addToast("Error! Can't like the post.", { appearance: "error" })
-      );
-  }
-
-  function enableLikeButton() {
-    setTimeout(() => {
-      setDisableLikeButton(false);
-    }, 1000);
-  }
-
-  function deletePostHandler() {
-    setShowDeleteModal(false);
-    db.collection("posts")
-      .doc(id)
-      .delete()
-      .then(() => {
-        if (postImages) {
-          return storage.refFromURL(postImages).delete();
-        }
-      })
-      .then(() => {
-        addToast("Deleted Post!", { appearance: "info" });
-      })
-      .catch(() => {
-        addToast("Could not delete post!", { appearance: "error" });
-      });
-  }
-
-  function repostHandler() {
-    db.collection("posts")
-      .add({
-        message: message,
-        name: user.displayName,
-        email: user.email,
-        image: user.photoURL,
-        uid: user.uid,
-        postImages: postImages ? postImages : null,
-        timestamp: FieldValue.serverTimestamp(),
-        comments: [],
-        likes: [],
-        repost: {
-          name: name,
-          timestamp: timestamp,
-          uid: uid,
-        },
-      })
-      .then(() => {
-        setShowRepostModal(false);
-        addToast("Re-posted!", { appearance: "success" });
-      })
-      .catch(() => {
-        addToast("Could not Re-Post!", { appearance: "error" });
-      });
-  }
-
   return (
     <>
       <CommentsModal
@@ -165,7 +98,9 @@ function Post({
       <ConfirmModal
         hideModal={() => setShowRepostModal(false)}
         show={showRepostModal}
-        func={repostHandler}
+        func={() =>
+          repostHandler(user, name, message, uid, timestamp, postImages)
+        }
         text="Are you sure you want to repost? 😎"
         title="Confirm Reposting"
       />
@@ -176,7 +111,7 @@ function Post({
         text="Are you sure you want to delete the post?"
         hideModal={() => setShowDeleteModal(false)}
         show={showDeleteModal}
-        func={deletePostHandler}
+        func={() => deletePostHandler(id, postImages)}
       />
 
       <Card className="neuEff" sx={{ width: "100%" }}>
@@ -210,7 +145,7 @@ function Post({
           }
         />
 
-        <CardActionArea onDoubleClick={toggleLiked}>
+        <CardActionArea onDoubleClick={() => toggleLiked(user, id, likes)}>
           <CardContent>
             {repost && name === user.displayName
               ? "You Reposted"
@@ -229,7 +164,7 @@ function Post({
           </Button>
           <Button
             variant={`${hasLiked ? "contained" : "outlined"}`}
-            onClick={toggleLiked}
+            onClick={() => toggleLiked(user, id, likes)}
             disabled={disableLikeButton}
           >
             Like ({likes.length})

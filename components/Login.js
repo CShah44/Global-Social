@@ -1,4 +1,4 @@
-import { Button } from "react-bootstrap";
+import { Button, Box } from "@mui/material";
 import { auth, provider } from "../firebase";
 import Image from "next/image";
 
@@ -8,21 +8,31 @@ function Login() {
   }
 
   return (
-    <div className="d-flex flex-column" style={{ maxHeight: "100vh" }}>
-      <div className="mx-auto mt-4">
+    <Box
+      sx={{
+        maxHeight: "100vh",
+        display: "flex",
+        flexDirection: "column",
+        gap: 2,
+      }}
+    >
+      <Box mx="auto" mt={4}>
         <Image
           src="/Logo.png"
           width="500"
           className="border border-white"
           height="500"
         />
-      </div>
-      <div className="mx-auto mt-3">
-        <Button onClick={signIn} variant="light">
-          Login with Google
-        </Button>
-      </div>
-    </div>
+      </Box>
+
+      <Button
+        sx={{ width: "250px", mx: "auto" }}
+        onClick={signIn}
+        variant="contained"
+      >
+        Login with Google
+      </Button>
+    </Box>
   );
 }
 

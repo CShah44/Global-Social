@@ -3,6 +3,7 @@ import { useCollection } from "react-firebase-hooks/firestore";
 import CurrentUser from "../../contexts/CurrentUser";
 import { db } from "../../firebase";
 import Post from "../Post";
+import { Stack } from "@mui/material";
 
 function UserPosts({ user }) {
   const currentUser = useContext(CurrentUser);
@@ -16,7 +17,7 @@ function UserPosts({ user }) {
   );
 
   return (
-    <div className="scrollbar-hide mx-auto mb-5 " style={{ width: "65vw" }}>
+    <Stack spacing={3} sx={{ mb: 5, mx: "auto", width: "65vw" }}>
       {userPosts && userPosts.docs.length > 0 ? (
         userPosts.docs.map(function (post) {
           return (
@@ -40,7 +41,7 @@ function UserPosts({ user }) {
       ) : (
         <p className="fs-2">No posts yet!</p>
       )}
-    </div>
+    </Stack>
   );
 }
 

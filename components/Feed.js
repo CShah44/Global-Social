@@ -1,22 +1,40 @@
 import { Stack } from "@mui/material";
-import Posts from "./Posts";
+import { useCollection } from "react-firebase-hooks/firestore";
+import { db } from "../firebase";
+import Post from "./Post";
 
 function Feed() {
+  const [realtimePosts, loading] = useCollection(
+    db.collection("posts").orderBy("timestamp", "desc")
+  );
+
   return (
     <Stack
-      marginBottom="5em"
-      display="flex"
-      justifyContent="center"
-      alignItems="center"
-      spacing={2}
       sx={{
         width: { xs: "100vw", md: "65vw" },
         my: "5em",
         marginLeft: "auto",
         marginRight: "auto",
       }}
+      spacing={{ xs: 0, md: 3 }}
     >
-      <Posts />
+      {realtimePosts &&
+        realtimePosts?.docs.map((post) => (
+          <Post
+            key={post.id}
+            id={post.id}
+            name={post.data().name}
+            message={post.data().message}
+            email={post.data().email}
+            timestamp={post.data().timestamp}
+            image={post.data().image}
+            comments={post.data().comments}
+            likes={post.data().likes}
+            showDeleteButton={false}
+            repost={post.data().repost}
+            uid={post.data().uid}
+          />
+        ))}
     </Stack>
   );
 }

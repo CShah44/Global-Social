@@ -1,9 +1,9 @@
 import Head from "next/head";
 import Header from "../components/Header";
-import Feed from "../components/Feed";
 import { ToastProvider } from "react-toast-notifications";
 import { Button, Typography, Box } from "@mui/material";
 import Link from "next/link";
+import Feed from "../components/Feed";
 
 export default function Home() {
   return (
@@ -28,7 +28,6 @@ export default function Home() {
             <Button variant="outlined">Create Post</Button>
           </Link>
         </Box>
-
         <Feed />
       </ToastProvider>
     </div>

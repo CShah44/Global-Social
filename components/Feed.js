@@ -11,10 +11,9 @@ function Feed() {
   return (
     <Stack
       sx={{
-        width: { xs: "100vw", md: "65vw" },
+        width: { xs: "100vw", md: "650px" },
         my: "5em",
-        marginLeft: "auto",
-        marginRight: "auto",
+        mx: "auto",
       }}
       spacing={{ xs: 0, md: 3 }}
     >

@@ -11,11 +11,10 @@ import {
 } from "@mui/material";
 
 import { db, FieldValue } from "../../firebase";
-import { useState, useContext, useRef } from "react";
+import { useState, useContext } from "react";
 import CurrentUser from "../../contexts/CurrentUser";
 
 function CommentsModal({ id, show, comments, hideModal }) {
-  const inputRef = useRef(null);
   const currentUser = useContext(CurrentUser);
   const user = currentUser.user;
   const [progress, setProgress] = useState(0);

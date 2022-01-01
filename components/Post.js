@@ -189,12 +189,18 @@ function Post({
           </CardActionArea>
           <CardActions sx={{ p: 1, borderTop: "0.1px solid grey" }}>
             <Button onClick={() => setShowComments(true)}>
+              <Typography variant="body" sx={{ px: 1 }}>
+                {comments.length}
+              </Typography>
               <CgComment />
             </Button>
             <Button
               onClick={() => toggleLiked(user, id, likes, setDisableLikeButton)}
               disabled={disableLikeButton}
             >
+              <Typography variant="body" sx={{ px: 1 }}>
+                {likes.length}
+              </Typography>
               {hasLiked ? <FcDislike /> : <FcLike />}
             </Button>
             {user.email != email && (

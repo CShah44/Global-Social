@@ -24,6 +24,10 @@ import { useRouter } from "next/router";
 import Link from "next/link";
 import ConfirmModal from "./UserFeedback/ConfirmModal";
 import getUser from "./Actions/getUser";
+import { CgComment } from "react-icons/cg";
+import { FcLike, FcDislike } from "react-icons/fc";
+import { AiFillDelete, AiOutlineRetweet, AiOutlineMenu } from "react-icons/ai";
+import { IconContext } from "react-icons";
 
 function Post({
   name,
@@ -115,69 +119,96 @@ function Post({
       />
 
       <Card className="neuEff" sx={{ width: "100%" }}>
-        <CardHeader
-          title={
-            <Link href={`${router.basePath}/user/${uid}`}>
-              <Stack alignItems="center" direction="row" spacing={2}>
-                <Avatar sx={{ margin: "0.5px" }} src={data.image} />
-                <Typography variant="h6">{data.name}</Typography>
-                {data.time}
-              </Stack>
-            </Link>
-          }
-          sx={{ cursor: "pointer" }}
-          subtitle={timeStamp}
-          titleTypographyProps={{ variant: "body" }}
-          action={
-            <>
-              <Button onClick={handleClick}>Options</Button>
-              <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
-                <MenuItem>
-                  <Link href={`${router.basePath}/user/${data.uid}`}>
-                    View Profile
-                  </Link>
-                </MenuItem>
-                <MenuItem>
-                  <Link href={`${router.basePath}/post/${id}`}>View Post</Link>
-                </MenuItem>
-              </Menu>
-            </>
-          }
-        />
-
-        <CardActionArea onDoubleClick={() => toggleLiked(user, id, likes)}>
-          <CardContent>
-            {repost && name === user.displayName
-              ? "You Reposted"
-              : `${name} Reposted`}
-            <Typography gutterBottom marginTop="0.5em">
-              {message}
-            </Typography>
-          </CardContent>
-          {postImages && (
-            <CardMedia component="img" src={postImages} height="500" />
+        <IconContext.Provider value={{ size: "1.35em" }}>
+          {repost && (
+            <Stack
+              direction="row"
+              spacing={1}
+              sx={{ m: 1, p: 0.5 }}
+              alignItems="center"
+            >
+              <Typography variant="body2">
+                {name === user.displayName
+                  ? "You Reposted"
+                  : `${name} Reposted`}
+              </Typography>
+              <AiOutlineRetweet />
+            </Stack>
           )}
-        </CardActionArea>
-        <CardActions>
-          <Button onClick={() => setShowComments(true)}>
-            Comments ({comments.length})
-          </Button>
-          <Button
-            variant={`${hasLiked ? "contained" : "outlined"}`}
-            onClick={() => toggleLiked(user, id, likes)}
-            disabled={disableLikeButton}
+          <CardActionArea
+            onDoubleClick={() =>
+              toggleLiked(user, id, likes, setDisableLikeButton)
+            }
           >
-            Like ({likes.length})
-          </Button>
-          {user.email != email && (
-            <Button onClick={() => setShowRepostModal(true)}>Repost</Button>
-          )}
-          {data.showDelete && (
-            <Button color="error" onClick={() => setShowDeleteModal(true)}>
-              Delete Post
+            <CardHeader
+              title={
+                <Stack alignItems="center" direction="row" spacing={2}>
+                  <Link href={`${router.basePath}/user/${uid}`}>
+                    <Avatar sx={{ margin: "0.5px" }} src={data.image} />
+                  </Link>
+                  <Typography variant="h6">{data.name}</Typography>
+                  {data.time}
+                </Stack>
+              }
+              sx={{ cursor: "pointer" }}
+              subtitle={timeStamp}
+              action={
+                <>
+                  <Button onClick={handleClick}>
+                    <AiOutlineMenu />
+                  </Button>
+                  <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
+                    <MenuItem>
+                      <Link href={`${router.basePath}/user/${data.uid}`}>
+                        View Profile
+                      </Link>
+                    </MenuItem>
+                    <MenuItem>
+                      <Link href={`${router.basePath}/post/${id}`}>
+                        View Post
+                      </Link>
+                    </MenuItem>
+                  </Menu>
+                </>
+              }
+            />
+
+            <CardContent>
+              <Typography variant="body" gutterBottom marginTop="0.5em">
+                {message}
+              </Typography>
+            </CardContent>
+            {postImages && (
+              <CardMedia
+                component="img"
+                src={postImages}
+                height="500"
+                alt="hello"
+              />
+            )}
+          </CardActionArea>
+          <CardActions sx={{ p: 1, borderTop: "0.1px solid grey" }}>
+            <Button onClick={() => setShowComments(true)}>
+              <CgComment />
             </Button>
-          )}
-        </CardActions>
+            <Button
+              onClick={() => toggleLiked(user, id, likes, setDisableLikeButton)}
+              disabled={disableLikeButton}
+            >
+              {hasLiked ? <FcDislike /> : <FcLike />}
+            </Button>
+            {user.email != email && (
+              <Button onClick={() => setShowRepostModal(true)}>
+                <AiOutlineRetweet />
+              </Button>
+            )}
+            {data.showDelete && (
+              <Button color="error" onClick={() => setShowDeleteModal(true)}>
+                <AiFillDelete />
+              </Button>
+            )}
+          </CardActions>
+        </IconContext.Provider>
       </Card>
     </>
   );

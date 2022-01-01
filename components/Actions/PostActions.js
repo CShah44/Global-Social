@@ -1,8 +1,10 @@
 import { db, FieldValue, storage } from "../../firebase";
 
-export function toggleLiked(user, id, likes) {
+export function toggleLiked(user, id, likes, setDisableLikeButton) {
   const hasLiked = likes.includes(user.email);
   const postRef = db.collection("posts").doc(id);
+
+  setDisableLikeButton(true);
 
   postRef
     .update({
@@ -12,7 +14,7 @@ export function toggleLiked(user, id, likes) {
     })
     .then(() => {
       setTimeout(() => {
-        // setDisableLikeButton(false);
+        setDisableLikeButton(false);
       }, 1000);
     })
     .catch(() => console.log("Cannot like post right now bro"));

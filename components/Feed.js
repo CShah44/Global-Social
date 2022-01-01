@@ -1,4 +1,4 @@
-import { Stack } from "@mui/material";
+import { Stack, Typography, Button } from "@mui/material";
 import { useCollection } from "react-firebase-hooks/firestore";
 import { db } from "../firebase";
 import Post from "./Post";
@@ -10,12 +10,8 @@ function Feed() {
 
   return (
     <Stack
-      sx={{
-        width: { xs: "100vw", md: "650px" },
-        my: "5em",
-        mx: "auto",
-      }}
-      spacing={{ xs: 0, md: 3 }}
+      sx={{ width: { xs: "100vw", md: "650px" }, my: "5em", mx: "auto" }}
+      spacing={1}
     >
       {realtimePosts &&
         realtimePosts?.docs.map((post) => (

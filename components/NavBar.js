@@ -13,13 +13,14 @@ import {
 import { AiOutlineMenu } from "react-icons/ai";
 import { useState } from "react";
 import { auth } from "../firebase";
-import Link from "next/link";
+import { useTheme } from "@mui/material/styles";
 import { useRouter } from "next/router";
 import getUser from "./Actions/getUser";
 
 function Navbar() {
   const router = useRouter();
   const user = getUser();
+  const theme = useTheme();
 
   function processSignOut() {
     auth.signOut();
@@ -40,10 +41,14 @@ function Navbar() {
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <Typography
-            variant="h5"
+            variant="h4"
             noWrap
             component="div"
-            sx={{ mr: 2, display: { xs: "none", md: "flex" } }}
+            sx={{
+              mr: 2,
+              display: { xs: "none", md: "flex" },
+              fontFamily: "Expose",
+            }}
           >
             GLOBAL SOCIAL
           </Typography>

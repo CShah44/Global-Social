@@ -1,4 +1,3 @@
-import { Card, Image, InputGroup, FormControl, Button } from "react-bootstrap";
 import { db } from "../../firebase";
 import { useRef, useState } from "react";
 import "emoji-mart/css/emoji-mart.css";

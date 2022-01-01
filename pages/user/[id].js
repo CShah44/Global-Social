@@ -4,8 +4,8 @@ import { useRouter } from "next/router";
 import { useCollection } from "react-firebase-hooks/firestore";
 import { db } from "../../firebase";
 import UserPosts from "../../components/Profile_Page/UserPosts";
-import { Spinner } from "react-bootstrap";
 import Navbar from "../../components/NavBar";
+import { CircularProgress } from "@mui/material";
 
 export default function Profile() {
   const router = useRouter();
@@ -14,7 +14,7 @@ export default function Profile() {
 
   const [user, loading] = useCollection(db.collection("users").doc(id));
 
-  if (loading) return <Spinner animation="border" variant="dark" />;
+  if (loading) return <CircularProgress />;
 
   return (
     <>

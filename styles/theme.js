@@ -5,7 +5,7 @@ let theme = createTheme({
     mode: "dark",
   },
   typography: {
-    fontFamily: "Nunito",
+    fontFamily: "Satoshi, Expose, sans-serif",
   },
 });
 

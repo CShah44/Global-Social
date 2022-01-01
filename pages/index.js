@@ -1,9 +1,9 @@
 import Head from "next/head";
-import { ToastProvider } from "react-toast-notifications";
 import { Button, Typography, Box } from "@mui/material";
 import Link from "next/link";
 import Feed from "../components/Feed";
 import Navbar from "../components/NavBar";
+import { Toaster } from "react-hot-toast";
 
 export default function Home() {
   return (
@@ -11,10 +11,9 @@ export default function Home() {
       <Head>
         <title>Global Social</title>
       </Head>
+      <Toaster position="bottom-center" />
       <Navbar />
-      <ToastProvider placement="bottom-center" autoDismiss>
-        <Feed />
-      </ToastProvider>
+      <Feed />
     </Box>
   );
 }

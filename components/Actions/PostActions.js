@@ -1,3 +1,4 @@
+import toast from "react-hot-toast";
 import { db, FieldValue, storage } from "../../firebase";
 
 export function toggleLiked(user, id, likes, setDisableLikeButton) {
@@ -15,58 +16,51 @@ export function toggleLiked(user, id, likes, setDisableLikeButton) {
     .then(() => {
       setTimeout(() => {
         setDisableLikeButton(false);
-      }, 1000);
+      }, 1500);
     })
-    .catch(() => console.log("Cannot like post right now bro"));
+    .catch(() => toast.error("Couldn't Like the post 😐"));
 }
 
 export function deletePostHandler(id, postImages) {
-  db.collection("posts")
+  const p = db
+    .collection("posts")
     .doc(id)
     .delete()
     .then(() => {
       if (postImages) {
         return storage.refFromURL(postImages).delete();
       }
-    })
-    .then(() => {
-      console.log("Post deleted hehe");
-    })
-    .catch(() => {
-      console.log("cannot delete post sorry");
     });
+
+  toast.promise(p, {
+    loading: "Deleting..",
+    success: "Post Deleted!",
+    error: "Couldn't delete post. 😐",
+  });
 }
 
-export async function repostHandler(
-  user,
-  name,
-  message,
-  uid,
-  timestamp,
-  postImages
-) {
-  await db
-    .collection("posts")
-    .add({
-      message: message,
-      name: user.displayName,
-      email: user.email,
-      image: user.photoURL,
-      uid: user.uid,
-      postImages: postImages ? postImages : null,
-      timestamp: FieldValue.serverTimestamp(),
-      comments: [],
-      likes: [],
-      repost: {
-        name: name,
-        timestamp: timestamp,
-        uid: uid,
-      },
-    })
-    .then(() => {
-      console.log("reposted hehe");
-    })
-    .catch(() => {
-      console.log("cant repost lol");
-    });
+export function repostHandler(user, name, message, uid, timestamp, postImages) {
+  // TODO - MODAL IS NOT CLOSING
+  const p = db.collection("posts").add({
+    message: message,
+    name: user.displayName,
+    email: user.email,
+    image: user.photoURL,
+    uid: user.uid,
+    postImages: postImages ? postImages : null,
+    timestamp: FieldValue.serverTimestamp(),
+    comments: [],
+    likes: [],
+    repost: {
+      name: name,
+      timestamp: timestamp,
+      uid: uid,
+    },
+  });
+
+  toast.promise(p, {
+    loading: "Reposting...",
+    success: "Reposted! Cheers! 😄",
+    error: "Couldn't Repost. 😐",
+  });
 }

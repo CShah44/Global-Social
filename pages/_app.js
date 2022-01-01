@@ -1,4 +1,3 @@
-import "bootstrap/dist/css/bootstrap.min.css";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth, db } from "../firebase";
 import { useEffect } from "react";

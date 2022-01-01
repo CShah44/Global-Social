@@ -3,7 +3,6 @@ import { db } from "../../firebase";
 import { useRef, useState } from "react";
 import "emoji-mart/css/emoji-mart.css";
 import Link from "next/link";
-import { useToasts } from "react-toast-notifications";
 import getUser from "../Actions/getUser";
 
 export default function ProfilePage({ user, docId }) {
@@ -11,8 +10,6 @@ export default function ProfilePage({ user, docId }) {
 
   const [isEditing, setIsEditing] = useState(false);
   const inputRef = useRef(null);
-
-  const { addToast } = useToasts();
 
   function clearField(e) {
     e.preventDefault();
@@ -32,7 +29,7 @@ export default function ProfilePage({ user, docId }) {
         about: inputRef.current.value,
       })
       .catch(() => {
-        addToast("Couldn't update your profile!", { appearance: "error" });
+        // addToast("Couldn't update your profile!", { appearance: "error" });
       });
   }
 

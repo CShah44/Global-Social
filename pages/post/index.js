@@ -87,6 +87,7 @@ function AddPostComponent() {
         }
       })
       .then(() => {
+        setMessage({ text: "", progress: 0 });
         console.log("post added");
       })
       .catch(() => {
@@ -136,9 +137,10 @@ function AddPostComponent() {
             label="Enter your caption"
             variant="filled"
             onChange={changeProgress}
-            error={message >= 100}
+            value={message.text}
+            error={message.progress >= 100}
             sx={{ resize: "none" }}
-            helperText={message >= 100 && "Type less, say more! 😅"}
+            helperText={message.progress >= 100 && "Type less, say more! 😅"}
           />
           <Box
             sx={{

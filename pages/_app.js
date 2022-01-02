@@ -9,6 +9,7 @@ import createEmotionCache from "../styles/createEmotionCache";
 import CssBaseline from "@mui/material/CssBaseline";
 import theme from "../styles/theme";
 import { ThemeProvider } from "@mui/material/styles";
+import { Toaster } from "react-hot-toast";
 
 const clientSideEmotionCache = createEmotionCache();
 
@@ -67,6 +68,7 @@ function MyApp(props) {
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <CurrentUser.Provider value={value}>
+          <Toaster position="bottom-center" />
           <Component {...pageProps} />
         </CurrentUser.Provider>
       </ThemeProvider>

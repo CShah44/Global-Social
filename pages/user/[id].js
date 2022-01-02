@@ -5,7 +5,7 @@ import { useCollection } from "react-firebase-hooks/firestore";
 import { db } from "../../firebase";
 import UserPosts from "../../components/Profile_Page/UserPosts";
 import Navbar from "../../components/NavBar";
-import { CircularProgress } from "@mui/material";
+import { CircularProgress, Stack } from "@mui/material";
 
 export default function Profile() {
   const router = useRouter();
@@ -21,9 +21,11 @@ export default function Profile() {
       <Head>
         <title>Global Social · {user.data().name} </title>
       </Head>
-      <Navbar />
-      <ProfilePage user={user.data()} docId={id} />
-      <UserPosts user={user.data()} />
+      <Stack>
+        <Navbar />
+        <ProfilePage user={user.data()} docId={id} />
+        <UserPosts user={user.data()} />
+      </Stack>
     </>
   );
 }

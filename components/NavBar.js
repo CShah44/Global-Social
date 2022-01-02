@@ -13,14 +13,13 @@ import {
 import { AiOutlineMenu } from "react-icons/ai";
 import { useState } from "react";
 import { auth } from "../firebase";
-import { useTheme } from "@mui/material/styles";
 import { useRouter } from "next/router";
 import getUser from "./Actions/getUser";
+import Link from "next/link";
 
 function Navbar() {
   const router = useRouter();
   const user = getUser();
-  const theme = useTheme();
 
   function processSignOut() {
     auth.signOut();
@@ -40,18 +39,20 @@ function Navbar() {
     <AppBar position="sticky">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <Typography
-            variant="h4"
-            noWrap
-            component="div"
-            sx={{
-              mr: 2,
-              display: { xs: "none", md: "flex" },
-              fontFamily: "Expose",
-            }}
-          >
-            GLOBAL SOCIAL
-          </Typography>
+          <Link href="/" passHref>
+            <Typography
+              variant="h4"
+              noWrap
+              component="div"
+              sx={{
+                mr: 2,
+                display: { xs: "none", md: "flex" },
+                fontFamily: "Expose",
+              }}
+            >
+              GLOBAL SOCIAL
+            </Typography>
+          </Link>
 
           <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
             <IconButton
@@ -83,32 +84,30 @@ function Navbar() {
               }}
             >
               <MenuItem>
-                <Button
-                  onClick={() =>
-                    router.push(`${router.basePath}/user/${user.uid}`)
-                  }
-                >
-                  Your Profile
-                </Button>
+                <Link href={`${router.basePath}/user/${user.uid}`} passHref>
+                  <Button>Your Profile</Button>
+                </Link>
               </MenuItem>
               <MenuItem>
-                <Button onClick={() => router.push("/post")}>
-                  Create Post
-                </Button>
+                <Link href="/post" passHref>
+                  <Button>Create Post</Button>
+                </Link>
               </MenuItem>
               <MenuItem>
                 <Button onClick={processSignOut}>Log out</Button>
               </MenuItem>
             </Menu>
           </Box>
-          <Typography
-            variant="h6"
-            noWrap
-            component="div"
-            sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}
-          >
-            GLOBAL SOCIAL
-          </Typography>
+          <Link href="/" passHref>
+            <Typography
+              variant="h6"
+              noWrap
+              component="div"
+              sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}
+            >
+              GLOBAL SOCIAL
+            </Typography>
+          </Link>
           <Box
             sx={{
               flexGrow: 1,
@@ -117,18 +116,17 @@ function Navbar() {
               mx: 2,
             }}
           >
-            <Button
-              onClick={() => router.push(`${router.basePath}/user/${user.uid}`)}
-              sx={{ my: 2, color: "white", display: "block" }}
-            >
-              Profile
-            </Button>
-            <Button
-              onClick={() => router.push("post")}
-              sx={{ my: 2, color: "white", display: "block" }}
-            >
-              Create Post
-            </Button>
+            <Link href={`${router.basePath}/user/${user.uid}`} passHref>
+              <Button sx={{ my: 2, color: "white", display: "block" }}>
+                Profile
+              </Button>
+            </Link>
+
+            <Link href="/post" passHref>
+              <Button sx={{ my: 2, color: "white", display: "block" }}>
+                Create Post
+              </Button>
+            </Link>
             <Button
               onClick={processSignOut}
               sx={{ my: 2, color: "white", display: "block" }}
@@ -138,7 +136,9 @@ function Navbar() {
           </Box>
 
           <Box sx={{ flexGrow: 0 }}>
-            <Avatar alt={user.displayName} src={user.photoURL} />
+            <Link href={`${router.basePath}/user/${user.uid}`} passHref>
+              <Avatar alt={user.displayName} src={user.photoURL} />
+            </Link>
           </Box>
         </Toolbar>
       </Container>

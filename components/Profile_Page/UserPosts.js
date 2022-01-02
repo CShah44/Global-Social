@@ -17,7 +17,10 @@ function UserPosts({ user }) {
   );
 
   return (
-    <Stack spacing={3} sx={{ mb: 5, mx: "auto", width: "65vw" }}>
+    <Stack
+      spacing={3}
+      sx={{ mb: 5, mx: "auto", width: { xs: "100vw", md: "650px" } }}
+    >
       {userPosts && userPosts.docs.length > 0 ? (
         userPosts.docs.map(function (post) {
           return (

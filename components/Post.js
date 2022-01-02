@@ -174,7 +174,7 @@ function Post({
             />
 
             <CardContent>
-              <Typography variant="body" gutterBottom marginTop="0.5em">
+              <Typography variant="body1" gutterBottom marginTop="0.5em">
                 {message}
               </Typography>
             </CardContent>

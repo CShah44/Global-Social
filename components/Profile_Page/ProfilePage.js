@@ -1,7 +1,6 @@
 import { db } from "../../firebase";
 import { useRef, useState } from "react";
 import "emoji-mart/css/emoji-mart.css";
-import Link from "next/link";
 import getUser from "../Actions/getUser";
 
 export default function ProfilePage({ user, docId }) {
@@ -65,13 +64,6 @@ export default function ProfilePage({ user, docId }) {
               <br />
               <span className="fs-5 m-3 text-muted">{user.email}</span>
             </p>
-            {user.email === currentUser.email && (
-              <Link href="/chat">
-                <Button className="ms-auto align-self-center p-3 fs-4">
-                  Chat
-                </Button>
-              </Link>
-            )}
           </div>
 
           {isEditing ? (

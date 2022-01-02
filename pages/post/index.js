@@ -10,8 +10,8 @@ import {
 } from "@mui/material";
 import getUser from "../../components/Actions/getUser";
 import { useRouter } from "next/router";
-import { AiOutlineArrowLeft } from "react-icons/ai";
 import Navbar from "../../components/NavBar";
+import toast from "react-hot-toast";
 
 function AddPostComponent() {
   const user = getUser();
@@ -38,13 +38,13 @@ function AddPostComponent() {
     setImageToPost(null);
   };
 
-  async function sendPostHandler() {
+  function sendPostHandler() {
     if (message.text?.length <= 0) {
-      console.log("WRITE MORE");
+      toast.error("I don't like posting empty stuff! 😑");
       return;
     }
 
-    await db
+    const p = db
       .collection("posts")
       .add({
         message: message.text,
@@ -68,7 +68,7 @@ function AddPostComponent() {
           uploadTask.on(
             "state_change",
             null,
-            (error) => console.log(error),
+            () => toast.error("Couldn't post images! 😐"),
             () => {
               storage
                 .ref(`posts`)
@@ -87,12 +87,14 @@ function AddPostComponent() {
         }
       })
       .then(() => {
-        setMessage({ text: "", progress: 0 });
-        console.log("post added");
-      })
-      .catch(() => {
-        console.log("post error");
+        router.push("/");
       });
+
+    toast.promise(p, {
+      loading: "Posting your awesome content...",
+      success: "Posted! Cheers! 😎",
+      error: "Couldn't Post! 😐",
+    });
 
     setMessage({ text: "", progress: 0 });
   }

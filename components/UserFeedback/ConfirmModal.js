@@ -8,6 +8,12 @@ import {
 } from "@mui/material";
 
 function ConfirmModal({ func, show, hideModal, text, title }) {
+  function click() {
+    func();
+    hideModal();
+    return;
+  }
+
   return (
     <Dialog className="normal" open={show} onClose={hideModal}>
       <DialogTitle>{title}</DialogTitle>
@@ -16,7 +22,7 @@ function ConfirmModal({ func, show, hideModal, text, title }) {
       </DialogContent>
       <DialogActions>
         <Button onClick={hideModal}>Close</Button>
-        <Button onClick={func} autoFocus>
+        <Button onClick={click} autoFocus>
           Yes
         </Button>
       </DialogActions>

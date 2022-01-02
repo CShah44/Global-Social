@@ -158,16 +158,12 @@ function Post({
                     <AiOutlineMenu />
                   </Button>
                   <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
-                    <MenuItem>
-                      <Link href={`${router.basePath}/user/${data.uid}`}>
-                        View Profile
-                      </Link>
-                    </MenuItem>
-                    <MenuItem>
-                      <Link href={`${router.basePath}/post/${id}`}>
-                        View Post
-                      </Link>
-                    </MenuItem>
+                    <Link href={`${router.basePath}/user/${data.uid}`}>
+                      <MenuItem>View Profile</MenuItem>
+                    </Link>
+                    <Link href={`${router.basePath}/post/${id}`}>
+                      <MenuItem>View Post</MenuItem>
+                    </Link>
                   </Menu>
                 </>
               }

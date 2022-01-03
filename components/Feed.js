@@ -10,11 +10,15 @@ function Feed() {
 
   return (
     <>
-      {loading && <CircularProgress />}
       <Stack
-        sx={{ width: { xs: "100vw", md: "650px" }, my: "3em", mx: "auto" }}
+        sx={{
+          width: { xs: "100vw", sm: "500px", md: "650px" },
+          my: "3em",
+          mx: "auto",
+        }}
         spacing={1}
       >
+        {loading && <CircularProgress />}
         {realtimePosts &&
           realtimePosts?.docs.map((post) => (
             <Post
@@ -30,6 +34,7 @@ function Feed() {
               showDeleteButton={false}
               repost={post.data().repost}
               uid={post.data().uid}
+              postImages={post.data().postImages}
             />
           ))}
       </Stack>

@@ -158,10 +158,10 @@ function Post({
                     <AiOutlineMenu />
                   </Button>
                   <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
-                    <Link href={`${router.basePath}/user/${data.uid}`}>
+                    <Link href={`${router.basePath}/user/${data.uid}`} passHref>
                       <MenuItem>View Profile</MenuItem>
                     </Link>
-                    <Link href={`${router.basePath}/post/${id}`}>
+                    <Link href={`${router.basePath}/post/${id}`} passHref>
                       <MenuItem>View Post</MenuItem>
                     </Link>
                   </Menu>
@@ -178,7 +178,7 @@ function Post({
               <CardMedia
                 component="img"
                 src={postImages}
-                height="500"
+                sx={{ width: { xs: "100%", sm: "500px", md: "650px" } }}
                 alt="hello"
               />
             )}

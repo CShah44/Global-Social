@@ -83,19 +83,13 @@ function Navbar() {
                 display: { xs: "block", md: "none" },
               }}
             >
-              <MenuItem>
-                <Link href={`${router.basePath}/user/${user.uid}`} passHref>
-                  <Button>Your Profile</Button>
-                </Link>
-              </MenuItem>
-              <MenuItem>
-                <Link href="/post" passHref>
-                  <Button>Create Post</Button>
-                </Link>
-              </MenuItem>
-              <MenuItem>
-                <Button onClick={processSignOut}>Log out</Button>
-              </MenuItem>
+              <Link href={`${router.basePath}/user/${user.uid}`} passHref>
+                <MenuItem>Your Profile</MenuItem>
+              </Link>
+              <Link href="/post" passHref>
+                <MenuItem>Create Post</MenuItem>
+              </Link>
+              <MenuItem onClick={processSignOut}>Log out</MenuItem>
             </Menu>
           </Box>
           <Link href="/" passHref>

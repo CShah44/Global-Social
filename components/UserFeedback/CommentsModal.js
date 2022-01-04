@@ -99,6 +99,7 @@ function CommentsModal({ id, show, comments, hideModal }) {
       <DialogActions>
         <TextField
           variant="outlined"
+          fullWidth
           sx={{ resize: "none" }}
           placeholder="Add a comment"
           onChange={changeProgress}
@@ -108,6 +109,7 @@ function CommentsModal({ id, show, comments, hideModal }) {
         <Button
           color="secondary"
           variant="outlined"
+          sx={{ height: "100%", m: 1, p: 1 }}
           disabled={progress > 100}
           onClick={addCommentHandler}
         >

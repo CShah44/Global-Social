@@ -7,11 +7,17 @@ import {
   Box,
   Typography,
   TextField,
+  Popper,
+  InputAdornment,
 } from "@mui/material";
 import getUser from "../../components/Actions/getUser";
 import { useRouter } from "next/router";
 import Navbar from "../../components/NavBar";
 import toast from "react-hot-toast";
+import { MdOutlineEmojiEmotions } from "react-icons/md";
+import { Picker } from "emoji-mart";
+
+import "emoji-mart/css/emoji-mart.css";
 
 function AddPostComponent() {
   const user = getUser();
@@ -21,6 +27,14 @@ function AddPostComponent() {
   const [imageToPost, setImageToPost] = useState(null);
 
   const [message, setMessage] = useState({ text: "", progress: 0 });
+  const [anchorEl, setAnchorEl] = useState(null);
+
+  const handleClick = (event) => {
+    setAnchorEl(anchorEl ? null : event.currentTarget);
+  };
+
+  const open = Boolean(anchorEl);
+  const id = open ? "simple-popper" : undefined;
 
   const addImageToPostHandler = (e) => {
     const reader = new FileReader();
@@ -37,6 +51,13 @@ function AddPostComponent() {
   const removeImage = () => {
     setImageToPost(null);
   };
+
+  function addEmoji(emo) {
+    setMessage((prev) => {
+      let a = prev.text.toString() + emo.native;
+      return a;
+    });
+  }
 
   function sendPostHandler() {
     if (message.text?.length <= 0) {
@@ -143,6 +164,17 @@ function AddPostComponent() {
             error={message.progress >= 100}
             sx={{ resize: "none" }}
             helperText={message.progress >= 100 && "Type less, say more! 😅"}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment
+                  sx={{ m: "auto", cursor: "pointer" }}
+                  onClick={handleClick}
+                  position="end"
+                >
+                  <MdOutlineEmojiEmotions />
+                </InputAdornment>
+              ),
+            }}
           />
           <Box
             sx={{
@@ -201,6 +233,15 @@ function AddPostComponent() {
           </Box>
         </Box>
       </Box>
+      <Popper id={id} open={open} anchorEl={anchorEl} placement="bottom">
+        <Picker
+          style={{ margin: 4 }}
+          enableFrequentEmojiSort
+          perLine={7}
+          theme="dark"
+          onClick={addEmoji}
+        />
+      </Popper>
     </>
   );
 }

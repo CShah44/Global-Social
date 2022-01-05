@@ -39,8 +39,16 @@ export function deletePostHandler(id, postImages) {
   });
 }
 
-export function repostHandler(user, name, message, uid, timestamp, postImages) {
-  // TODO - MODAL IS NOT CLOSING
+export function repostHandler(
+  user,
+  name,
+  message,
+  uid,
+  timestamp,
+  postImages,
+  image
+) {
+  //Repost object contains original data.
   const p = db.collection("posts").add({
     message: message,
     name: user.displayName,
@@ -55,6 +63,7 @@ export function repostHandler(user, name, message, uid, timestamp, postImages) {
       name: name,
       timestamp: timestamp,
       uid: uid,
+      image: image,
     },
   });
 

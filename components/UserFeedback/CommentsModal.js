@@ -11,14 +11,14 @@ import {
 } from "@mui/material";
 
 import { db, FieldValue } from "../../firebase";
-import { useState, useContext } from "react";
+import { useState, useContext, useRef } from "react";
 import CurrentUser from "../../contexts/CurrentUser";
 
 function CommentsModal({ id, show, comments, hideModal }) {
   const currentUser = useContext(CurrentUser);
   const user = currentUser.user;
   const [progress, setProgress] = useState(0);
-  const [input, setInput] = useState("");
+  const input = useRef(null);
 
   function addCommentHandler(e) {
     e.preventDefault();
@@ -30,12 +30,12 @@ function CommentsModal({ id, show, comments, hideModal }) {
       .update({
         comments: FieldValue.arrayUnion({
           name: user.displayName,
-          comment: input,
+          comment: input.current.value,
           email: user.email,
         }),
       })
       .catch(alert);
-    setInput("");
+    input.current.value = "";
   }
 
   function deleteCommentHandler(comment) {
@@ -51,8 +51,6 @@ function CommentsModal({ id, show, comments, hideModal }) {
   }
 
   function changeProgress(e) {
-    setInput(e.target.value);
-
     let v = (e.target.value.length / 150) * 100;
     setProgress(v);
   }
@@ -64,7 +62,6 @@ function CommentsModal({ id, show, comments, hideModal }) {
       open={show}
       onClose={hideModal}
       className="normal"
-      scroll="paper"
     >
       <DialogTitle>Comments</DialogTitle>
       <DialogContent>
@@ -103,7 +100,7 @@ function CommentsModal({ id, show, comments, hideModal }) {
           sx={{ resize: "none" }}
           placeholder="Add a comment"
           onChange={changeProgress}
-          value={input}
+          inputRef={input}
           error={progress > 100}
         />
         <Button

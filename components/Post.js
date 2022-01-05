@@ -74,6 +74,7 @@ function Post({
     </span>
   );
 
+  // checking if reposted and accordingly assinging data to be displayed.
   const data = {
     image: repost ? repost.image : image,
     uid: repost ? repost.uid : uid,
@@ -103,7 +104,7 @@ function Post({
         hideModal={() => setShowRepostModal(false)}
         show={showRepostModal}
         func={() =>
-          repostHandler(user, name, message, uid, timestamp, postImages)
+          repostHandler(user, name, message, uid, timestamp, postImages, image)
         }
         text="Are you sure you want to repost? 😎"
         title="Confirm Reposting"

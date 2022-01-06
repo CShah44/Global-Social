@@ -22,18 +22,14 @@ function MyApp(props) {
 
   useEffect(() => {
     auth.onAuthStateChanged((user) => {
-      console.log("hi");
       if (user) {
-        console.log("hi2");
         db.collection("users")
           .doc(user.uid)
           .get()
           .then((doc) => {
             if (doc.exists) {
-              console.log("hi3");
               return (data.about = doc.data().about);
             } else {
-              console.log("hi4");
               db.collection("users").doc(user.uid).set(
                 {
                   name: user.displayName,
@@ -48,7 +44,6 @@ function MyApp(props) {
             }
           });
       } else {
-        console.log("hi5");
         return <Login />;
       }
     });

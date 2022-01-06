@@ -136,40 +136,40 @@ function Post({
               <AiOutlineRetweet />
             </Stack>
           )}
+          <CardHeader
+            title={
+              <Stack alignItems="center" direction="row" spacing={2}>
+                <Link href={`${router.basePath}/user/${uid}`}>
+                  <Avatar sx={{ margin: "0.5px" }} src={data.image} />
+                </Link>
+                <Typography variant="h6">{data.name}</Typography>
+                {data.time}
+              </Stack>
+            }
+            sx={{ cursor: "pointer" }}
+            subtitle={timeStamp}
+            action={
+              <>
+                <Button onClick={handleClick}>
+                  <AiOutlineMenu />
+                </Button>
+                <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
+                  <Link href={`${router.basePath}/user/${data.uid}`} passHref>
+                    <MenuItem>View Profile</MenuItem>
+                  </Link>
+                  <Link href={`${router.basePath}/post/${id}`} passHref>
+                    <MenuItem>View Post</MenuItem>
+                  </Link>
+                </Menu>
+              </>
+            }
+          />
+
           <CardActionArea
             onDoubleClick={() =>
               toggleLiked(user, id, likes, setDisableLikeButton)
             }
           >
-            <CardHeader
-              title={
-                <Stack alignItems="center" direction="row" spacing={2}>
-                  <Link href={`${router.basePath}/user/${uid}`}>
-                    <Avatar sx={{ margin: "0.5px" }} src={data.image} />
-                  </Link>
-                  <Typography variant="h6">{data.name}</Typography>
-                  {data.time}
-                </Stack>
-              }
-              sx={{ cursor: "pointer" }}
-              subtitle={timeStamp}
-              action={
-                <>
-                  <Button onClick={handleClick}>
-                    <AiOutlineMenu />
-                  </Button>
-                  <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
-                    <Link href={`${router.basePath}/user/${data.uid}`} passHref>
-                      <MenuItem>View Profile</MenuItem>
-                    </Link>
-                    <Link href={`${router.basePath}/post/${id}`} passHref>
-                      <MenuItem>View Post</MenuItem>
-                    </Link>
-                  </Menu>
-                </>
-              }
-            />
-
             <CardContent>
               <Typography variant="body1" gutterBottom marginTop="0.5em">
                 {message}

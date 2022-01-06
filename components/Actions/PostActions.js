@@ -2,21 +2,26 @@ import toast from "react-hot-toast";
 import { db, FieldValue, storage } from "../../firebase";
 
 export function toggleLiked(user, id, likes, setDisableLikeButton) {
-  const hasLiked = likes.includes(user.email);
+  // const hasLiked = likes.includes(user.email);
   const postRef = db.collection("posts").doc(id);
 
   setDisableLikeButton(true);
 
-  postRef
-    .update({
-      likes: hasLiked
-        ? FieldValue.arrayRemove(user.email)
-        : FieldValue.arrayUnion(user.email),
-    })
+  db.runTransaction(async (transaction) => {
+    return await transaction.get(postRef).then((doc) => {
+      const hasLiked = doc.data().likes.includes(user.email);
+
+      transaction.update(postRef, {
+        likes: hasLiked
+          ? FieldValue.arrayRemove(user.email)
+          : FieldValue.arrayUnion(user.email),
+      });
+    });
+  })
     .then(() => {
       setTimeout(() => {
         setDisableLikeButton(false);
-      }, 1500);
+      }, 1000);
     })
     .catch(() => toast.error("Couldn't Like the post 😐"));
 }

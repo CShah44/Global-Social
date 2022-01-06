@@ -21,35 +21,38 @@ function MyApp(props) {
   let data = {};
 
   useEffect(() => {
-    if (
-      db
-        .collection("users")
-        .doc(user?.uid)
-        .get()
-        .then((snap) => {
-          if (snap.exists) {
-            return (data.about = snap.data().about);
-          }
-
-          if (user) {
-            db.collection("users").doc(user.uid).set(
-              {
-                name: user.displayName,
-                about: "Hey there, I am using Global Social!",
-                email: user.email,
-                followers: [],
-                following: [],
-                photoURL: user.photoURL,
-              },
-              { merge: true }
-            );
-          }
-        })
-        .catch(() => {
-          return <Login />;
-        })
-    );
-  }, [user]);
+    auth.onAuthStateChanged((user) => {
+      console.log("hi");
+      if (user) {
+        console.log("hi2");
+        db.collection("users")
+          .doc(user.uid)
+          .get()
+          .then((doc) => {
+            if (doc.exists) {
+              console.log("hi3");
+              return (data.about = doc.data().about);
+            } else {
+              console.log("hi4");
+              db.collection("users").doc(user.uid).set(
+                {
+                  name: user.displayName,
+                  about: "Hey there, I am using Global Social!",
+                  email: user.email,
+                  followers: [],
+                  following: [],
+                  photoURL: user.photoURL,
+                },
+                { merge: true }
+              );
+            }
+          });
+      } else {
+        console.log("hi5");
+        return <Login />;
+      }
+    });
+  }, []);
 
   if (loading) return null;
   if (!user) return <Login />;

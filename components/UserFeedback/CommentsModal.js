@@ -13,6 +13,7 @@ import {
 import { db, FieldValue } from "../../firebase";
 import { useState, useContext, useRef } from "react";
 import CurrentUser from "../../contexts/CurrentUser";
+import toast from "react-hot-toast";
 
 function CommentsModal({ id, show, comments, hideModal }) {
   const currentUser = useContext(CurrentUser);
@@ -34,8 +35,10 @@ function CommentsModal({ id, show, comments, hideModal }) {
           email: user.email,
         }),
       })
-      .catch(alert);
-    input.current.value = "";
+      .then(() => {
+        input.current.value = "";
+      })
+      .catch(() => toast.error("Could Not Comment. 😞"));
   }
 
   function deleteCommentHandler(comment) {

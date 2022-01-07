@@ -15,6 +15,7 @@ import {
   Stack,
   Popper,
   InputAdornment,
+  CardActions,
 } from "@mui/material";
 import { MdOutlineEmojiEmotions } from "react-icons/md";
 import { Picker } from "emoji-mart";
@@ -26,9 +27,9 @@ export default function ProfilePage({ user, docId }) {
   const [input, setInput] = useState("");
   const [anchorEl, setAnchorEl] = useState(null);
 
-  const handleClick = (event) => {
+  function handleClick(event) {
     setAnchorEl(anchorEl ? null : event.currentTarget);
-  };
+  }
 
   const open = Boolean(anchorEl);
   const id = open ? "simple-popper" : undefined;
@@ -63,20 +64,6 @@ export default function ProfilePage({ user, docId }) {
       success: "It's Done! 😁",
       error: "Couldn't Update 'About Me' 😐",
     });
-  }
-
-  let editButton;
-
-  if (docId === currentUser.uid) {
-    editButton = (
-      <Button
-        variant="contained"
-        sx={{ mr: "auto", mt: 4 }}
-        onClick={() => setIsEditing(true)}
-      >
-        Edit
-      </Button>
-    );
   }
 
   return (
@@ -134,10 +121,18 @@ export default function ProfilePage({ user, docId }) {
           ) : (
             <>
               <Typography variant="body1">{user.about}</Typography>
-              {editButton}
             </>
           )}
         </CardContent>
+        {docId === currentUser.uid && (
+          <CardActions>
+            {!isEditing && (
+              <Button variant="contained" onClick={() => setIsEditing(true)}>
+                Edit Your Bio
+              </Button>
+            )}
+          </CardActions>
+        )}
       </Card>
       <Popper id={id} open={open} anchorEl={anchorEl} placement="bottom">
         <Picker

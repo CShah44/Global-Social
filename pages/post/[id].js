@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { db } from "../../firebase";
+import { db, FieldValue } from "../../firebase";
 import {
   Avatar,
   Box,
@@ -9,34 +9,56 @@ import {
   ListItemText,
   TextField,
   Typography,
+  Button,
 } from "@mui/material";
 import { useDocumentData } from "react-firebase-hooks/firestore";
 import getUser from "../../components/Actions/getUser";
-import Image from "next/image";
+import Link from "next/link";
 import TimeAgo from "timeago-react";
 import { useState } from "react";
-import { AiOutlineRetweet, AiFillDelete } from "react-icons/ai";
+import { AiOutlineRetweet } from "react-icons/ai";
 import { FcDislike, FcLike } from "react-icons/fc";
+import { IconContext } from "react-icons";
+import {
+  toggleLiked,
+  repostHandler,
+} from "../../components/Actions/PostActions";
+import { useRef } from "react";
 
 function ViewPost() {
   const router = useRouter();
   const postId = router.query.id;
   const user = getUser();
 
+  const [disableLikeButton, setDisableLikeButton] = useState(false);
+
   const [ref, loading, error] = useDocumentData(
     db.collection("posts").doc(postId)
   );
-
-  if (error) {
-    return <div>No data.</div>;
-  }
 
   if (loading) {
     return <CircularProgress />;
   }
 
-  const { name, message, image, timestamp, id, comments, likes, uid, repost } =
-    ref;
+  // TODO: CHECK IS REF IS EMPTY
+  if (error || !ref) {
+    return router.push("/");
+  }
+
+  // Details of the current post.
+  const {
+    name,
+    message,
+    image,
+    timestamp,
+    comments,
+    likes,
+    uid,
+    repost,
+    postImages,
+  } = ref;
+
+  console.log(ref);
 
   const hasLiked = likes.includes(user.email);
 
@@ -59,14 +81,46 @@ function ViewPost() {
         display: "flex",
         flexDirection: "column",
         mt: 10,
-        width: { xs: "100vw", sm: "650px" },
+        width: { xs: "100vw", sm: "500px", md: "650px" },
         mx: "auto",
+        px: { xs: 2, sm: 0 },
       }}
     >
-      <Box sx={{ display: "flex", flexDirection: "row", gap: 2 }}>
-        <Avatar src={image} />
-        <Typography variant="h5">{name}</Typography>
-        <Typography variant="h6">{timeStamp}</Typography>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "row",
+          gap: 2,
+          alignItems: "center",
+          mb: 2,
+        }}
+      >
+        {repost && <Typography variant="h6"></Typography>}
+
+        <Avatar src={repost ? repost.image : image} />
+        {repost ? (
+          <Link href={`${router.basePath}/user/${repost.uid}`} passHref>
+            <Typography sx={{ cursor: "pointer" }} variant="h4">
+              {repost.name}
+            </Typography>
+          </Link>
+        ) : (
+          <Link href={`${router.basePath}/user/${uid}`} passHref>
+            <Typography sx={{ cursor: "pointer" }} variant="h4">
+              {name}
+            </Typography>
+          </Link>
+        )}
+        <Typography variant="h5">
+          {repost ? (
+            <TimeAgo
+              style={{ fontSize: "0.8em" }}
+              datetime={new Date(repost.timestamp.toDate()).toLocaleString()}
+            />
+          ) : (
+            timeStamp
+          )}
+        </Typography>
       </Box>
       <Box
         sx={{
@@ -77,28 +131,52 @@ function ViewPost() {
           gap: 1,
         }}
       >
-        {ref?.postImages && <Image src={postImages} layout="fill" />}
-        <Typography gutterBottom>{message}</Typography>
+        <Typography gutterBottom variant="h6">
+          {message}
+        </Typography>
+        {ref?.postImages && <img src={postImages} width="100%" />}
       </Box>
 
       {/* Post related actions - like, delete */}
-      <Box sx={{ display: "flex", flexDirection: "row", gap: 1 }}>
-        <Button
-          onClick={() => toggleLiked(user, id, likes, setDisableLikeButton)}
+      <IconContext.Provider value={{ size: "2em" }}>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "row",
+            gap: 1,
+            my: 2,
+          }}
         >
-          {hasLiked ? <FcDislike /> : <FcLike />}
-        </Button>
-        {user.uid != uid && (
-          <Button onClick={() => setShowRepostModal(true)}>
-            <AiOutlineRetweet />
+          <Button
+            disabled={disableLikeButton}
+            onClick={() => {
+              toggleLiked(user, postId, likes, setDisableLikeButton);
+            }}
+          >
+            <Typography variant="body" sx={{ px: 1 }}>
+              {likes.length}
+            </Typography>
+            {hasLiked ? <FcDislike /> : <FcLike />}
           </Button>
-        )}
-        {user.uid === uid && (
-          <Button color="error" onClick={() => setShowDeleteModal(true)}>
-            <AiFillDelete />
-          </Button>
-        )}
-      </Box>
+          {user.uid != uid && (
+            <Button
+              onClick={() =>
+                repostHandler(
+                  user,
+                  name,
+                  message,
+                  uid,
+                  timestamp,
+                  postImages,
+                  image
+                )
+              }
+            >
+              <AiOutlineRetweet />
+            </Button>
+          )}
+        </Box>
+      </IconContext.Provider>
       <CommentsArea comments={comments} id={postId} />
     </Box>
   );
@@ -107,8 +185,8 @@ function ViewPost() {
 export default ViewPost;
 
 function CommentsArea({ comments, id }) {
-  const [input, setInput] = useState("");
   const user = getUser();
+  const input = useRef(null);
 
   function deleteCommentHandler(comment) {
     db.collection("posts")
@@ -124,34 +202,37 @@ function CommentsArea({ comments, id }) {
 
   function addCommentHandler(e) {
     e.preventDefault();
-    console.log("hi");
 
-    if (input?.length <= 0) return;
+    if (input.current.value?.length <= 0) return;
 
     db.collection("posts")
       .doc(id)
       .update({
         comments: FieldValue.arrayUnion({
           name: user.displayName,
-          comment: input,
+          comment: input.current.value,
           email: user.email,
         }),
       })
       .catch(alert);
-    setInput("");
+    input.current.value = "";
   }
 
   return (
     <>
-      <TextField
-        variant="outlined"
-        fullWidth
-        sx={{ resize: "none" }}
-        label="Add a comment"
-        onChange={(e) => setInput(e.target.value)}
-        value={input}
-        onSubmit={addCommentHandler}
-      />
+      <Box>
+        <TextField
+          variant="outlined"
+          fullWidth
+          sx={{ resize: "none" }}
+          label="Add a comment"
+          InputProps={{ maxLength: 3 }}
+          inputRef={input}
+        />
+        <Button sx={{ my: 1 }} variant="contained" onClick={addCommentHandler}>
+          Add
+        </Button>
+      </Box>
 
       <List>
         {comments.length > 0 ? (

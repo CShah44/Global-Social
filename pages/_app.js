@@ -18,8 +18,6 @@ function MyApp(props) {
 
   const [user, loading, error] = useAuthState(auth);
 
-  let data = {};
-
   useEffect(() => {
     auth.onAuthStateChanged((user) => {
       if (user) {
@@ -28,7 +26,7 @@ function MyApp(props) {
           .get()
           .then((doc) => {
             if (doc.exists) {
-              return (data.about = doc.data().about);
+              return;
             } else {
               db.collection("users").doc(user.uid).set(
                 {
@@ -57,7 +55,6 @@ function MyApp(props) {
         user,
         loading,
         error,
-        about: data?.about,
       }
     : {};
 

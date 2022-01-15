@@ -10,7 +10,6 @@ import {
   Popper,
   InputAdornment,
 } from "@mui/material";
-import getUser from "../../components/Actions/getUser";
 import { useRouter } from "next/router";
 import Navbar from "../../components/NavBar";
 import toast from "react-hot-toast";
@@ -18,9 +17,10 @@ import { MdOutlineEmojiEmotions } from "react-icons/md";
 import { Picker } from "emoji-mart";
 
 import "emoji-mart/css/emoji-mart.css";
+import { useAuth } from "../../components/Actions/useAuth";
 
 function AddPostComponent() {
-  const user = getUser();
+  const { user } = useAuth();
   const router = useRouter();
 
   const filePickerRef = useRef(null);
@@ -54,8 +54,11 @@ function AddPostComponent() {
 
   function addEmoji(emo) {
     setMessage((prev) => {
-      let a = prev.text.toString() + emo.native;
-      return a;
+      let a = prev.text + emo.native;
+      return {
+        text: a,
+        progress: prev.progress,
+      };
     });
   }
 
@@ -167,7 +170,7 @@ function AddPostComponent() {
             InputProps={{
               endAdornment: (
                 <InputAdornment
-                  sx={{ m: "auto", cursor: "pointer" }}
+                  sx={{ width: 30, height: 30, cursor: "pointer" }}
                   onClick={handleClick}
                   position="end"
                 >

@@ -12,11 +12,10 @@ import {
   Button,
 } from "@mui/material";
 import { useDocumentData } from "react-firebase-hooks/firestore";
-import getUser from "../../components/Actions/getUser";
 import Link from "next/link";
 import TimeAgo from "timeago-react";
 import { useState } from "react";
-import { AiOutlineRetweet } from "react-icons/ai";
+import { AiOutlineRetweet, AiOutlineArrowLeft } from "react-icons/ai";
 import { FcDislike, FcLike } from "react-icons/fc";
 import { IconContext } from "react-icons";
 import {
@@ -24,11 +23,13 @@ import {
   repostHandler,
 } from "../../components/Actions/PostActions";
 import { useRef } from "react";
+import Head from "next/head";
+import { useAuth } from "../../components/Actions/useAuth";
 
 function ViewPost() {
   const router = useRouter();
   const postId = router.query.id;
-  const user = getUser();
+  const { user } = useAuth();
 
   const [disableLikeButton, setDisableLikeButton] = useState(false);
 
@@ -73,112 +74,130 @@ function ViewPost() {
     </span>
   );
 
-  // TODO: DELETE, repost modals stuff yet to be sorted maybe merge with the one on post component
-
   return (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        mt: 10,
-        width: { xs: "100vw", sm: "500px", md: "650px" },
-        mx: "auto",
-        px: { xs: 2, sm: 0 },
-      }}
-    >
+    <>
+      <Head>
+        <title>Post ∙ {name}</title>
+      </Head>
       <Box
         sx={{
-          display: "flex",
-          flexDirection: "row",
-          gap: 2,
-          alignItems: "center",
-          mb: 2,
+          borderBottom: "1px solid whitesmoke",
+          width: { xs: "100vw", sm: "500px", md: "650px" },
+          mx: "auto",
+          mt: 1,
         }}
       >
-        {repost && <Typography variant="h6"></Typography>}
-
-        <Avatar src={repost ? repost.image : image} />
-        {repost ? (
-          <Link href={`${router.basePath}/user/${repost.uid}`} passHref>
-            <Typography sx={{ cursor: "pointer" }} variant="h4">
-              {repost.name}
-            </Typography>
-          </Link>
-        ) : (
-          <Link href={`${router.basePath}/user/${uid}`} passHref>
-            <Typography sx={{ cursor: "pointer" }} variant="h4">
-              {name}
-            </Typography>
-          </Link>
-        )}
-        <Typography variant="h5">
-          {repost ? (
-            <TimeAgo
-              style={{ fontSize: "0.8em" }}
-              datetime={new Date(repost.timestamp.toDate()).toLocaleString()}
-            />
-          ) : (
-            timeStamp
-          )}
-        </Typography>
+        <Button sx={{ mr: "auto", m: 1 }} onClick={() => router.back()}>
+          <IconContext.Provider value={{ size: "2em" }}>
+            <AiOutlineArrowLeft />
+          </IconContext.Provider>
+        </Button>
       </Box>
       <Box
         sx={{
-          mt: 2,
-          mb: 4,
           display: "flex",
           flexDirection: "column",
-          gap: 1,
+          mt: 10,
+          width: { xs: "100vw", sm: "500px", md: "650px" },
+          mx: "auto",
+          px: { xs: 2, sm: 0 },
         }}
       >
-        <Typography gutterBottom variant="h6">
-          {message}
-        </Typography>
-        {ref?.postImages && <img src={postImages} width="100%" />}
-      </Box>
-
-      {/* Post related actions - like, delete */}
-      <IconContext.Provider value={{ size: "2em" }}>
         <Box
           sx={{
             display: "flex",
             flexDirection: "row",
-            gap: 1,
-            my: 2,
+            gap: 2,
+            alignItems: "center",
+            mb: 2,
           }}
         >
-          <Button
-            disabled={disableLikeButton}
-            onClick={() => {
-              toggleLiked(user, postId, likes, setDisableLikeButton);
+          {repost && <Typography variant="h6"></Typography>}
+
+          <Avatar src={repost ? repost.image : image} />
+          {repost ? (
+            <Link href={`${router.basePath}/user/${repost.uid}`} passHref>
+              <Typography sx={{ cursor: "pointer" }} variant="h4">
+                {repost.name}
+              </Typography>
+            </Link>
+          ) : (
+            <Link href={`${router.basePath}/user/${uid}`} passHref>
+              <Typography sx={{ cursor: "pointer" }} variant="h4">
+                {name}
+              </Typography>
+            </Link>
+          )}
+          <Typography variant="h5">
+            {repost ? (
+              // TODO CHECK FONT SIZE
+              <TimeAgo
+                style={{ fontSize: "0.8em" }}
+                datetime={new Date(repost.timestamp.toDate()).toLocaleString()}
+              />
+            ) : (
+              timeStamp
+            )}
+          </Typography>
+        </Box>
+        <Box
+          sx={{
+            mt: 2,
+            mb: 4,
+            display: "flex",
+            flexDirection: "column",
+            gap: 1,
+          }}
+        >
+          <Typography gutterBottom variant="h6">
+            {message}
+          </Typography>
+          {postImages && <img src={postImages} width="100%" />}
+        </Box>
+
+        {/* Post related actions - like, delete */}
+        <IconContext.Provider value={{ size: "2em" }}>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              gap: 1,
+              my: 2,
             }}
           >
-            <Typography variant="body" sx={{ px: 1 }}>
-              {likes.length}
-            </Typography>
-            {hasLiked ? <FcDislike /> : <FcLike />}
-          </Button>
-          {user.uid != uid && (
             <Button
-              onClick={() =>
-                repostHandler(
-                  user,
-                  name,
-                  message,
-                  uid,
-                  timestamp,
-                  postImages,
-                  image
-                )
-              }
+              disabled={disableLikeButton}
+              onClick={() => {
+                toggleLiked(user, postId, likes);
+              }}
             >
-              <AiOutlineRetweet />
+              <Typography variant="body" sx={{ px: 1 }}>
+                {likes.length}
+              </Typography>
+              {hasLiked ? <FcDislike /> : <FcLike />}
             </Button>
-          )}
-        </Box>
-      </IconContext.Provider>
-      <CommentsArea comments={comments} id={postId} />
-    </Box>
+            {user.uid != uid && (
+              <Button
+                onClick={() =>
+                  repostHandler(
+                    user,
+                    name,
+                    message,
+                    uid,
+                    timestamp,
+                    postImages,
+                    image
+                  )
+                }
+              >
+                <AiOutlineRetweet />
+              </Button>
+            )}
+          </Box>
+        </IconContext.Provider>
+        <CommentsArea comments={comments} id={postId} />
+      </Box>
+    </>
   );
 }
 

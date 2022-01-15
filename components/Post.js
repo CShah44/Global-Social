@@ -23,11 +23,11 @@ import TimeAgo from "timeago-react";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import ConfirmModal from "./UserFeedback/ConfirmModal";
-import getUser from "./Actions/getUser";
 import { CgComment } from "react-icons/cg";
 import { FcLike, FcDislike } from "react-icons/fc";
 import { AiFillDelete, AiOutlineRetweet, AiOutlineMenu } from "react-icons/ai";
 import { IconContext } from "react-icons";
+import { useAuth } from "./Actions/useAuth";
 
 function Post({
   name,
@@ -59,17 +59,17 @@ function Post({
   };
 
   const router = useRouter();
-  const user = getUser();
+  const { user } = useAuth();
 
   const hasLiked = likes.includes(user.email);
 
   const timeStamp = timestamp ? (
     <TimeAgo
-      style={{ fontSize: "0.8em" }}
+      style={{ fontSize: "0.7em" }}
       datetime={new Date(timestamp?.toDate()).toLocaleString()}
     />
   ) : (
-    <span style={{ paddingLeft: 2, paddingRight: 2, fontSize: "0.8em" }}>
+    <span style={{ paddingLeft: 2, paddingRight: 2, fontSize: "0.7em" }}>
       Loading...
     </span>
   );
@@ -81,7 +81,7 @@ function Post({
     name: repost ? repost.name : name,
     time: repost ? (
       <TimeAgo
-        style={{ fontSize: "0.8em" }}
+        style={{ fontSize: "0.7em" }}
         datetime={new Date(repost.timestamp.toDate()).toLocaleString()}
       />
     ) : (
@@ -89,6 +89,18 @@ function Post({
     ),
     showDelete: user.uid === uid,
   };
+
+  function processDelete() {
+    let canDeleteImage;
+    if (postImages) {
+      if (repost) {
+        canDeleteImage = false;
+      } else {
+        canDeleteImage = true;
+      }
+    }
+    return deletePostHandler(id, postImages, canDeleteImage);
+  }
 
   return (
     <>
@@ -116,7 +128,7 @@ function Post({
         text="Are you sure you want to delete the post?"
         hideModal={() => setShowDeleteModal(false)}
         show={showDeleteModal}
-        func={() => deletePostHandler(id, postImages)}
+        func={processDelete}
       />
 
       <Card className="neuEff" sx={{ width: "100%" }}>
@@ -139,7 +151,7 @@ function Post({
           <CardHeader
             title={
               <Stack alignItems="center" direction="row" spacing={2}>
-                <Link href={`${router.basePath}/user/${uid}`}>
+                <Link href={`${router.basePath}/user/${data.uid}`}>
                   <Avatar sx={{ margin: "0.5px" }} src={data.image} />
                 </Link>
                 <Typography variant="h6">{data.name}</Typography>
@@ -165,11 +177,7 @@ function Post({
             }
           />
 
-          <CardActionArea
-            onDoubleClick={() =>
-              toggleLiked(user, id, likes, setDisableLikeButton)
-            }
-          >
+          <CardActionArea onDoubleClick={() => toggleLiked(user, id, likes)}>
             <CardContent>
               <Typography variant="body1" gutterBottom marginTop="0.5em">
                 {message}
@@ -180,7 +188,7 @@ function Post({
                 component="img"
                 src={postImages}
                 sx={{ width: { xs: "100%", sm: "500px", md: "650px" } }}
-                alt="hello"
+                alt="Post Image"
               />
             )}
           </CardActionArea>
@@ -192,7 +200,7 @@ function Post({
               <CgComment />
             </Button>
             <Button
-              onClick={() => toggleLiked(user, id, likes, setDisableLikeButton)}
+              onClick={() => toggleLiked(user, id, likes)}
               disabled={disableLikeButton}
             >
               <Typography variant="body" sx={{ px: 1 }}>

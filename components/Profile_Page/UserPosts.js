@@ -1,13 +1,12 @@
-import { useContext } from "react";
 import { useCollection } from "react-firebase-hooks/firestore";
-import CurrentUser from "../../contexts/CurrentUser";
 import { db } from "../../firebase";
 import Post from "../Post";
 import { Stack } from "@mui/material";
+import { useAuth } from "../Actions/useAuth";
 
 function UserPosts({ user }) {
-  const currentUser = useContext(CurrentUser);
-  const email = currentUser.user.email;
+  const { user } = useAuth();
+  const email = user.email;
 
   const [userPosts] = useCollection(
     db

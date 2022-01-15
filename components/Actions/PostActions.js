@@ -1,12 +1,8 @@
 import toast from "react-hot-toast";
 import { db, FieldValue, storage } from "../../firebase";
 
-export function toggleLiked(user, id, likes, setDisableLikeButton) {
-  // const hasLiked = likes.includes(user.email);
+export function toggleLiked(user, id) {
   const postRef = db.collection("posts").doc(id);
-
-  setDisableLikeButton(true);
-
   db.runTransaction(async (transaction) => {
     return await transaction.get(postRef).then((doc) => {
       const hasLiked = doc.data().likes.includes(user.email);
@@ -17,24 +13,21 @@ export function toggleLiked(user, id, likes, setDisableLikeButton) {
           : FieldValue.arrayUnion(user.email),
       });
     });
-  })
-    .then(() => {
-      setTimeout(() => {
-        setDisableLikeButton(false);
-      }, 1000);
-    })
-    .catch(() => toast.error("Couldn't Like the post 😐"));
+  }).catch(() => toast.error("Couldn't Like the post 😐"));
 }
 
-export function deletePostHandler(id, postImages) {
+export function deletePostHandler(id, postImages, canDeleteImage = Boolean()) {
   const p = db
     .collection("posts")
     .doc(id)
     .delete()
     .then(() => {
-      if (postImages) {
-        return storage.refFromURL(postImages).delete();
+      if (canDeleteImage) {
+        storage.refFromURL(postImages).delete();
       }
+    })
+    .catch((E) => {
+      console.log(E);
     });
 
   toast.promise(p, {

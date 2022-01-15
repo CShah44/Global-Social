@@ -14,12 +14,12 @@ import { AiOutlineMenu } from "react-icons/ai";
 import { useState } from "react";
 import { auth } from "../firebase";
 import { useRouter } from "next/router";
-import getUser from "./Actions/getUser";
 import Link from "next/link";
+import { useAuth } from "./Actions/useAuth";
 
 function Navbar() {
   const router = useRouter();
-  const user = getUser();
+  const { user } = useAuth();
 
   function processSignOut() {
     auth.signOut();

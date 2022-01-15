@@ -1,7 +1,6 @@
 import { db } from "../../firebase";
 import { useState } from "react";
 import "emoji-mart/css/emoji-mart.css";
-import getUser from "../Actions/getUser";
 import toast from "react-hot-toast";
 import {
   Button,
@@ -19,9 +18,10 @@ import {
 } from "@mui/material";
 import { MdOutlineEmojiEmotions } from "react-icons/md";
 import { Picker } from "emoji-mart";
+import { useAuth } from "../Actions/useAuth";
 
 export default function ProfilePage({ user, docId }) {
-  const currentUser = getUser();
+  const { currentUser: user } = useAuth();
 
   const [isEditing, setIsEditing] = useState(false);
   const [input, setInput] = useState("");
@@ -47,7 +47,7 @@ export default function ProfilePage({ user, docId }) {
     });
   }
 
-  function updateAboutMe(e) {
+  function updateBio(e) {
     e.preventDefault();
     if (input.length <= 10) {
       return toast.error("Enter at least 10 characters.");
@@ -60,9 +60,9 @@ export default function ProfilePage({ user, docId }) {
     });
 
     toast.promise(p, {
-      loading: "Updating 'About Me'...",
-      success: "It's Done! 😁",
-      error: "Couldn't Update 'About Me' 😐",
+      loading: "Updating your bio...",
+      success: "Done! 😁",
+      error: "Couldn't Update Your Bio! 😐",
     });
   }
 
@@ -104,7 +104,7 @@ export default function ProfilePage({ user, docId }) {
               <Button
                 sx={{ mr: 1, mt: 1 }}
                 color="success"
-                onClick={updateAboutMe}
+                onClick={updateBio}
                 variant="contained"
               >
                 Done

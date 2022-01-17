@@ -2,10 +2,10 @@ import { useCollection } from "react-firebase-hooks/firestore";
 import { db } from "../../firebase";
 import Post from "../Post";
 import { Stack } from "@mui/material";
-import { useAuth } from "../Actions/useAuth";
+import getUser from "../Actions/getUser";
 
 function UserPosts({ user }) {
-  const { user } = useAuth();
+  const user = getUser();
   const email = user.email;
 
   const [userPosts] = useCollection(

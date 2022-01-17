@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Card,
   CardActions,
@@ -27,7 +27,8 @@ import { CgComment } from "react-icons/cg";
 import { FcLike, FcDislike } from "react-icons/fc";
 import { AiFillDelete, AiOutlineRetweet, AiOutlineMenu } from "react-icons/ai";
 import { IconContext } from "react-icons";
-import { useAuth } from "./Actions/useAuth";
+import { db } from "../firebase";
+import getUser from "./Actions/getUser";
 
 function Post({
   name,
@@ -37,7 +38,6 @@ function Post({
   postImages,
   timestamp,
   id,
-  comments,
   likes,
   uid,
   repost,
@@ -46,9 +46,21 @@ function Post({
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showRepostModal, setShowRepostModal] = useState(false);
   const [disableLikeButton, setDisableLikeButton] = useState(false);
+  const [comments, setComments] = useState([]);
 
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
+
+  useEffect(() => {
+    db.collection("posts")
+      .doc(id)
+      .collection("comments")
+      .get()
+      .then((snap) => {
+        setComments(snap.docs);
+        console.log(comments);
+      });
+  }, []);
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -59,7 +71,7 @@ function Post({
   };
 
   const router = useRouter();
-  const { user } = useAuth();
+  const user = getUser();
 
   const hasLiked = likes.includes(user.email);
 
@@ -91,15 +103,7 @@ function Post({
   };
 
   function processDelete() {
-    let canDeleteImage;
-    if (postImages) {
-      if (repost) {
-        canDeleteImage = false;
-      } else {
-        canDeleteImage = true;
-      }
-    }
-    return deletePostHandler(id, postImages, canDeleteImage);
+    deletePostHandler(id, postImages);
   }
 
   return (

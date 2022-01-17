@@ -18,10 +18,10 @@ import {
 } from "@mui/material";
 import { MdOutlineEmojiEmotions } from "react-icons/md";
 import { Picker } from "emoji-mart";
-import { useAuth } from "../Actions/useAuth";
+import getUser from "../Actions/getUser";
 
 export default function ProfilePage({ user, docId }) {
-  const { currentUser: user } = useAuth();
+  const currentUser = getUser();
 
   const [isEditing, setIsEditing] = useState(false);
   const [input, setInput] = useState("");

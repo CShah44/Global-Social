@@ -24,12 +24,12 @@ import {
 } from "../../components/Actions/PostActions";
 import { useRef } from "react";
 import Head from "next/head";
-import { useAuth } from "../../components/Actions/useAuth";
+import getUser from "../../components/Actions/getUser";
 
 function ViewPost() {
   const router = useRouter();
   const postId = router.query.id;
-  const { user } = useAuth();
+  const user = getUser();
 
   const [disableLikeButton, setDisableLikeButton] = useState(false);
 

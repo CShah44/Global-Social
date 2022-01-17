@@ -15,11 +15,12 @@ import { useState } from "react";
 import { auth } from "../firebase";
 import { useRouter } from "next/router";
 import Link from "next/link";
-import { useAuth } from "./Actions/useAuth";
+import getUser from "./Actions/getUser";
+import Login from "./Login";
 
 function Navbar() {
   const router = useRouter();
-  const { user } = useAuth();
+  const user = getUser();
 
   function processSignOut() {
     auth.signOut();

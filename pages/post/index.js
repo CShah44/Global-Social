@@ -15,12 +15,11 @@ import Navbar from "../../components/NavBar";
 import toast from "react-hot-toast";
 import { MdOutlineEmojiEmotions } from "react-icons/md";
 import { Picker } from "emoji-mart";
-
 import "emoji-mart/css/emoji-mart.css";
-import { useAuth } from "../../components/Actions/useAuth";
+import getUser from "../../components/Actions/getUser";
 
 function AddPostComponent() {
-  const { user } = useAuth();
+  const user = getUser();
   const router = useRouter();
 
   const filePickerRef = useRef(null);
@@ -77,7 +76,6 @@ function AddPostComponent() {
         image: user.photoURL,
         uid: user.uid,
         timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-        comments: [],
         likes: [],
         repost: null,
       })

@@ -8,15 +8,16 @@ import {
   ListItem,
   ListItemText,
   DialogActions,
+  InputAdornment,
+  CircularProgress,
 } from "@mui/material";
-
-import { db, FieldValue } from "../../firebase";
+import getUser from "../Actions/getUser";
+import { db } from "../../firebase";
 import { useState, useRef } from "react";
 import toast from "react-hot-toast";
-import { useAuth } from "../Actions/useAuth";
 
 function CommentsModal({ id, show, comments, hideModal }) {
-  const { user } = useAuth();
+  const user = getUser();
   const [progress, setProgress] = useState(0);
   const input = useRef(null);
 
@@ -27,12 +28,12 @@ function CommentsModal({ id, show, comments, hideModal }) {
 
     db.collection("posts")
       .doc(id)
-      .update({
-        comments: FieldValue.arrayUnion({
-          name: user.displayName,
-          comment: input.current.value,
-          email: user.email,
-        }),
+      .collection("comments")
+      .add({
+        name: user.displayName,
+        comment: input.current.value,
+        email: user.email,
+        uid: user.uid,
       })
       .then(() => {
         input.current.value = "";
@@ -41,15 +42,19 @@ function CommentsModal({ id, show, comments, hideModal }) {
   }
 
   function deleteCommentHandler(comment) {
-    db.collection("posts")
+    const ref = db
+      .collection("posts")
       .doc(id)
-      .update({
-        comments: FieldValue.arrayRemove({
-          comment: comment.comment,
-          name: comment.name,
-          email: comment.email,
-        }),
-      });
+      .collection("comments")
+      .where("comment", "==", comment.comment)
+      .where("uid", "==", comment.uid);
+
+    ref
+      .get()
+      .then((snap) => {
+        snap.forEach((doc) => doc.ref.delete());
+      })
+      .catch(() => toast("Couldn't delete comment. 😐"));
   }
 
   function changeProgress(e) {
@@ -104,6 +109,13 @@ function CommentsModal({ id, show, comments, hideModal }) {
           onChange={changeProgress}
           inputRef={input}
           error={progress > 100}
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                <CircularProgress value={progress} />
+              </InputAdornment>
+            ),
+          }}
         />
         <Button
           color="secondary"

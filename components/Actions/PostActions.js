@@ -16,19 +16,31 @@ export function toggleLiked(user, id) {
   }).catch(() => toast.error("Couldn't Like the post 😐"));
 }
 
-export function deletePostHandler(id, postImages, canDeleteImage = Boolean()) {
-  const p = db
-    .collection("posts")
-    .doc(id)
-    .delete()
-    .then(() => {
-      if (canDeleteImage) {
-        storage.refFromURL(postImages).delete();
+export function deletePostHandler(id, postImages) {
+  let x = false;
+
+  const ref = db.collection("posts").doc(id);
+
+  const p = db.runTransaction(async (transaction) => {
+    return await transaction.get(ref).then((doc) => {
+      if (postImages) {
+        if (doc.data().repost != null) {
+          return;
+        } else {
+          return (x = true);
+        }
       }
-    })
-    .catch((E) => {
-      console.log(E);
+
+      transaction.delete(ref).then(() => {
+        if (x) {
+          storage
+            .refFromURL(postImages)
+            .delete()
+            .catch((e) => console.log(e));
+        }
+      });
     });
+  });
 
   toast.promise(p, {
     loading: "Deleting..",
@@ -55,7 +67,6 @@ export function repostHandler(
     uid: user.uid,
     postImages: postImages ? postImages : null,
     timestamp: FieldValue.serverTimestamp(),
-    comments: [],
     likes: [],
     repost: {
       name: name,

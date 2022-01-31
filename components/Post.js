@@ -27,7 +27,6 @@ import { CgComment } from "react-icons/cg";
 import { FcLike, FcDislike } from "react-icons/fc";
 import { AiFillDelete, AiOutlineRetweet, AiOutlineMenu } from "react-icons/ai";
 import { IconContext } from "react-icons";
-import { db } from "../firebase";
 import getUser from "./Actions/getUser";
 
 function Post({
@@ -45,22 +44,9 @@ function Post({
   const [showComments, setShowComments] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showRepostModal, setShowRepostModal] = useState(false);
-  const [disableLikeButton, setDisableLikeButton] = useState(false);
-  const [comments, setComments] = useState([]);
 
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
-
-  useEffect(() => {
-    db.collection("posts")
-      .doc(id)
-      .collection("comments")
-      .get()
-      .then((snap) => {
-        setComments(snap.docs);
-        console.log(comments);
-      });
-  }, []);
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -109,7 +95,6 @@ function Post({
   return (
     <>
       <CommentsModal
-        comments={comments}
         hideModal={() => setShowComments(false)}
         show={showComments}
         id={id}
@@ -198,15 +183,9 @@ function Post({
           </CardActionArea>
           <CardActions sx={{ p: 1, borderTop: "0.1px solid grey" }}>
             <Button onClick={() => setShowComments(true)}>
-              <Typography variant="body" sx={{ px: 1 }}>
-                {comments.length}
-              </Typography>
               <CgComment />
             </Button>
-            <Button
-              onClick={() => toggleLiked(user, id, likes)}
-              disabled={disableLikeButton}
-            >
+            <Button>
               <Typography variant="body" sx={{ px: 1 }}>
                 {likes.length}
               </Typography>

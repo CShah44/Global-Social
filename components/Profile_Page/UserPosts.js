@@ -32,7 +32,6 @@ function UserPosts({ user }) {
               timestamp={post.data().timestamp}
               image={post.data().image}
               postImages={post.data().postImages}
-              comments={post.data().comments}
               likes={post.data().likes}
               showUserOptions={post.data().email === email ? true : false}
               repost={post.data().repost}

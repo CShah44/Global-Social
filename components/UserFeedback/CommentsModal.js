@@ -15,11 +15,16 @@ import getUser from "../Actions/getUser";
 import { db } from "../../firebase";
 import { useState, useRef } from "react";
 import toast from "react-hot-toast";
+import { useCollectionData } from "react-firebase-hooks/firestore";
 
-function CommentsModal({ id, show, comments, hideModal }) {
+function CommentsModal({ id, show, hideModal }) {
   const user = getUser();
   const [progress, setProgress] = useState(0);
   const input = useRef(null);
+
+  const [comments] = useCollectionData(
+    db.collection("posts").doc(id).collection("comments")
+  );
 
   function addCommentHandler(e) {
     e.preventDefault();
@@ -37,6 +42,7 @@ function CommentsModal({ id, show, comments, hideModal }) {
       })
       .then(() => {
         input.current.value = "";
+        setProgress(0);
       })
       .catch(() => toast.error("Could Not Comment. 😞"));
   }
@@ -73,7 +79,7 @@ function CommentsModal({ id, show, comments, hideModal }) {
       <DialogTitle>Comments</DialogTitle>
       <DialogContent>
         <List sx={{ width: "100%" }}>
-          {comments.length > 0 ? (
+          {comments?.length > 0 ? (
             comments.map(function (comment, i) {
               return (
                 <ListItem
@@ -112,7 +118,11 @@ function CommentsModal({ id, show, comments, hideModal }) {
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">
-                <CircularProgress value={progress} />
+                <CircularProgress
+                  value={progress}
+                  color={progress >= 100 ? "error" : "primary"}
+                  variant="determinate"
+                />
               </InputAdornment>
             ),
           }}
@@ -120,7 +130,7 @@ function CommentsModal({ id, show, comments, hideModal }) {
         <Button
           color="secondary"
           variant="outlined"
-          sx={{ height: "100%", m: 1, p: 1 }}
+          sx={{ height: "100%", m: 1, py: 1.6 }}
           disabled={progress > 100}
           onClick={addCommentHandler}
         >

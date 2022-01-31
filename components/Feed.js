@@ -29,7 +29,6 @@ function Feed() {
               email={post.data().email}
               timestamp={post.data().timestamp}
               image={post.data().image}
-              comments={post.data().comments}
               likes={post.data().likes}
               showDeleteButton={false}
               repost={post.data().repost}

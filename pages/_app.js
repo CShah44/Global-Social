@@ -33,8 +33,6 @@ function MyApp(props) {
                   name: user.displayName,
                   about: "Hey there, I am using Global Social!",
                   email: user.email,
-                  followers: [],
-                  following: [],
                   photoURL: user.photoURL,
                 },
                 { merge: true }

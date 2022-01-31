@@ -10,11 +10,14 @@ import {
   TextField,
   Typography,
   Button,
+  InputAdornment,
 } from "@mui/material";
-import { useDocumentData } from "react-firebase-hooks/firestore";
+import {
+  useCollectionData,
+  useDocumentData,
+} from "react-firebase-hooks/firestore";
 import Link from "next/link";
 import TimeAgo from "timeago-react";
-import { useState } from "react";
 import { AiOutlineRetweet, AiOutlineArrowLeft } from "react-icons/ai";
 import { FcDislike, FcLike } from "react-icons/fc";
 import { IconContext } from "react-icons";
@@ -22,7 +25,7 @@ import {
   toggleLiked,
   repostHandler,
 } from "../../components/Actions/PostActions";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import Head from "next/head";
 import getUser from "../../components/Actions/getUser";
 
@@ -30,8 +33,6 @@ function ViewPost() {
   const router = useRouter();
   const postId = router.query.id;
   const user = getUser();
-
-  const [disableLikeButton, setDisableLikeButton] = useState(false);
 
   const [ref, loading, error] = useDocumentData(
     db.collection("posts").doc(postId)
@@ -42,24 +43,12 @@ function ViewPost() {
   }
 
   // TODO: CHECK IS REF IS EMPTY
-  if (error || !ref) {
+  if (error) {
     return router.push("/");
   }
 
-  // Details of the current post.
-  const {
-    name,
-    message,
-    image,
-    timestamp,
-    comments,
-    likes,
-    uid,
-    repost,
-    postImages,
-  } = ref;
-
-  console.log(ref);
+  const { name, message, image, timestamp, likes, uid, repost, postImages } =
+    ref;
 
   const hasLiked = likes.includes(user.email);
 
@@ -77,7 +66,7 @@ function ViewPost() {
   return (
     <>
       <Head>
-        <title>Post ∙ {name}</title>
+        <title>Post by ∙ {name}</title>
       </Head>
       <Box
         sx={{
@@ -130,7 +119,6 @@ function ViewPost() {
           )}
           <Typography variant="h5">
             {repost ? (
-              // TODO CHECK FONT SIZE
               <TimeAgo
                 style={{ fontSize: "0.8em" }}
                 datetime={new Date(repost.timestamp.toDate()).toLocaleString()}
@@ -166,7 +154,6 @@ function ViewPost() {
             }}
           >
             <Button
-              disabled={disableLikeButton}
               onClick={() => {
                 toggleLiked(user, postId, likes);
               }}
@@ -195,7 +182,7 @@ function ViewPost() {
             )}
           </Box>
         </IconContext.Provider>
-        <CommentsArea comments={comments} id={postId} />
+        <CommentsArea id={postId} />
       </Box>
     </>
   );
@@ -203,38 +190,55 @@ function ViewPost() {
 
 export default ViewPost;
 
-function CommentsArea({ comments, id }) {
+function CommentsArea({ id }) {
   const user = getUser();
   const input = useRef(null);
+  const [progress, setProgress] = useState(0);
+
+  const [comments] = useCollectionData(
+    db.collection("posts").doc(id).collection("comments")
+  );
 
   function deleteCommentHandler(comment) {
-    db.collection("posts")
+    const ref = db
+      .collection("posts")
       .doc(id)
-      .update({
-        comments: FieldValue.arrayRemove({
-          comment: comment.comment,
-          name: comment.name,
-          email: comment.email,
-        }),
-      });
+      .collection("comments")
+      .where("comment", "==", comment.comment)
+      .where("uid", "==", comment.uid);
+
+    ref
+      .get()
+      .then((snap) => {
+        snap.forEach((doc) => doc.ref.delete());
+      })
+      .catch(() => toast("Couldn't delete comment. 😐"));
   }
 
   function addCommentHandler(e) {
     e.preventDefault();
 
-    if (input.current.value?.length <= 0) return;
+    if (progress <= 0) return;
 
     db.collection("posts")
       .doc(id)
-      .update({
-        comments: FieldValue.arrayUnion({
-          name: user.displayName,
-          comment: input.current.value,
-          email: user.email,
-        }),
+      .collection("comments")
+      .add({
+        name: user.displayName,
+        comment: input.current.value,
+        email: user.email,
+        uid: user.uid,
       })
-      .catch(alert);
-    input.current.value = "";
+      .then(() => {
+        input.current.value = "";
+        setProgress(0);
+      })
+      .catch(() => toast.error("Could Not Comment. 😞"));
+  }
+
+  function changeProgress(e) {
+    let v = (e.target.value.length / 150) * 100;
+    setProgress(v);
   }
 
   return (
@@ -247,14 +251,32 @@ function CommentsArea({ comments, id }) {
           label="Add a comment"
           InputProps={{ maxLength: 3 }}
           inputRef={input}
+          onChange={changeProgress}
+          error={progress > 100}
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                <CircularProgress
+                  value={progress}
+                  color={progress >= 100 ? "error" : "primary"}
+                  variant="determinate"
+                />
+              </InputAdornment>
+            ),
+          }}
         />
-        <Button sx={{ my: 1 }} variant="contained" onClick={addCommentHandler}>
+        <Button
+          disabled={progress <= 0}
+          sx={{ my: 1 }}
+          variant="contained"
+          onClick={addCommentHandler}
+        >
           Add
         </Button>
       </Box>
 
       <List>
-        {comments.length > 0 ? (
+        {comments?.length > 0 ? (
           comments.map(function (comment, i) {
             return (
               <ListItem
@@ -276,7 +298,7 @@ function CommentsArea({ comments, id }) {
           })
         ) : (
           <ListItem>
-            <ListItemText primary="No Comments Yet!" />
+            <ListItemText primary="Be the first one to comment..." />
           </ListItem>
         )}
       </List>

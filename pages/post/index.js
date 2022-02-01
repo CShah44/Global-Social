@@ -163,6 +163,13 @@ function AddPostComponent() {
             onChange={changeProgress}
             value={message.text}
             error={message.progress >= 100}
+            color={
+              message.progress >= 100
+                ? "error"
+                : message.progress >= 85
+                ? "warning"
+                : "primary"
+            }
             sx={{ resize: "none" }}
             helperText={message.progress >= 100 && "Type less, say more! 😅"}
             InputProps={{

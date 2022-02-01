@@ -115,12 +115,21 @@ function CommentsModal({ id, show, hideModal }) {
           onChange={changeProgress}
           inputRef={input}
           error={progress > 100}
+          color={
+            progress >= 100 ? "error" : progress >= 85 ? "warning" : "primary"
+          }
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">
                 <CircularProgress
                   value={progress}
-                  color={progress >= 100 ? "error" : "primary"}
+                  color={
+                    progress >= 100
+                      ? "error"
+                      : progress >= 85
+                      ? "warning"
+                      : "primary"
+                  }
                   variant="determinate"
                 />
               </InputAdornment>

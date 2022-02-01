@@ -88,7 +88,7 @@ export default function ProfilePage({ user, docId }) {
                 sx={{ resize: "none" }}
                 fullWidth
                 value={input}
-                placeholder="Lets see what changes do you make in your about section..."
+                placeholder="Type Your Next Awesome Bio Here!"
                 InputProps={{
                   endAdornment: (
                     <InputAdornment

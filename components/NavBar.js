@@ -16,14 +16,14 @@ import { auth } from "../firebase";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import getUser from "./Actions/getUser";
-import Login from "./Login";
+import { signOut } from "firebase/auth";
 
 function Navbar() {
   const router = useRouter();
   const user = getUser();
 
   function processSignOut() {
-    auth.signOut();
+    signOut(auth);
     router.replace("/");
   }
 

@@ -1,11 +1,12 @@
 import { Stack, CircularProgress } from "@mui/material";
 import { useCollection } from "react-firebase-hooks/firestore";
 import { db } from "../firebase";
+import { collection, orderBy, query } from "firebase/firestore";
 import Post from "./Post";
 
 function Feed() {
-  const [realtimePosts, loading] = useCollection(
-    db.collection("posts").orderBy("timestamp", "desc")
+  const [snap, loading] = useCollection(
+    query(collection(db, "posts"), orderBy("timestamp", "desc"))
   );
 
   return (
@@ -16,11 +17,11 @@ function Feed() {
           my: "3em",
           mx: "auto",
         }}
-        spacing={1}
+        spacing={2}
       >
         {loading && <CircularProgress />}
-        {realtimePosts &&
-          realtimePosts?.docs.map((post) => (
+        {snap &&
+          snap?.docs.map((post) => (
             <Post
               key={post.id}
               id={post.id}
@@ -33,7 +34,7 @@ function Feed() {
               showDeleteButton={false}
               repost={post.data().repost}
               uid={post.data().uid}
-              postImages={post.data().postImages}
+              postImage={post.data().postImage}
             />
           ))}
       </Stack>

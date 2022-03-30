@@ -1,4 +1,5 @@
 import { db } from "../../firebase";
+import { doc, updateDoc } from "firebase/firestore";
 import { useState } from "react";
 import "emoji-mart/css/emoji-mart.css";
 import toast from "react-hot-toast";
@@ -55,7 +56,7 @@ export default function ProfilePage({ user, docId }) {
 
     setIsEditing(false);
 
-    const p = db.collection("users").doc(docId).update({
+    const p = updateDoc(doc(db, "users", docId), {
       about: input,
     });
 

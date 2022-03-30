@@ -16,30 +16,35 @@ import { db } from "../../firebase";
 import { useState, useRef } from "react";
 import toast from "react-hot-toast";
 import { useCollectionData } from "react-firebase-hooks/firestore";
+import {
+  collection,
+  addDoc,
+  query,
+  where,
+  getDocs,
+  deleteDoc,
+} from "firebase/firestore";
 
 function CommentsModal({ id, show, hideModal }) {
   const user = getUser();
   const [progress, setProgress] = useState(0);
   const input = useRef(null);
 
-  const [comments] = useCollectionData(
-    db.collection("posts").doc(id).collection("comments")
-  );
+  const [comments] = useCollectionData(collection(db, "posts", id, "comments"));
 
   function addCommentHandler(e) {
     e.preventDefault();
 
     if (progress <= 0) return;
 
-    db.collection("posts")
-      .doc(id)
-      .collection("comments")
-      .add({
-        name: user.displayName,
-        comment: input.current.value,
-        email: user.email,
-        uid: user.uid,
-      })
+    const ref = collection(db, "posts", id, "comments");
+
+    addDoc(ref, {
+      name: user.displayName,
+      comment: input.current.value,
+      email: user.email,
+      uid: user.uid,
+    })
       .then(() => {
         input.current.value = "";
         setProgress(0);
@@ -48,19 +53,19 @@ function CommentsModal({ id, show, hideModal }) {
   }
 
   function deleteCommentHandler(comment) {
-    const ref = db
-      .collection("posts")
-      .doc(id)
-      .collection("comments")
-      .where("comment", "==", comment.comment)
-      .where("uid", "==", comment.uid);
+    //TODO CHECK THIS
+    const postColl = collection(db, "posts", id, "comments");
+    const q = query(
+      postColl,
+      where("comment", "==", comment.comment),
+      where("uid", "==", comment.uid)
+    );
 
-    ref
-      .get()
-      .then((snap) => {
-        snap.forEach((doc) => doc.ref.delete());
-      })
-      .catch(() => toast("Couldn't delete comment. 😐"));
+    const qSnap = getDocs(q);
+
+    qSnap.forEach((doc) =>
+      deleteDoc(doc).catch(() => toast("Couldn't delete comment. 😐"))
+    );
   }
 
   function changeProgress(e) {

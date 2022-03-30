@@ -1,6 +1,13 @@
 import { useRef, useState } from "react";
 import { db, storage } from "../../firebase";
-import firebase from "firebase";
+import {
+  addDoc,
+  collection,
+  serverTimestamp,
+  doc,
+  updateDoc,
+} from "firebase/firestore";
+import { ref, uploadString, getDownloadURL } from "firebase/storage";
 import {
   Button,
   CircularProgress,
@@ -61,58 +68,48 @@ function AddPostComponent() {
     });
   }
 
-  function sendPostHandler() {
+  async function sendPostHandler() {
     if (message.text?.length <= 0) {
       toast.error("I don't like posting empty stuff! 😑");
       return;
     }
 
-    const p = db
-      .collection("posts")
-      .add({
-        message: message.text,
-        name: user.displayName,
-        email: user.email,
-        image: user.photoURL,
-        uid: user.uid,
-        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-        likes: [],
-        repost: null,
-      })
-      .then((doc) => {
-        if (imageToPost) {
-          const uploadTask = storage
-            .ref(`posts/${doc.id}`)
-            .putString(imageToPost, "data_url");
+    const docRef = addDoc(collection(db, "posts"), {
+      message: message.text,
+      name: user.displayName,
+      email: user.email,
+      image: user.photoURL,
+      uid: user.uid,
+      timestamp: serverTimestamp(),
+      likes: [],
+      repost: null,
+    })
+      .then((newDoc) => {
+        if (!imageToPost) return;
 
-          removeImage();
+        const imageRef = ref(storage, `posts/${newDoc.id}`);
 
-          uploadTask.on(
-            "state_change",
-            null,
-            () => toast.error("Couldn't post images! 😐"),
-            () => {
-              storage
-                .ref(`posts`)
-                .child(doc.id)
-                .getDownloadURL()
-                .then((url) => {
-                  db.collection("posts").doc(doc.id).set(
-                    {
-                      postImages: url,
-                    },
-                    { merge: true }
-                  );
-                });
-            }
-          );
-        }
+        uploadString(imageRef, imageToPost, "data_url")
+          .then((snap) => {
+            const downloadURL = getDownloadURL(imageRef);
+
+            downloadURL.then((url) => {
+              updateDoc(doc(db, `posts/${newDoc.id}`), {
+                postImage: url,
+              }).then(() => {
+                removeImage();
+              });
+            });
+          })
+          .catch(() => {
+            toast.error("Sorry! Could not upload image! 😐");
+          });
       })
       .then(() => {
         router.push("/");
       });
 
-    toast.promise(p, {
+    toast.promise(docRef, {
       loading: "Posting your awesome content...",
       success: "Posted! Cheers! 😎",
       error: "Couldn't Post! 😐",

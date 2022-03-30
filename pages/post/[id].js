@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { db, FieldValue } from "../../firebase";
+import { db } from "../../firebase";
 import {
   Avatar,
   Box,
@@ -16,6 +16,15 @@ import {
   useCollectionData,
   useDocumentData,
 } from "react-firebase-hooks/firestore";
+import {
+  doc,
+  collection,
+  addDoc,
+  query,
+  where,
+  getDoc,
+  deleteDoc,
+} from "firebase/firestore";
 import Link from "next/link";
 import TimeAgo from "timeago-react";
 import { AiOutlineRetweet, AiOutlineArrowLeft } from "react-icons/ai";
@@ -28,26 +37,20 @@ import {
 import { useRef, useState } from "react";
 import Head from "next/head";
 import getUser from "../../components/Actions/getUser";
+import toast from "react-hot-toast";
 
 function ViewPost() {
   const router = useRouter();
   const postId = router.query.id;
   const user = getUser();
 
-  const [ref, loading, error] = useDocumentData(
-    db.collection("posts").doc(postId)
-  );
+  const [ref, loading] = useDocumentData(doc(db, "posts", postId));
 
   if (loading) {
     return <CircularProgress />;
   }
 
-  // TODO: CHECK IS REF IS EMPTY
-  if (error) {
-    return router.push("/");
-  }
-
-  const { name, message, image, timestamp, likes, uid, repost, postImages } =
+  const { name, message, image, timestamp, likes, uid, repost, postImage } =
     ref;
 
   const hasLiked = likes.includes(user.email);
@@ -140,7 +143,7 @@ function ViewPost() {
           <Typography gutterBottom variant="h6">
             {message}
           </Typography>
-          {postImages && <img src={postImages} width="100%" />}
+          {postImage && <img src={postImage} width="100%" />}
         </Box>
 
         {/* Post related actions - like, delete */}
@@ -172,7 +175,7 @@ function ViewPost() {
                     message,
                     uid,
                     timestamp,
-                    postImages,
+                    postImage,
                     image
                   )
                 }
@@ -195,24 +198,19 @@ function CommentsArea({ id }) {
   const input = useRef(null);
   const [progress, setProgress] = useState(0);
 
-  const [comments] = useCollectionData(
-    db.collection("posts").doc(id).collection("comments")
-  );
+  const [comments] = useCollectionData(collection(db, "posts", id, "comments"));
 
-  function deleteCommentHandler(comment) {
-    const ref = db
-      .collection("posts")
-      .doc(id)
-      .collection("comments")
-      .where("comment", "==", comment.comment)
-      .where("uid", "==", comment.uid);
+  async function deleteCommentHandler(comment) {
+    toast("Delete Function out soon!");
+    // const postColl = collection(db, "posts", id, "comments");
+    // const q = query(
+    //   postColl,
+    //   where("comment", "==", comment.comment),
+    //   where("uid", "==", comment.uid)
+    // );
 
-    ref
-      .get()
-      .then((snap) => {
-        snap.forEach((doc) => doc.ref.delete());
-      })
-      .catch(() => toast("Couldn't delete comment. 😐"));
+    // const qSnap = await getDoc(q);
+    // deleteDoc(qSnap).catch(() => toast.error("Couldn't delete comment!"));
   }
 
   function addCommentHandler(e) {
@@ -220,15 +218,14 @@ function CommentsArea({ id }) {
 
     if (progress <= 0) return;
 
-    db.collection("posts")
-      .doc(id)
-      .collection("comments")
-      .add({
-        name: user.displayName,
-        comment: input.current.value,
-        email: user.email,
-        uid: user.uid,
-      })
+    const ref = collection(db, "posts", id, "comments");
+
+    addDoc(ref, {
+      name: user.displayName,
+      comment: input.current.value,
+      email: user.email,
+      uid: user.uid,
+    })
       .then(() => {
         input.current.value = "";
         setProgress(0);
@@ -249,7 +246,7 @@ function CommentsArea({ id }) {
           fullWidth
           sx={{ resize: "none" }}
           label="Add a comment"
-          InputProps={{ maxLength: 3 }}
+          inputProps={{ maxLength: 100 }}
           inputRef={input}
           onChange={changeProgress}
           error={progress > 100}

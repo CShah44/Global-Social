@@ -1,5 +1,6 @@
-import { useAuthState } from "react-firebase-hooks/auth";
 import { auth, db } from "../firebase";
+import { onAuthStateChanged } from "firebase/auth";
+import { getDoc, doc, setDoc } from "firebase/firestore";
 import { useEffect } from "react";
 import CurrentUser from "../contexts/CurrentUser";
 import "../styles/globals.css";
@@ -10,51 +11,47 @@ import CssBaseline from "@mui/material/CssBaseline";
 import theme from "../styles/theme";
 import { ThemeProvider } from "@mui/material/styles";
 import { Toaster } from "react-hot-toast";
+import { useState } from "react";
 
 const clientSideEmotionCache = createEmotionCache();
 
 function MyApp(props) {
   const { Component, emotionCache = clientSideEmotionCache, pageProps } = props;
 
-  const [user, loading, error] = useAuthState(auth);
+  // TODO CHECK THIS
+  // const [user, loading, error] = useAuthState(auth);
+  const [user, setUser] = useState();
 
   useEffect(() => {
-    auth.onAuthStateChanged((user) => {
-      if (user) {
-        db.collection("users")
-          .doc(user.uid)
-          .get()
-          .then((doc) => {
-            if (doc.exists) {
-              return;
-            } else {
-              db.collection("users").doc(user.uid).set(
-                {
-                  name: user.displayName,
-                  about: "Hey there, I am using Global Social!",
-                  email: user.email,
-                  photoURL: user.photoURL,
-                },
-                { merge: true }
-              );
-            }
-          });
-      } else {
-        return <Login />;
-      }
-    });
-  }, []);
+    const unsub = onAuthStateChanged(auth, (user) => {
+      if (!user) return;
 
-  if (loading) return null;
-  if (!user) return <Login />;
+      setUser(user);
+
+      const userDoc = getDoc(doc(db, "users", user.uid));
+
+      userDoc.then((doc) => {
+        if (!doc.exists) {
+          setDoc(doc(db, "users", user.uid), {
+            name: user.displayName,
+            about: "Hey there, I am using Global Social!",
+            email: user.email,
+            photoURL: user.photoURL,
+          });
+        }
+      });
+    });
+
+    return () => unsub();
+  }, []);
 
   const value = user
     ? {
         user,
-        loading,
-        error,
       }
     : {};
+
+  if (!user) return <Login />;
 
   return (
     <CacheProvider value={emotionCache}>

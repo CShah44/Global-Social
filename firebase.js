@@ -1,7 +1,7 @@
-import firebase from "firebase/compat/app";
-import "firebase/compat/auth";
-import "firebase/compat/firestore";
-import "firebase/compat/auth";
+import { getFirestore } from "firebase/firestore";
+import { getStorage } from "firebase/storage";
+import { initializeApp, getApp, getApps } from "firebase/app";
+import { getAuth, GoogleAuthProvider } from "firebase/auth";
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -12,14 +12,11 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
 
-const app = !firebase.apps.length
-  ? firebase.initializeApp(firebaseConfig)
-  : firebase.app();
+const app = !getApps.length ? initializeApp(firebaseConfig) : getApp;
+const db = getFirestore();
+const storage = getStorage();
 
-const db = firebase.firestore();
-const storage = firebase.storage();
-const auth = firebase.auth();
-const provider = new firebase.auth.GoogleAuthProvider();
-const FieldValue = firebase.firestore.FieldValue;
+const auth = getAuth();
+const provider = new GoogleAuthProvider();
 
-export { db, storage, auth, provider, FieldValue };
+export { db, storage, auth, provider };

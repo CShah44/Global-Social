@@ -1,8 +1,9 @@
 import Head from "next/head";
 import ProfilePage from "../../components/Profile_Page/ProfilePage";
 import { useRouter } from "next/router";
-import { useCollection } from "react-firebase-hooks/firestore";
+import { useDocument } from "react-firebase-hooks/firestore";
 import { db } from "../../firebase";
+import { doc } from "firebase/firestore";
 import UserPosts from "../../components/Profile_Page/UserPosts";
 import Navbar from "../../components/NavBar";
 import { CircularProgress, Stack } from "@mui/material";
@@ -12,7 +13,8 @@ export default function Profile() {
 
   const id = router.query.id;
 
-  const [user, loading] = useCollection(db.collection("users").doc(id));
+  // TODO CHECK THIS
+  const [user, loading] = useDocument(doc(db, `users/${id}`));
 
   if (loading) return <CircularProgress />;
 

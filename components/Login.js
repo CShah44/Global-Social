@@ -1,10 +1,11 @@
 import { Button, Box } from "@mui/material";
 import { auth, provider } from "../firebase";
+import { signInWithPopup } from "firebase/auth";
 import Image from "next/image";
 
 function Login() {
   function signIn() {
-    auth.signInWithPopup(provider).catch(alert);
+    signInWithPopup(auth, provider).catch(alert);
   }
 
   return (

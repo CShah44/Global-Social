@@ -1,18 +1,18 @@
 import { useCollection } from "react-firebase-hooks/firestore";
 import { db } from "../../firebase";
+import { collection, where, orderBy, query } from "firebase/firestore";
 import Post from "../Post";
 import { Stack } from "@mui/material";
-import getUser from "../Actions/getUser";
 
 function UserPosts({ user }) {
-  const user = getUser();
   const email = user.email;
 
   const [userPosts] = useCollection(
-    db
-      .collection("posts")
-      .where("email", "==", user.email)
-      .orderBy("timestamp", "desc")
+    query(
+      collection(db, "posts"),
+      where("email", "==", email),
+      orderBy("timestamp", "desc")
+    )
   );
 
   return (
@@ -20,7 +20,7 @@ function UserPosts({ user }) {
       spacing={3}
       sx={{ mb: 5, mx: "auto", width: { xs: "100vw", md: "650px" } }}
     >
-      {userPosts && userPosts.docs.length > 0 ? (
+      {userPosts && userPosts?.docs.length > 0 ? (
         userPosts.docs.map(function (post) {
           return (
             <Post
@@ -31,7 +31,7 @@ function UserPosts({ user }) {
               email={post.data().email}
               timestamp={post.data().timestamp}
               image={post.data().image}
-              postImages={post.data().postImages}
+              postImage={post.data().postImage}
               likes={post.data().likes}
               showUserOptions={post.data().email === email ? true : false}
               repost={post.data().repost}

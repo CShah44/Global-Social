@@ -34,7 +34,7 @@ function Post({
   email,
   message,
   image,
-  postImages,
+  postImage,
   timestamp,
   id,
   likes,
@@ -89,7 +89,7 @@ function Post({
   };
 
   function processDelete() {
-    deletePostHandler(id, postImages);
+    deletePostHandler(id);
   }
 
   return (
@@ -105,7 +105,7 @@ function Post({
         hideModal={() => setShowRepostModal(false)}
         show={showRepostModal}
         func={() =>
-          repostHandler(user, name, message, uid, timestamp, postImages, image)
+          repostHandler(user, name, message, uid, timestamp, postImage, image)
         }
         text="Are you sure you want to repost? 😎"
         title="Confirm Reposting"
@@ -172,10 +172,10 @@ function Post({
                 {message}
               </Typography>
             </CardContent>
-            {postImages && (
+            {postImage && (
               <CardMedia
                 component="img"
-                src={postImages}
+                src={postImage}
                 sx={{ width: { xs: "100%", sm: "500px", md: "650px" } }}
                 alt="Post Image"
               />

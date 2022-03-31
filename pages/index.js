@@ -11,9 +11,6 @@ export default function Home() {
       </Head>
       <Stack>
         <Navbar />
-        <Typography variant="h4" sx={{ mx: "auto", mt: 4 }}>
-          Your Feed
-        </Typography>
         <Feed />
       </Stack>
     </>

@@ -12,14 +12,14 @@ import theme from "../styles/theme";
 import { ThemeProvider } from "@mui/material/styles";
 import { Toaster } from "react-hot-toast";
 import { useState } from "react";
+import { CircularProgress } from "@mui/material";
 
 const clientSideEmotionCache = createEmotionCache();
 
 function MyApp(props) {
   const { Component, emotionCache = clientSideEmotionCache, pageProps } = props;
 
-  // TODO CHECK THIS
-  // const [user, loading, error] = useAuthState(auth);
+  const [loading, setLoading] = useState(true);
   const [user, setUser] = useState();
 
   useEffect(() => {
@@ -42,7 +42,11 @@ function MyApp(props) {
       });
     });
 
-    return () => unsub();
+    setLoading(false);
+
+    return () => {
+      unsub();
+    };
   }, []);
 
   const value = user
@@ -51,7 +55,8 @@ function MyApp(props) {
       }
     : {};
 
-  if (!user) return <Login />;
+  if (loading) return <CircularProgress />;
+  if (!user && !loading) return <Login />;
 
   return (
     <CacheProvider value={emotionCache}>

@@ -22,7 +22,7 @@ import {
   addDoc,
   query,
   where,
-  getDoc,
+  getDocs,
   deleteDoc,
 } from "firebase/firestore";
 import Link from "next/link";
@@ -201,16 +201,18 @@ function CommentsArea({ id }) {
   const [comments] = useCollectionData(collection(db, "posts", id, "comments"));
 
   async function deleteCommentHandler(comment) {
-    toast("Delete Function out soon!");
-    // const postColl = collection(db, "posts", id, "comments");
-    // const q = query(
-    //   postColl,
-    //   where("comment", "==", comment.comment),
-    //   where("uid", "==", comment.uid)
-    // );
+    const postColl = collection(db, "posts", id, "comments");
+    const q = query(
+      postColl,
+      where("comment", "==", comment.comment),
+      where("uid", "==", comment.uid)
+    );
 
-    // const qSnap = await getDoc(q);
-    // deleteDoc(qSnap).catch(() => toast.error("Couldn't delete comment!"));
+    const qSnap = await getDocs(q);
+
+    qSnap.forEach((snapDoc) => {
+      deleteDoc(snapDoc.ref).catch(() => toast("Couldn't delete comment. 😐"));
+    });
   }
 
   function addCommentHandler(e) {
@@ -246,7 +248,7 @@ function CommentsArea({ id }) {
           fullWidth
           sx={{ resize: "none" }}
           label="Add a comment"
-          inputProps={{ maxLength: 100 }}
+          inputProps={{ maxLength: 150 }}
           inputRef={input}
           onChange={changeProgress}
           error={progress > 100}

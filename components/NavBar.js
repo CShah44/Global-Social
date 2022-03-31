@@ -48,7 +48,7 @@ function Navbar() {
               sx={{
                 mr: 2,
                 display: { xs: "none", md: "flex" },
-                fontFamily: "Expose",
+                cursor: "pointer",
               }}
             >
               GLOBAL SOCIAL
@@ -132,7 +132,11 @@ function Navbar() {
 
           <Box sx={{ flexGrow: 0 }}>
             <Link href={`${router.basePath}/user/${user.uid}`} passHref>
-              <Avatar alt={user.displayName} src={user.photoURL} />
+              <Avatar
+                sx={{ cursor: "pointer" }}
+                alt={user.displayName}
+                src={user.photoURL}
+              />
             </Link>
           </Box>
         </Toolbar>

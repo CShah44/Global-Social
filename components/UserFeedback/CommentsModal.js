@@ -52,8 +52,7 @@ function CommentsModal({ id, show, hideModal }) {
       .catch(() => toast.error("Could Not Comment. 😞"));
   }
 
-  function deleteCommentHandler(comment) {
-    //TODO CHECK THIS
+  async function deleteCommentHandler(comment) {
     const postColl = collection(db, "posts", id, "comments");
     const q = query(
       postColl,
@@ -61,11 +60,11 @@ function CommentsModal({ id, show, hideModal }) {
       where("uid", "==", comment.uid)
     );
 
-    const qSnap = getDocs(q);
+    const qSnap = await getDocs(q);
 
-    qSnap.forEach((doc) =>
-      deleteDoc(doc).catch(() => toast("Couldn't delete comment. 😐"))
-    );
+    qSnap.forEach((snapDoc) => {
+      deleteDoc(snapDoc.ref).catch(() => toast("Couldn't delete comment. 😐"));
+    });
   }
 
   function changeProgress(e) {
@@ -117,6 +116,7 @@ function CommentsModal({ id, show, hideModal }) {
           fullWidth
           sx={{ resize: "none" }}
           placeholder="Add a comment"
+          inputProps={{ maxLength: 150 }}
           onChange={changeProgress}
           inputRef={input}
           error={progress > 100}

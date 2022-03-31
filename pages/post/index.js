@@ -160,6 +160,7 @@ function AddPostComponent() {
             onChange={changeProgress}
             value={message.text}
             error={message.progress >= 100}
+            inputProps={{ maxLength: 240 }}
             color={
               message.progress >= 100
                 ? "error"

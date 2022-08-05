@@ -54,6 +54,7 @@ export default function ProfilePage({ user, docId }) {
       return toast.error("Enter at least 10 characters.");
     }
 
+    setAnchorEl(null);
     setIsEditing(false);
 
     const p = updateDoc(doc(db, "users", docId), {
@@ -76,8 +77,9 @@ export default function ProfilePage({ user, docId }) {
           avatar={<Avatar src={user.photoURL} alt={user.name} />}
           title={
             <Stack>
-              <Typography variant="h4">Hi, {user.name}</Typography>
-              <Typography variant="h5">{user.email}</Typography>
+              <Typography variant="h4">
+                {docId === currentUser.uid ? "Hi," : "It's "} {user.name}
+              </Typography>
             </Stack>
           }
         />

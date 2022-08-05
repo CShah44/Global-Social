@@ -76,7 +76,7 @@ function ViewPost() {
           borderBottom: "1px solid whitesmoke",
           width: { xs: "100vw", sm: "500px", md: "650px" },
           mx: "auto",
-          mt: 1,
+          my: 1,
         }}
       >
         <Button sx={{ mr: "auto", m: 1 }} onClick={() => router.back()}>
@@ -89,7 +89,7 @@ function ViewPost() {
         sx={{
           display: "flex",
           flexDirection: "column",
-          mt: 10,
+          mt: 6,
           width: { xs: "100vw", sm: "500px", md: "650px" },
           mx: "auto",
           px: { xs: 2, sm: 0 },
@@ -104,15 +104,16 @@ function ViewPost() {
             mb: 2,
           }}
         >
-          {repost && <Typography variant="h6"></Typography>}
-
           <Avatar src={repost ? repost.image : image} />
           {repost ? (
-            <Link href={`${router.basePath}/user/${repost.uid}`} passHref>
-              <Typography sx={{ cursor: "pointer" }} variant="h4">
-                {repost.name}
-              </Typography>
-            </Link>
+            <>
+              <Typography variant="h6"> Reposted by {name}</Typography>
+              <Link href={`${router.basePath}/user/${repost.uid}`} passHref>
+                <Typography sx={{ cursor: "pointer" }} variant="h4">
+                  {repost.name}
+                </Typography>
+              </Link>
+            </>
           ) : (
             <Link href={`${router.basePath}/user/${uid}`} passHref>
               <Typography sx={{ cursor: "pointer" }} variant="h4">

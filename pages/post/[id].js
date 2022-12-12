@@ -79,7 +79,10 @@ function ViewPost() {
           my: 1,
         }}
       >
-        <Button sx={{ mr: "auto", m: 1 }} onClick={() => router.back()}>
+        <Button
+          sx={{ mr: "auto", my: 1, mr: 1, px: 2, border: "1px solid #808080" }}
+          onClick={() => router.back()}
+        >
           <IconContext.Provider value={{ size: "2em" }}>
             <AiOutlineArrowLeft />
           </IconContext.Provider>
@@ -108,6 +111,7 @@ function ViewPost() {
           {repost ? (
             <>
               <Typography variant="h6"> Reposted by {name}</Typography>
+              <br />
               <Link href={`${router.basePath}/user/${repost.uid}`} passHref>
                 <Typography sx={{ cursor: "pointer" }} variant="h4">
                   {repost.name}

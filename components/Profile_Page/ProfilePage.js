@@ -18,8 +18,11 @@ import {
   CardActions,
 } from "@mui/material";
 import { MdOutlineEmojiEmotions } from "react-icons/md";
+import { AiOutlineEdit } from "react-icons/ai";
 import { Picker } from "emoji-mart";
 import getUser from "../Actions/getUser";
+
+let a = ["It's ", "Yo! I'm ", "Hey! It's ", "😎 ", "🤛🏻", "👀"];
 
 export default function ProfilePage({ user, docId }) {
   const currentUser = getUser();
@@ -78,7 +81,10 @@ export default function ProfilePage({ user, docId }) {
           title={
             <Stack>
               <Typography variant="h4">
-                {docId === currentUser.uid ? "Hi," : "It's "} {user.name}
+                {docId === currentUser.uid
+                  ? "Hi,"
+                  : a[Math.floor(Math.random() * a.length)]}{" "}
+                {user.name}
               </Typography>
             </Stack>
           }
@@ -131,7 +137,7 @@ export default function ProfilePage({ user, docId }) {
           <CardActions>
             {!isEditing && (
               <Button variant="contained" onClick={() => setIsEditing(true)}>
-                Edit Your Bio
+                Edit <AiOutlineEdit style={{ marginLeft: 4 }} />
               </Button>
             )}
           </CardActions>

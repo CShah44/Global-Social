@@ -12,18 +12,19 @@ import theme from "../styles/theme";
 import { ThemeProvider } from "@mui/material/styles";
 import { Toaster } from "react-hot-toast";
 import { useState } from "react";
-import { CircularProgress } from "@mui/material";
+// import { CircularProgress } from "@mui/material";
 
 const clientSideEmotionCache = createEmotionCache();
 
 function MyApp(props) {
   const { Component, emotionCache = clientSideEmotionCache, pageProps } = props;
 
-  const [loading, setLoading] = useState(true);
+  // const [loading, setLoading] = useState();
   const [user, setUser] = useState();
 
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, (user) => {
+      console.log("return ke pehle ka in useeffect");
       if (!user) return;
 
       setUser(user);
@@ -41,13 +42,13 @@ function MyApp(props) {
         }
       });
     });
-
-    setLoading(false);
+    console.log("main");
 
     return () => {
+      console.log("unsub");
       unsub();
     };
-  }, []);
+  });
 
   const value = user
     ? {
@@ -55,8 +56,9 @@ function MyApp(props) {
       }
     : {};
 
-  if (loading) return <CircularProgress />;
-  if (!user && !loading) return <Login />;
+  //if (loading) return <CircularProgress />;
+  console.log("LOGIN TAK PAHUCHA KI NAHI");
+  if (!user) return <Login />;
 
   return (
     <CacheProvider value={emotionCache}>

@@ -24,7 +24,7 @@ function Navbar() {
 
   function processSignOut() {
     signOut(auth);
-    router.replace("/");
+    router.push("/");
   }
 
   const [anchorElNav, setAnchorElNav] = useState(null);

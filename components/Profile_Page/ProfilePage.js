@@ -74,13 +74,13 @@ export default function ProfilePage({ user, docId }) {
   return (
     <>
       <Card
-        sx={{ width: { xs: "100vw", md: "650px" }, mx: "auto", my: 4, p: 3 }}
+        sx={{ width: { xs: "100vw", md: "650px" }, mx: "auto", my: 4, p: 5 }}
       >
         <CardHeader
           avatar={<Avatar src={user.photoURL} alt={user.name} />}
           title={
             <Stack>
-              <Typography variant="h4">
+              <Typography variant="h3">
                 {docId === currentUser.uid
                   ? "Hi,"
                   : a[Math.floor(Math.random() * a.length)]}{" "}
@@ -129,7 +129,7 @@ export default function ProfilePage({ user, docId }) {
             </Box>
           ) : (
             <>
-              <Typography variant="body1">{user.about}</Typography>
+              <Typography variant="h6">{user.about}</Typography>
             </>
           )}
         </CardContent>

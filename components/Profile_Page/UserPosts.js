@@ -2,7 +2,7 @@ import { useCollection } from "react-firebase-hooks/firestore";
 import { db } from "../../firebase";
 import { collection, where, orderBy, query } from "firebase/firestore";
 import Post from "../Post";
-import { Stack } from "@mui/material";
+import { Stack, Typography } from "@mui/material";
 
 function UserPosts({ user }) {
   const email = user.email;
@@ -18,8 +18,9 @@ function UserPosts({ user }) {
   return (
     <Stack
       spacing={3}
-      sx={{ mb: 5, mx: "auto", width: { xs: "100vw", md: "650px" } }}
+      sx={{ my: 5, mx: "auto", width: { xs: "100vw", md: "650px" } }}
     >
+      <Typography variant="h5">Posts</Typography>
       {userPosts && userPosts?.docs.length > 0 ? (
         userPosts.docs.map(function (post) {
           return (

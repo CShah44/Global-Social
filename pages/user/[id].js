@@ -13,7 +13,6 @@ export default function Profile() {
 
   const id = router.query.id;
 
-  // TODO CHECK THIS
   const [user, loading] = useDocument(doc(db, `users/${id}`));
 
   if (loading) return <CircularProgress />;
